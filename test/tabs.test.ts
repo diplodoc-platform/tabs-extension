@@ -76,7 +76,7 @@ describe('Tabs', () => {
     test('Tab syntax is escaped', () => {
         const escapedTabTokens = callPlugin(
             transform({bundle: false}),
-            tokenize(['`{% list tabs %}`'])
+            tokenize(['`{% list tabs %}`']),
         );
 
         expect(escapedTabTokens).toEqual(escaped);
