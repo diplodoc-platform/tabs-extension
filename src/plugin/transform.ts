@@ -9,7 +9,7 @@ import {copyRuntimeFiles} from './copyRuntimeFiles';
 export type PluginOptions = {
     runtimeJsPath: string;
     runtimeCssPath: string;
-    containerClass: string;
+    containerClasses: string;
     bundle: boolean;
 };
 
@@ -101,7 +101,7 @@ function insertTabs(
     tabs: Tab[],
     state: StateCore,
     {start, end}: {start: number; end: number},
-    {containerClass}: Partial<PluginOptions>,
+    {containerClasses}: Partial<PluginOptions>,
 ) {
     const tabsTokens = [];
     const tabListTokens = [];
@@ -115,7 +115,7 @@ function insertTabs(
     tabsClose.block = true;
     tabListOpen.block = true;
     tabListClose.block = true;
-    tabsOpen.attrSet('class', ['yfm-tabs', containerClass].join(' '));
+    tabsOpen.attrSet('class', ['yfm-tabs', containerClasses].join(' '));
     tabListOpen.attrSet('class', 'yfm-tab-list');
     tabListOpen.attrSet('role', 'tablist');
 
@@ -209,7 +209,7 @@ function matchOpenToken(tokens: Token[], i: number) {
 export function transform({
     runtimeJsPath = '_assets/tabs-extension.js',
     runtimeCssPath = '_assets/tabs-extension.css',
-    containerClass = '',
+    containerClasses = '',
     bundle = true,
 }: Partial<PluginOptions> = {}) {
     const tabs: MarkdownItPluginCb<{output: string}> = function (md: MarkdownIt, {output = '.'}) {
@@ -242,7 +242,7 @@ export function transform({
                 const {tabs, index} = findTabs(state.tokens, i + 3);
 
                 if (tabs.length > 0) {
-                    i += insertTabs(tabs, state, {start: i, end: index + 3}, {containerClass});
+                    i += insertTabs(tabs, state, {start: i, end: index + 3}, {containerClasses});
                     tabsAreInserted = true;
                 } else {
                     state.tokens.splice(i, index - i);
