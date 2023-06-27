@@ -11,6 +11,7 @@ import {generateID} from './utils';
 export type PluginOptions = {
     runtimeJsPath: string;
     runtimeCssPath: string;
+    containerClass: string;
     bundle: boolean;
 };
 
@@ -98,7 +99,12 @@ function findTabs(tokens: Token[], idx: number) {
     };
 }
 
-function insertTabs(tabs: Tab[], state: StateCore, start: number, end: number) {
+function insertTabs(
+    tabs: Tab[],
+    state: StateCore,
+    {start, end}: {start: number; end: number},
+    {containerClass}: Partial<PluginOptions>,
+) {
     const tabsTokens = [];
     const tabListTokens = [];
     const tabPanelsTokens = [];
@@ -111,7 +117,7 @@ function insertTabs(tabs: Tab[], state: StateCore, start: number, end: number) {
     tabsClose.block = true;
     tabListOpen.block = true;
     tabListClose.block = true;
-    tabsOpen.attrSet('class', 'yfm-tabs');
+    tabsOpen.attrSet('class', ['yfm-tabs', containerClass].join(' '));
     tabListOpen.attrSet('class', 'yfm-tab-list');
     tabListOpen.attrSet('role', 'tablist');
 
@@ -205,6 +211,7 @@ function matchOpenToken(tokens: Token[], i: number) {
 export function transform({
     runtimeJsPath = '_assets/tabs-extension.js',
     runtimeCssPath = '_assets/tabs-extension.css',
+    containerClass = '',
     bundle = true,
 }: Partial<PluginOptions> = {}) {
     const tabs: MarkdownItPluginCb<{output: string}> = function (md: MarkdownIt, {output = '.'}) {
@@ -237,7 +244,7 @@ export function transform({
                 const {tabs, index} = findTabs(state.tokens, i + 3);
 
                 if (tabs.length > 0) {
-                    i += insertTabs(tabs, state, i, index + 3);
+                    i += insertTabs(tabs, state, {start: i, end: index + 3}, {containerClass});
                     tabsAreInserted = true;
                 } else {
                     state.tokens.splice(i, index - i);
