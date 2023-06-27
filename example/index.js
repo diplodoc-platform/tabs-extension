@@ -18,9 +18,7 @@ import {readFile} from 'node:fs/promises';
 <html>
     <head>
         ${result.meta.script.map((scriptFile) => `<script src="${scriptFile}"></script>`)}
-        ${result.meta.style.map(
-            (styleFile) => `<link rel="stylesheet" href="${styleFile}"></script>`,
-        )}
+        ${result.meta.style.map((styleFile) => `<link rel="stylesheet" href="${styleFile}" />`)}
     </head>
     <body>
         ${result.html}    
