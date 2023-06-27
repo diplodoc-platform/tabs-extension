@@ -1,6 +1,5 @@
 import {isCustom, getEventTarget} from './utils';
 
-// TODO rename classes?
 const Selector = {
     TABS: '.yfm-tabs',
     TAB_LIST: '.yfm-tab-list',

@@ -1,12 +1,10 @@
-import {join, dirname, resolve} from 'node:path';
-import {mkdirSync, copyFileSync} from 'node:fs';
-
 import MarkdownIt from 'markdown-it';
 import StateCore from 'markdown-it/lib/rules_core/state_core';
 import Token from 'markdown-it/lib/token';
 import type {MarkdownItPluginCb} from '@doc-tools/transform/lib/plugins/typings';
 
-import {generateID} from './utils';
+import {addHiddenProperty, generateID} from './utils';
+import {copyRuntimeFiles} from './copyRuntimeFiles';
 
 export type PluginOptions = {
     runtimeJsPath: string;
@@ -259,18 +257,7 @@ export function transform({
                 env.meta.style.push(runtimeCssPath);
 
                 if (bundle) {
-                    const runtimeFiles = {
-                        'index.js': runtimeJsPath,
-                        'yfm.css': runtimeCssPath,
-                    };
-                    for (const [originFile, outputFile] of Object.entries(runtimeFiles)) {
-                        // TODO const
-                        const file = join('../runtime', originFile);
-                        if (!env.bundled.has(file)) {
-                            env.bundled.add(file);
-                            copy(resolve(__dirname, file), join(output, outputFile));
-                        }
-                    }
+                    copyRuntimeFiles({runtimeJsPath, runtimeCssPath, output}, env.bundled);
                 }
             }
         };
@@ -283,24 +270,4 @@ export function transform({
     };
 
     return tabs;
-}
-
-function addHiddenProperty<
-    B extends Record<string | symbol, unknown>,
-    F extends string | symbol,
-    V,
->(box: B, field: F, value: V) {
-    if (!(field in box)) {
-        Object.defineProperty(box, field, {
-            enumerable: false,
-            value: value,
-        });
-    }
-
-    return box as B & {[P in F]: V};
-}
-
-function copy(from: string, to: string) {
-    mkdirSync(dirname(to), {recursive: true});
-    copyFileSync(from, to);
 }
