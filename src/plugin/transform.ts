@@ -13,7 +13,7 @@ export type PluginOptions = {
     bundle: boolean;
 };
 
-const TAB_RE = /`?{% list (tabs) %}`?/;
+const TAB_RE = /`?{% list tabs( group=([^ ]*))? %}`?/;
 
 type Tab = {
     name: string;
@@ -101,7 +101,7 @@ function insertTabs(
     tabs: Tab[],
     state: StateCore,
     {start, end}: {start: number; end: number},
-    {containerClasses}: Partial<PluginOptions>,
+    {containerClasses, tabsGroup}: {containerClasses: string; tabsGroup: string},
 ) {
     const tabsTokens = [];
     const tabListTokens = [];
@@ -115,7 +115,9 @@ function insertTabs(
     tabsClose.block = true;
     tabListOpen.block = true;
     tabListClose.block = true;
+
     tabsOpen.attrSet('class', ['yfm-tabs', containerClasses].filter(Boolean).join(' '));
+    tabsOpen.attrSet('data-group', tabsGroup);
     tabListOpen.attrSet('class', 'yfm-tab-list');
     tabListOpen.attrSet('role', 'tablist');
 
@@ -239,10 +241,17 @@ export function transform({
                     continue;
                 }
 
+                const tabsGroup = match[2] || generateID();
+
                 const {tabs, index} = findTabs(state.tokens, i + 3);
 
                 if (tabs.length > 0) {
-                    i += insertTabs(tabs, state, {start: i, end: index + 3}, {containerClasses});
+                    i += insertTabs(
+                        tabs,
+                        state,
+                        {start: i, end: index + 3},
+                        {containerClasses, tabsGroup},
+                    );
                     tabsAreInserted = true;
                 } else {
                     state.tokens.splice(i, index - i);
