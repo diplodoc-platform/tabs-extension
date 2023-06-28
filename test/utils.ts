@@ -46,7 +46,7 @@ export function callPlugin<T extends {}>(
         ),
     );
 
-    return state.tokens;
+    return state;
 }
 
 export const tokenize = (lines: string[] = []) => md.parse(lines.join('\n'), {});
