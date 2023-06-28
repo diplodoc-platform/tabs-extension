@@ -151,4 +151,6 @@ describe('plugin', () => {
             });
         });
     });
+
+    // TODO add tests about tabs group and tab ids
 });
