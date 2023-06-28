@@ -11,15 +11,17 @@ const ClassName = {
     ACTIVE: 'active',
 };
 
-function selectTab(element: HTMLElement) {
+function isValidTabElement(element: HTMLElement) {
     const parentNode = element.parentNode as HTMLElement;
-    if (
-        !parentNode ||
-        !parentNode.matches(Selector.TAB_LIST) ||
-        !parentNode.parentNode ||
-        !(parentNode.parentNode as HTMLElement).matches(Selector.TABS) ||
-        element.classList.contains(ClassName.ACTIVE)
-    ) {
+    return (
+        element.matches(Selector.TAB) ||
+        parentNode?.matches(Selector.TAB_LIST) ||
+        (parentNode?.parentNode as HTMLElement)?.matches(Selector.TABS)
+    );
+}
+
+function selectTab(element: HTMLElement) {
+    if (!isValidTabElement(element) || element.classList.contains(ClassName.ACTIVE)) {
         return;
     }
 
@@ -33,18 +35,12 @@ function selectTab(element: HTMLElement) {
     for (let i = 0; i < allTabs.length; i++) {
         const tab = allTabs[i];
         const panel = allPanels[i];
+        const isTargetTab = i === targetIndex;
 
-        if (i === targetIndex) {
-            tab.classList.toggle(ClassName.ACTIVE, true);
-            tab.setAttribute('aria-selected', 'true');
-            tab.setAttribute('tabindex', '0');
-            panel.classList.toggle(ClassName.ACTIVE, true);
-        } else {
-            tab.classList.toggle(ClassName.ACTIVE, false);
-            tab.setAttribute('aria-selected', 'false');
-            tab.setAttribute('tabindex', '-1');
-            panel.classList.toggle(ClassName.ACTIVE, false);
-        }
+        tab.classList.toggle(ClassName.ACTIVE, isTargetTab);
+        tab.setAttribute('aria-selected', isTargetTab.toString());
+        tab.setAttribute('tabindex', isTargetTab ? '0' : '-1');
+        panel.classList.toggle(ClassName.ACTIVE, isTargetTab);
     }
 }
 
@@ -52,7 +48,7 @@ if (typeof document !== 'undefined') {
     document.addEventListener('click', (event) => {
         const target = getEventTarget(event) as HTMLElement;
 
-        if (isCustom(event) || !target.matches(Selector.TAB)) {
+        if (isCustom(event) || !isValidTabElement(target)) {
             return;
         }
 
