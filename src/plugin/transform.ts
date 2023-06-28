@@ -115,7 +115,7 @@ function insertTabs(
     tabsClose.block = true;
     tabListOpen.block = true;
     tabListClose.block = true;
-    tabsOpen.attrSet('class', ['yfm-tabs', containerClasses].join(' '));
+    tabsOpen.attrSet('class', ['yfm-tabs', containerClasses].filter(Boolean).join(' '));
     tabListOpen.attrSet('class', 'yfm-tab-list');
     tabListOpen.attrSet('role', 'tablist');
 

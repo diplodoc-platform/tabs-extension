@@ -110,7 +110,17 @@ describe('plugin', () => {
             expect(attrsObject['class']).toEqual('yfm-tabs test_1 test_2');
         });
 
-        test('should add an extra className to container node', () => {
+        test('should return the default className for container node', () => {
+            // ACT
+            const {tokens: result} = makeTransform();
+
+            // ASSERT
+            const tabs = result.filter(({type}) => type === 'tabs_open');
+            const attrsObject = convertAttrsToObject(tabs[0]);
+            expect(attrsObject['class']).toEqual('yfm-tabs');
+        });
+
+        test('should return custom runtimeJsPath and runtimeCssPath meta data', () => {
             // ACT
             const result = makeTransform({
                 transformOptions: {
@@ -123,8 +133,21 @@ describe('plugin', () => {
             expect(result.env).toEqual({
                 meta: {
                     script: ['path_1'],
-                    style: ['path_2']
-                }
+                    style: ['path_2'],
+                },
+            });
+        });
+
+        test('should return default runtimeJsPath and runtimeCssPath meta data', () => {
+            // ACT
+            const result = makeTransform();
+
+            // ASSERT
+            expect(result.env).toEqual({
+                meta: {
+                    script: ['_assets/tabs-extension.js'],
+                    style: ['_assets/tabs-extension.css'],
+                },
             });
         });
     });
