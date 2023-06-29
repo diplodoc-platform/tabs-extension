@@ -1,27 +1,34 @@
+import {
+    ACTIVE_CLASSNAME,
+    GROUP_DATA_KEY,
+    SELECT_TAB_EVENT_NAME,
+    TABS_CLASSNAME,
+    TABS_LIST_CLASSNAME,
+    TAB_CLASSNAME,
+    TAB_DATA_KEY,
+    TAB_PANEL_CLASSNAME,
+} from '../const';
 import {isCustom, getEventTarget} from './utils';
 
 const Selector = {
-    TABS: '.yfm-tabs',
-    TAB_LIST: '.yfm-tab-list',
-    TAB: '.yfm-tabs .yfm-tab',
-    TAB_PANEL: '.yfm-tab-panel',
+    TABS: `.${TABS_CLASSNAME}`,
+    TAB_LIST: `.${TABS_LIST_CLASSNAME}`,
+    TAB: `.${TAB_CLASSNAME}`,
+    TAB_PANEL: `.${TAB_PANEL_CLASSNAME}`,
 };
 
-const ClassName = {
-    ACTIVE: 'active',
-};
+interface ISelectTabEventsDetails {
+    key: string;
+    group: string;
+}
 
 function isValidTabElement(element: HTMLElement) {
-    const parentNode = element.parentNode as HTMLElement;
-    return (
-        element.matches(Selector.TAB) ||
-        parentNode?.matches(Selector.TAB_LIST) ||
-        (parentNode?.parentNode as HTMLElement)?.matches(Selector.TABS)
-    );
+    const tabList = element.matches(Selector.TAB) ? element.closest(Selector.TAB_LIST) : null;
+    return tabList?.closest(Selector.TABS);
 }
 
 function selectTab(element: HTMLElement) {
-    if (!isValidTabElement(element) || element.classList.contains(ClassName.ACTIVE)) {
+    if (!isValidTabElement(element) || element.classList.contains(ACTIVE_CLASSNAME)) {
         return;
     }
 
@@ -37,10 +44,10 @@ function selectTab(element: HTMLElement) {
         const panel = allPanels[i];
         const isTargetTab = i === targetIndex;
 
-        tab.classList.toggle(ClassName.ACTIVE, isTargetTab);
+        tab.classList.toggle(ACTIVE_CLASSNAME, isTargetTab);
         tab.setAttribute('aria-selected', isTargetTab.toString());
         tab.setAttribute('tabindex', isTargetTab ? '0' : '-1');
-        panel.classList.toggle(ClassName.ACTIVE, isTargetTab);
+        panel.classList.toggle(ACTIVE_CLASSNAME, isTargetTab);
     }
 }
 
@@ -52,6 +59,31 @@ if (typeof document !== 'undefined') {
             return;
         }
 
-        selectTab(target);
+        const key = target.dataset.diplodocKey;
+        const group = (target.closest(Selector.TABS) as HTMLElement)?.dataset.diplodocGroup;
+
+        if (key && group) {
+            const event = new CustomEvent<ISelectTabEventsDetails>(SELECT_TAB_EVENT_NAME, {
+                detail: {key, group},
+            });
+            document.dispatchEvent(event);
+        }
+    });
+
+    document.addEventListener(SELECT_TAB_EVENT_NAME, (event) => {
+        const customEvent = event as CustomEvent<ISelectTabEventsDetails>;
+        const {key, group} = customEvent.detail;
+
+        if (!key || !group) {
+            return;
+        }
+
+        const selectedTabs = document.querySelectorAll(
+            `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
+        );
+
+        selectedTabs.forEach((element) => {
+            selectTab(element as HTMLElement);
+        });
     });
 }

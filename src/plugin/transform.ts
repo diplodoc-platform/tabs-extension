@@ -7,6 +7,14 @@ import {v4 as uuidv4} from 'uuid';
 import {addHiddenProperty, generateID} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
 import {getTabId, getTabKey} from './getTabId';
+import {
+    ACTIVE_CLASSNAME,
+    GROUP_DATA_KEY,
+    TABS_CLASSNAME,
+    TABS_LIST_CLASSNAME,
+    TAB_CLASSNAME,
+    TAB_PANEL_CLASSNAME,
+} from '../const';
 
 export type PluginOptions = {
     runtimeJsPath: string;
@@ -122,9 +130,9 @@ function insertTabs(
     tabListOpen.block = true;
     tabListClose.block = true;
 
-    tabsOpen.attrSet('class', ['yfm-tabs', containerClasses].filter(Boolean).join(' '));
-    tabsOpen.attrSet('data-diplodoc-group', tabsGroup);
-    tabListOpen.attrSet('class', 'yfm-tab-list');
+    tabsOpen.attrSet('class', [TABS_CLASSNAME, containerClasses].filter(Boolean).join(' '));
+    tabsOpen.attrSet(GROUP_DATA_KEY, tabsGroup);
+    tabListOpen.attrSet('class', TABS_LIST_CLASSNAME);
     tabListOpen.attrSet('role', 'tablist');
 
     for (let i = 0; i < tabs.length; i++) {
@@ -150,22 +158,22 @@ function insertTabs(
         tabPanelClose.block = true;
         tabOpen.attrSet('id', tabId);
         tabOpen.attrSet('data-diplodoc-key', tabKey);
-        tabOpen.attrSet('class', 'yfm-tab');
+        tabOpen.attrSet('class', TAB_CLASSNAME);
         tabOpen.attrSet('role', 'tab');
         tabOpen.attrSet('aria-controls', tabPanelId);
         tabOpen.attrSet('aria-selected', 'false');
         tabOpen.attrSet('tabindex', '-1');
         tabPanelOpen.attrSet('id', tabPanelId);
-        tabPanelOpen.attrSet('class', 'yfm-tab-panel');
+        tabPanelOpen.attrSet('class', TAB_PANEL_CLASSNAME);
         tabPanelOpen.attrSet('role', 'tabpanel');
         tabPanelOpen.attrSet('aria-labelledby', tabId);
         tabPanelOpen.attrSet('data-title', tab.name);
 
         if (i === 0) {
-            tabOpen.attrJoin('class', 'active');
+            tabOpen.attrJoin('class', ACTIVE_CLASSNAME);
             tabOpen.attrSet('aria-selected', 'true');
             tabOpen.attrSet('tabindex', '0');
-            tabPanelOpen.attrJoin('class', 'active');
+            tabPanelOpen.attrJoin('class', ACTIVE_CLASSNAME);
         }
 
         tabListTokens.push(tabOpen, tabInline, tabClose);
