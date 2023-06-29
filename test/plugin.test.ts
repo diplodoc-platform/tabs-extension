@@ -51,7 +51,15 @@ describe('plugin', () => {
 
     test('Should use correct attrs', () => {
         // ARRANGE
-        const attrs = ['id', 'class', 'role', 'aria-controls', 'aria-selected', 'tabindex'];
+        const attrs = [
+            'id',
+            'data-diplodoc-key',
+            'class',
+            'role',
+            'aria-controls',
+            'aria-selected',
+            'tabindex',
+        ];
 
         // ACT
         const {tokens: result} = makeTransform();
@@ -161,7 +169,7 @@ describe('plugin', () => {
             // ASSERT
             const tabs = result.filter(({type}) => type === 'tabs_open');
             const attrsObject = convertAttrsToObject(tabs[0]);
-            expect(attrsObject['data-group']).toMatch(/[a-z0-9]{8}/);
+            expect(attrsObject['data-diplodoc-group']).toMatch(/[a-z0-9]{8}/);
         });
 
         test('should set a specific group name for the tabs container', () => {
@@ -179,7 +187,7 @@ describe('plugin', () => {
             // ASSERT
             const tabsContainer = result.filter(({type}) => type === 'tabs_open');
             const attrsObject = convertAttrsToObject(tabsContainer[0]);
-            expect(attrsObject['data-group']).toEqual('group_1');
+            expect(attrsObject['data-diplodoc-group']).toEqual('group_1');
         });
     });
 
@@ -197,6 +205,9 @@ describe('plugin', () => {
             expect(attrsObject0.id).toEqual('python');
             expect(attrsObject1.id).toEqual('tab-with-list');
             expect(attrsObject2.id).toEqual('tab-with-list-1');
+            expect(attrsObject0['data-diplodoc-key']).toEqual('python');
+            expect(attrsObject1['data-diplodoc-key']).toEqual('tab-with-list');
+            expect(attrsObject2['data-diplodoc-key']).toEqual('tab-with-list');
         });
 
         test('should set custom anchors for tabs', () => {
@@ -220,6 +231,8 @@ describe('plugin', () => {
 
             expect(attrsObject0.id).toEqual('my-tab');
             expect(attrsObject1.id).toEqual('my-tab-1');
+            expect(attrsObject0['data-diplodoc-key']).toEqual('my-tab');
+            expect(attrsObject1['data-diplodoc-key']).toEqual('my-tab');
         });
     });
 });

@@ -6,7 +6,7 @@ import {v4 as uuidv4} from 'uuid';
 
 import {addHiddenProperty, generateID} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
-import {getTabId} from './getTabId';
+import {getTabId, getTabKey} from './getTabId';
 
 export type PluginOptions = {
     runtimeJsPath: string;
@@ -123,7 +123,7 @@ function insertTabs(
     tabListClose.block = true;
 
     tabsOpen.attrSet('class', ['yfm-tabs', containerClasses].filter(Boolean).join(' '));
-    tabsOpen.attrSet('data-group', tabsGroup);
+    tabsOpen.attrSet('data-diplodoc-group', tabsGroup);
     tabListOpen.attrSet('class', 'yfm-tab-list');
     tabListOpen.attrSet('role', 'tablist');
 
@@ -137,6 +137,7 @@ function insertTabs(
 
         const tab = tabs[i];
         const tabId = getTabId(tab, {runId});
+        const tabKey = getTabKey(tab);
         tab.name = tab.name.replace(tabId, '');
 
         const tabPanelId = generateID();
@@ -148,6 +149,7 @@ function insertTabs(
         tabPanelOpen.block = true;
         tabPanelClose.block = true;
         tabOpen.attrSet('id', tabId);
+        tabOpen.attrSet('data-diplodoc-key', tabKey);
         tabOpen.attrSet('class', 'yfm-tab');
         tabOpen.attrSet('role', 'tab');
         tabOpen.attrSet('aria-controls', tabPanelId);
