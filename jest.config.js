@@ -1,21 +1,9 @@
-/* eslint-env node */
-/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-    roots: ['<rootDir>/test'],
     preset: 'ts-jest',
+    moduleDirectories: ['node_modules', 'src'],
     transform: {
-        '^.+\\.ts?$': 'ts-jest',
+        '^.+\\.(j|t)s?$': ['ts-jest', {tsconfig: '<rootDir>/test/tsconfig.json'}],
     },
-    modulePaths: ['<rootDir>'],
-    moduleDirectories: ['node_modules'],
-    testPathIgnorePatterns: ['spec.js', 'spec.ts'],
-    moduleNameMapper: {
-        '\\.(css|less|scss|sss|styl)$': '<rootDir>/node_modules/jest-css-modules',
-        '.+\\.(svg|png|jpg)$': 'identity-obj-proxy',
-    },
-    globals: {
-        'ts-jest': {
-            useESM: true,
-        },
-    },
+    transformIgnorePatterns: [],
 };
