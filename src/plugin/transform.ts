@@ -5,6 +5,7 @@ import type {MarkdownItPluginCb} from '@doc-tools/transform/lib/plugins/typings'
 
 import {addHiddenProperty, generateID} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
+import {getTabId} from './getTabId';
 
 export type PluginOptions = {
     runtimeJsPath: string;
@@ -15,7 +16,7 @@ export type PluginOptions = {
 
 const TAB_RE = /`?{% list tabs( group=([^ ]*))? %}`?/;
 
-type Tab = {
+export type Tab = {
     name: string;
     tokens: Token[];
 };
@@ -129,7 +130,10 @@ function insertTabs(
         const tabPanelOpen = new state.Token('tab-panel_open', 'div', 1);
         const tabPanelClose = new state.Token('tab-panel_close', 'div', -1);
 
-        const tabId = generateID();
+        const tab = tabs[i];
+        const tabId = getTabId(tab);
+        tab.name = tab.name.replace(tabId, '');
+
         const tabPanelId = generateID();
 
         tabText.content = tabs[i].name;
@@ -148,7 +152,7 @@ function insertTabs(
         tabPanelOpen.attrSet('class', 'yfm-tab-panel');
         tabPanelOpen.attrSet('role', 'tabpanel');
         tabPanelOpen.attrSet('aria-labelledby', tabId);
-        tabPanelOpen.attrSet('data-title', tabs[i].name);
+        tabPanelOpen.attrSet('data-title', tab.name);
 
         if (i === 0) {
             tabOpen.attrJoin('class', 'active');
