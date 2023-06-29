@@ -55,9 +55,9 @@ describe('plugin', () => {
 
         // ACT
         const {tokens: result} = makeTransform();
-        const tabs = result.filter(({type}) => type === 'tab_open');
 
         // ASSERT
+        const tabs = result.filter(({type}) => type === 'tab_open');
         tabs.forEach((tab, i) => {
             const attrsObject = convertAttrsToObject(tab);
 
@@ -70,10 +70,11 @@ describe('plugin', () => {
     test('Tab should fit tabPanel', () => {
         // ACT
         const {tokens: result} = makeTransform();
+
+        // ASSERT
         const tabs = result.filter(({type}) => type === 'tab_open');
         const tabPanels = result.filter(({type}) => type === 'tab-panel_open');
 
-        // ASSERT
         expect(tabs.length).toEqual(tabPanels.length);
 
         tabs.forEach((tab, i) => {
@@ -105,8 +106,8 @@ describe('plugin', () => {
             });
 
             // ASSERT
-            const tabs = result.filter(({type}) => type === 'tabs_open');
-            const attrsObject = convertAttrsToObject(tabs[0]);
+            const tabsContainer = result.filter(({type}) => type === 'tabs_open');
+            const attrsObject = convertAttrsToObject(tabsContainer[0]);
             expect(attrsObject['class']).toEqual('yfm-tabs test_1 test_2');
         });
 
@@ -115,8 +116,8 @@ describe('plugin', () => {
             const {tokens: result} = makeTransform();
 
             // ASSERT
-            const tabs = result.filter(({type}) => type === 'tabs_open');
-            const attrsObject = convertAttrsToObject(tabs[0]);
+            const tabsContainer = result.filter(({type}) => type === 'tabs_open');
+            const attrsObject = convertAttrsToObject(tabsContainer[0]);
             expect(attrsObject['class']).toEqual('yfm-tabs');
         });
 
@@ -152,5 +153,73 @@ describe('plugin', () => {
         });
     });
 
-    // TODO add tests about tabs group and tab ids
+    describe('tabs groups', () => {
+        test('should set a random group name for the tabs container', () => {
+            // ACT
+            const {tokens: result} = makeTransform();
+
+            // ASSERT
+            const tabs = result.filter(({type}) => type === 'tabs_open');
+            const attrsObject = convertAttrsToObject(tabs[0]);
+            expect(attrsObject['data-group']).toMatch(/[a-z0-9]{8}/);
+        });
+
+        test('should set a specific group name for the tabs container', () => {
+            // ACT
+            const {tokens: result} = makeTransform({
+                content: [
+                    '{% list tabs group=group_1 %}',
+                    '',
+                    '- Tab with list',
+                    '',
+                    '{% endlist %}',
+                ],
+            });
+
+            // ASSERT
+            const tabsContainer = result.filter(({type}) => type === 'tabs_open');
+            const attrsObject = convertAttrsToObject(tabsContainer[0]);
+            expect(attrsObject['data-group']).toEqual('group_1');
+        });
+    });
+
+    describe('tabs anchors', () => {
+        test('should set default anchors for tabs', () => {
+            // ACT
+            const {tokens: result} = makeTransform();
+
+            // ASSERT
+            const tabs = result.filter(({type}) => type === 'tab_open');
+            const attrsObject0 = convertAttrsToObject(tabs[0]);
+            const attrsObject1 = convertAttrsToObject(tabs[1]);
+            const attrsObject2 = convertAttrsToObject(tabs[2]);
+
+            expect(attrsObject0.id).toEqual('python');
+            expect(attrsObject1.id).toEqual('tab-with-list');
+            expect(attrsObject2.id).toEqual('tab-with-list-1');
+        });
+
+        test('should set custom anchors for tabs', () => {
+            // ACT
+            const {tokens: result} = makeTransform({
+                content: [
+                    '{% list tabs %}',
+                    '',
+                    '- Python {#my-tab}',
+                    '',
+                    '- Java {#my-tab}',
+                    '',
+                    '{% endlist %}',
+                ],
+            });
+
+            // ASSERT
+            const tabs = result.filter(({type}) => type === 'tab_open');
+            const attrsObject0 = convertAttrsToObject(tabs[0]);
+            const attrsObject1 = convertAttrsToObject(tabs[1]);
+
+            expect(attrsObject0.id).toEqual('my-tab');
+            expect(attrsObject1.id).toEqual('my-tab-1');
+        });
+    });
 });

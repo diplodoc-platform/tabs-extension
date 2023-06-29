@@ -2,6 +2,7 @@ import MarkdownIt from 'markdown-it';
 import StateCore from 'markdown-it/lib/rules_core/state_core';
 import Token from 'markdown-it/lib/token';
 import type {MarkdownItPluginCb} from '@doc-tools/transform/lib/plugins/typings';
+import {v4 as uuidv4} from 'uuid';
 
 import {addHiddenProperty, generateID} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
@@ -102,7 +103,11 @@ function insertTabs(
     tabs: Tab[],
     state: StateCore,
     {start, end}: {start: number; end: number},
-    {containerClasses, tabsGroup}: {containerClasses: string; tabsGroup: string},
+    {
+        containerClasses,
+        tabsGroup,
+        runId,
+    }: {containerClasses: string; tabsGroup: string; runId: string},
 ) {
     const tabsTokens = [];
     const tabListTokens = [];
@@ -131,7 +136,7 @@ function insertTabs(
         const tabPanelClose = new state.Token('tab-panel_close', 'div', -1);
 
         const tab = tabs[i];
-        const tabId = getTabId(tab);
+        const tabId = getTabId(tab, {runId});
         tab.name = tab.name.replace(tabId, '');
 
         const tabPanelId = generateID();
@@ -221,6 +226,7 @@ export function transform({
     const tabs: MarkdownItPluginCb<{output: string}> = function (md: MarkdownIt, {output = '.'}) {
         const plugin = (state: StateCore) => {
             const {env, tokens} = state;
+            const runId = uuidv4();
 
             addHiddenProperty(env, 'bundled', new Set<string>());
 
@@ -254,7 +260,11 @@ export function transform({
                         tabs,
                         state,
                         {start: i, end: index + 3},
-                        {containerClasses, tabsGroup},
+                        {
+                            containerClasses,
+                            tabsGroup,
+                            runId,
+                        },
                     );
                     tabsAreInserted = true;
                 } else {
