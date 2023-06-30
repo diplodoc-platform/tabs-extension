@@ -7,4 +7,4 @@ export const ACTIVE_CLASSNAME = 'active';
 export const GROUP_DATA_KEY = 'data-diplodoc-group';
 export const TAB_DATA_KEY = 'data-diplodoc-key';
 
-export const SELECT_TAB_EVENT_NAME = 'diplodoc:select_tab';
+export const SELECT_TAB_EVENT_NAME = 'selecttab';
