@@ -21,7 +21,7 @@ import {readFile} from 'node:fs/promises';
         ${result.meta.style.map((styleFile) => `<link rel="stylesheet" href="${styleFile}" />`)}
         <script>
             window.diplodocTabs.addEventListener('selecttab', (event) => {
-                const {group, key} = event.detail;
+                const {group, key} = event.detail.tab;
                 console.log(\`Tabs with key=\${key} in group=\${group} were selected!\`);
 
                 // window.diplodocTabs.selectTab({group: 'group_1', key: 'python'});
