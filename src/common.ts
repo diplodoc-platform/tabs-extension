@@ -8,3 +8,12 @@ export const GROUP_DATA_KEY = 'data-diplodoc-group';
 export const TAB_DATA_KEY = 'data-diplodoc-key';
 
 export const SELECT_TAB_EVENT_NAME = 'selecttab';
+
+export interface Tab {
+    group: string;
+    key: string;
+}
+
+export interface SelectedTabEvent {
+    tab: Tab;
+}

@@ -2,12 +2,14 @@ import {
     ACTIVE_CLASSNAME,
     GROUP_DATA_KEY,
     SELECT_TAB_EVENT_NAME,
+    SelectedTabEvent,
     TABS_CLASSNAME,
     TABS_LIST_CLASSNAME,
     TAB_CLASSNAME,
     TAB_DATA_KEY,
     TAB_PANEL_CLASSNAME,
-} from '../const';
+    Tab,
+} from '../common';
 import {isCustom, getEventTarget} from './utils';
 
 const Selector = {
@@ -17,14 +19,14 @@ const Selector = {
     TAB_PANEL: `.${TAB_PANEL_CLASSNAME}`,
 };
 
-export interface ISelectTabEventDetails {
-    key: string;
-    group: string;
-}
-
 export class TabsController extends EventTarget {
+    // TODO Should we always have a default value?
+    #selectedTab: Tab | null;
+
     constructor(document: Document) {
         super();
+
+        this.#selectedTab = null;
 
         document.addEventListener('click', (event) => {
             const target = getEventTarget(event) as HTMLElement;
@@ -37,22 +39,13 @@ export class TabsController extends EventTarget {
             const group = (target.closest(Selector.TABS) as HTMLElement)?.dataset.diplodocGroup;
 
             if (key && group) {
-                this.dispatchEvent(
-                    new CustomEvent<ISelectTabEventDetails>(SELECT_TAB_EVENT_NAME, {
-                        detail: {key, group},
-                    }),
-                );
+                this.selectTab({group, key});
             }
         });
+    }
 
-        this.addEventListener(SELECT_TAB_EVENT_NAME, (event) => {
-            const customEvent = event as CustomEvent<ISelectTabEventDetails>;
-            const {key, group} = customEvent.detail;
-
-            if (key && group) {
-                this.selectTab(group, key);
-            }
-        });
+    get selectedTab() {
+        return this.#selectedTab;
     }
 
     #isValidTabElement(element: HTMLElement) {
@@ -60,7 +53,18 @@ export class TabsController extends EventTarget {
         return tabList?.closest(Selector.TABS);
     }
 
-    selectTab(group: string, key: string) {
+    selectTab(tab: Tab) {
+        const {group, key} = tab;
+        if (
+            this.#selectedTab &&
+            this.#selectedTab.group === group &&
+            this.#selectedTab.key === key
+        ) {
+            return;
+        }
+
+        this.#selectedTab = tab;
+
         const selectedTabs = document.querySelectorAll(
             `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
         );
@@ -92,5 +96,9 @@ export class TabsController extends EventTarget {
                 panel.classList.toggle(ACTIVE_CLASSNAME, isTargetTab);
             }
         });
+
+        this.dispatchEvent(
+            new CustomEvent<SelectedTabEvent>(SELECT_TAB_EVENT_NAME, {detail: {tab}}),
+        );
     }
 }

@@ -14,7 +14,7 @@ import {
     TABS_LIST_CLASSNAME,
     TAB_CLASSNAME,
     TAB_PANEL_CLASSNAME,
-} from '../const';
+} from '../common';
 
 export type PluginOptions = {
     runtimeJsPath: string;

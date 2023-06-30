@@ -1,1 +1,1 @@
-// TBD
+export {useDiplodocTabs} from './useDiplodocTabs';

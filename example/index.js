@@ -24,7 +24,7 @@ import {readFile} from 'node:fs/promises';
                 const {group, key} = event.detail;
                 console.log(\`Tabs with key=\${key} in group=\${group} were selected!\`);
 
-                // window.diplodocTabs.selectTab('group_1', 'python');
+                // window.diplodocTabs.selectTab({group: 'group_1', key: 'python'});
             });
         </script>
     </head>
