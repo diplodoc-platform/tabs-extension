@@ -23,6 +23,8 @@ import {readFile} from 'node:fs/promises';
             window.diplodocTabs.addEventListener('selecttab', (event) => {
                 const {group, key} = event.detail;
                 console.log(\`Tabs with key=\${key} in group=\${group} were selected!\`);
+
+                // window.diplodocTabs.selectTab('group_1', 'python');
             });
         </script>
     </head>
