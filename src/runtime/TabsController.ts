@@ -20,18 +20,18 @@ const Selector = {
 };
 
 export class TabsController extends EventTarget {
-    // TODO Should we always have a default value?
-    #selectedTab: Tab | null;
+    // TODO Should it always have a default value?
+    private _selectedTab: Tab | null;
 
     constructor(document: Document) {
         super();
 
-        this.#selectedTab = null;
+        this._selectedTab = null;
 
         document.addEventListener('click', (event) => {
             const target = getEventTarget(event) as HTMLElement;
 
-            if (isCustom(event) || !this.#isValidTabElement(target)) {
+            if (isCustom(event) || !this.isValidTabElement(target)) {
                 return;
             }
 
@@ -45,36 +45,28 @@ export class TabsController extends EventTarget {
     }
 
     get selectedTab() {
-        return this.#selectedTab;
-    }
-
-    #isValidTabElement(element: HTMLElement) {
-        const tabList = element.matches(Selector.TAB) ? element.closest(Selector.TAB_LIST) : null;
-        return tabList?.closest(Selector.TABS);
+        return this._selectedTab;
     }
 
     selectTab(tab: Tab) {
         const {group, key} = tab;
         if (
-            this.#selectedTab &&
-            this.#selectedTab.group === group &&
-            this.#selectedTab.key === key
+            this._selectedTab &&
+            this._selectedTab.group === group &&
+            this._selectedTab.key === key
         ) {
             return;
         }
 
-        this.#selectedTab = tab;
+        this._selectedTab = tab;
 
-        const selectedTabs = document.querySelectorAll(
+        const _selectedTabs = document.querySelectorAll(
             `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
         );
 
-        selectedTabs.forEach((element) => {
+        _selectedTabs.forEach((element) => {
             const htmlElem = element as HTMLElement;
-            if (
-                !this.#isValidTabElement(htmlElem) ||
-                element.classList.contains(ACTIVE_CLASSNAME)
-            ) {
+            if (!this.isValidTabElement(htmlElem) || element.classList.contains(ACTIVE_CLASSNAME)) {
                 return;
             }
 
@@ -100,5 +92,10 @@ export class TabsController extends EventTarget {
         this.dispatchEvent(
             new CustomEvent<SelectedTabEvent>(SELECT_TAB_EVENT_NAME, {detail: {tab}}),
         );
+    }
+
+    private isValidTabElement(element: HTMLElement) {
+        const tabList = element.matches(Selector.TAB) ? element.closest(Selector.TAB_LIST) : null;
+        return tabList?.closest(Selector.TABS);
     }
 }
