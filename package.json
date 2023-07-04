@@ -27,7 +27,7 @@
     "precommit": "npm run lint && npm run test",
     "prepublish": "npm run lint && npm run build",
     "test": "jest",
-    "prepare": "husky install"
+    "prepare": "npm ci && husky install"
   },
   "author": "",
   "license": "ISC",
