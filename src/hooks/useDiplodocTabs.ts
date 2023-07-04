@@ -2,7 +2,8 @@ import {useEffect, useState} from 'react';
 import {SELECT_TAB_EVENT_NAME, SelectedTabEvent, Tab} from '../common';
 
 export function useDiplodocTabs(group: string) {
-    const [selectedTab, setSelectedTab] = useState<Tab | null>(window.diplodocTabs.selectedTab);
+    const isBrowser = typeof window !== 'undefined';
+    const [selectedTab, setSelectedTab] = useState<Tab | null>(null);
 
     function selectTabHandle(event: Event) {
         const {tab} = (event as CustomEvent<SelectedTabEvent>).detail;
@@ -12,17 +13,22 @@ export function useDiplodocTabs(group: string) {
     }
 
     useEffect(() => {
-        window.diplodocTabs.addEventListener(SELECT_TAB_EVENT_NAME, selectTabHandle);
-
+        if (isBrowser) {
+            window.diplodocTabs.addEventListener(SELECT_TAB_EVENT_NAME, selectTabHandle);
+        }
         return () => {
-            window.diplodocTabs.removeEventListener(SELECT_TAB_EVENT_NAME, selectTabHandle);
+            if (isBrowser) {
+                window.diplodocTabs.removeEventListener(SELECT_TAB_EVENT_NAME, selectTabHandle);
+            }
         };
     }, []);
 
     return [
         selectedTab,
         (key: string) => {
-            window.diplodocTabs.selectTab({group, key});
+            if (isBrowser) {
+                window.diplodocTabs.selectTab({group, key});
+            }
         },
     ];
 }
