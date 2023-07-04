@@ -1,12 +1,14 @@
 import {useEffect, useState} from 'react';
 import {SELECT_TAB_EVENT_NAME, SelectedTabEvent, Tab} from '../common';
 
-export function useDiplodocTabs() {
+export function useDiplodocTabs(group: string) {
     const [selectedTab, setSelectedTab] = useState<Tab | null>(window.diplodocTabs.selectedTab);
 
     function selectTabHandle(event: Event) {
         const {tab} = (event as CustomEvent<SelectedTabEvent>).detail;
-        setSelectedTab(tab);
+        if (tab.group === group) {
+            setSelectedTab(tab);
+        }
     }
 
     useEffect(() => {
@@ -19,8 +21,8 @@ export function useDiplodocTabs() {
 
     return [
         selectedTab,
-        (tab: Tab) => {
-            window.diplodocTabs.selectTab(tab);
+        (key: string) => {
+            window.diplodocTabs.selectTab({group, key});
         },
     ];
 }
