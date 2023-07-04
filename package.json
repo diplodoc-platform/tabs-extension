@@ -27,7 +27,7 @@
     "precommit": "npm run lint && npm run test",
     "prepublish": "npm run lint && npm run build",
     "test": "jest",
-    "prepare": "npm ci && husky install"
+    "prepare": "husky install"
   },
   "author": "",
   "license": "ISC",
@@ -56,9 +56,7 @@
     "react": "^18.2.0",
     "sass": "^1.63.6",
     "ts-jest": "^29.1.0",
-    "typescript": "^5.0.2"
-  },
-  "dependencies": {
+    "typescript": "^5.0.2",
     "uuid": "^9.0.0"
   }
 }
