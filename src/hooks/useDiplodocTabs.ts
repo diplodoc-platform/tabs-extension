@@ -23,7 +23,7 @@ export function useDiplodocTabs(callback: UseDiplodocTabsCallback) {
         };
     }, []);
 
-    return (elementId: string) => {
-        window.diplodocTabs.selectTabById(elementId);
+    return {
+        selectTabById: (id: string) => window.diplodocTabs.selectTabById(id),
     };
 }
