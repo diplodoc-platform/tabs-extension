@@ -20,27 +20,46 @@ const Selector = {
 };
 
 export class TabsController extends EventTarget {
+    private _selectedTabByGroup: Map<string, Tab> = new Map();
+    private _document: Document;
+
     constructor(document: Document) {
         super();
 
-        document.addEventListener('click', (event) => {
+        this._document = document;
+        this._document.addEventListener('click', (event) => {
             const target = getEventTarget(event) as HTMLElement;
 
             if (isCustom(event) || !this.isValidTabElement(target)) {
                 return;
             }
 
-            const key = target.dataset.diplodocKey;
-            const group = (target.closest(Selector.TABS) as HTMLElement)?.dataset.diplodocGroup;
-
-            if (key && group) {
-                this.selectTab({group, key});
+            const tab = this.getTabDataFromHTMLElement(target);
+            if (tab) {
+                this.selectTab(tab, target.id);
             }
         });
     }
 
-    selectTab(tab: Tab) {
+    selectTabById(id: string) {
+        const target = this._document.getElementById(id);
+        if (!target || !this.isValidTabElement(target)) {
+            return;
+        }
+
+        const tab = this.getTabDataFromHTMLElement(target);
+        if (tab) {
+            this.selectTab(tab, id);
+        }
+    }
+
+    selectTab(tab: Tab, currentTabId?: string) {
         const {group, key} = tab;
+        if (this._selectedTabByGroup.get(group)?.key === key) {
+            return;
+        }
+
+        this._selectedTabByGroup.set(group, tab);
 
         const _selectedTabs = document.querySelectorAll(
             `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
@@ -72,12 +91,18 @@ export class TabsController extends EventTarget {
         });
 
         this.dispatchEvent(
-            new CustomEvent<SelectedTabEvent>(SELECT_TAB_EVENT_NAME, {detail: {tab}}),
+            new CustomEvent<SelectedTabEvent>(SELECT_TAB_EVENT_NAME, {detail: {tab, currentTabId}}),
         );
     }
 
     private isValidTabElement(element: HTMLElement) {
         const tabList = element.matches(Selector.TAB) ? element.closest(Selector.TAB_LIST) : null;
         return tabList?.closest(Selector.TABS);
+    }
+
+    private getTabDataFromHTMLElement(target: HTMLElement): Tab | null {
+        const key = target.dataset.diplodocKey;
+        const group = (target.closest(Selector.TABS) as HTMLElement)?.dataset.diplodocGroup;
+        return key && group ? {group, key} : null;
     }
 }
