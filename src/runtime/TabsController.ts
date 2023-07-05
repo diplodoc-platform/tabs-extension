@@ -20,8 +20,6 @@ const Selector = {
 };
 
 export class TabsController extends EventTarget {
-    private _selectedTabByGroup: Map<string, Tab> = new Map();
-
     constructor(document: Document) {
         super();
 
@@ -43,11 +41,6 @@ export class TabsController extends EventTarget {
 
     selectTab(tab: Tab) {
         const {group, key} = tab;
-        if (this._selectedTabByGroup.get(group)?.key === key) {
-            return;
-        }
-
-        this._selectedTabByGroup.set(group, tab);
 
         const _selectedTabs = document.querySelectorAll(
             `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,

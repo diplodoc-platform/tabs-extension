@@ -1,14 +1,18 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useRef} from 'react';
 import {SELECT_TAB_EVENT_NAME, SelectedTabEvent, Tab} from '../common';
 
-export function useDiplodocTabs(group: string) {
-    const [selectedTab, setSelectedTab] = useState<Tab | null>(null);
+export type UseDiplodocTabsCallback = (tab: Tab) => void;
+
+export function useDiplodocTabs(callback: UseDiplodocTabsCallback) {
+    const callbackRef = useRef<UseDiplodocTabsCallback>();
+
+    useEffect(() => {
+        callbackRef.current = callback;
+    }, [callback]);
 
     function selectTabHandle(event: Event) {
         const {tab} = (event as CustomEvent<SelectedTabEvent>).detail;
-        if (tab.group === group) {
-            setSelectedTab(tab);
-        }
+        callbackRef.current?.(tab);
     }
 
     useEffect(() => {
@@ -18,12 +22,9 @@ export function useDiplodocTabs(group: string) {
         };
     }, []);
 
-    return [
-        selectedTab,
-        (key: string) => {
-            useEffect(() => {
-                window.diplodocTabs.selectTab({group, key});
-            });
-        },
-    ];
+    return (tab: Tab) => {
+        useEffect(() => {
+            window.diplodocTabs.selectTab(tab);
+        });
+    };
 }

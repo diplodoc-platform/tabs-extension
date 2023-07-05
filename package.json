@@ -17,11 +17,12 @@
     "./hooks": "./hooks/index.js"
   },
   "scripts": {
-    "build": "run-p build:*:*",
+    "build": "npm run build:declarations && run-p build:*:*",
     "build:runtime:css": "sass src/runtime/scss/yfm.scss runtime/yfm.css --style=compressed",
     "build:plugin:js": "./esbuild/plugin.sh",
     "build:hooks:js": "./esbuild/hooks.sh",
     "build:runtime:js": "./esbuild/runtime.sh",
+    "build:declarations": "tsc --emitDeclarationOnly --outDir .",
     "lint": "npx eslint \"{src,example}/**/*.{js,ts}\"",
     "lint:fix": "npm run lint -- --fix",
     "precommit": "npm run lint && npm run test",
