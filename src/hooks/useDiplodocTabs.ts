@@ -1,6 +1,8 @@
 import {useEffect, useRef} from 'react';
 import {SELECT_TAB_EVENT_NAME, SelectedTabEvent, Tab} from '../common';
 
+export {Tab};
+
 export type UseDiplodocTabsCallback = (tab: Tab) => void;
 
 export function useDiplodocTabs(callback: UseDiplodocTabsCallback) {
