@@ -2,7 +2,6 @@ import {useEffect, useRef} from 'react';
 import {SELECT_TAB_EVENT_NAME, SelectedTabEvent, Tab} from '../common';
 
 export {Tab};
-
 export type UseDiplodocTabsCallback = (tab: Tab) => void;
 
 export function useDiplodocTabs(callback: UseDiplodocTabsCallback) {
@@ -25,8 +24,6 @@ export function useDiplodocTabs(callback: UseDiplodocTabsCallback) {
     }, []);
 
     return (tab: Tab) => {
-        useEffect(() => {
-            window.diplodocTabs.selectTab(tab);
-        });
+        window.diplodocTabs.selectTab(tab);
     };
 }
