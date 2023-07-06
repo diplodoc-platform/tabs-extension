@@ -18,7 +18,7 @@ export function getTabId(tab: Tab, {runId}: {runId: string}) {
         sluggersStorage.set(runId, slugger);
     }
 
-    return slugger.slug(getCustomId(tab.name) || tab.name);
+    return slugger.slug(getTabKey(tab));
 }
 
 export function getTabKey(tab: Tab) {

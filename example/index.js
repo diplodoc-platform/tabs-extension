@@ -9,7 +9,7 @@ import {readFile} from 'node:fs/promises';
         output: './build',
         plugins: [
             tabs.transform({
-                bundled: true,
+                bundle: false,
             }),
         ],
     });
