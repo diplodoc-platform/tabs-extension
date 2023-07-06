@@ -52,7 +52,7 @@ describe('plugin', () => {
     test('Should use correct attrs', () => {
         // ARRANGE
         const attrs = [
-            'id',
+            'data-diplodoc-id',
             'data-diplodoc-key',
             'class',
             'role',
@@ -202,9 +202,9 @@ describe('plugin', () => {
             const attrsObject1 = convertAttrsToObject(tabs[1]);
             const attrsObject2 = convertAttrsToObject(tabs[2]);
 
-            expect(attrsObject0.id).toEqual('python');
-            expect(attrsObject1.id).toEqual('tab-with-list');
-            expect(attrsObject2.id).toEqual('tab-with-list-1');
+            expect(attrsObject0['data-diplodoc-id']).toEqual('python');
+            expect(attrsObject1['data-diplodoc-id']).toEqual('tab-with-list');
+            expect(attrsObject2['data-diplodoc-id']).toEqual('tab-with-list-1');
             expect(attrsObject0['data-diplodoc-key']).toEqual('python');
             expect(attrsObject1['data-diplodoc-key']).toEqual('tab%20with%20list');
             expect(attrsObject2['data-diplodoc-key']).toEqual('tab%20with%20list');
@@ -229,8 +229,8 @@ describe('plugin', () => {
             const attrsObject0 = convertAttrsToObject(tabs[0]);
             const attrsObject1 = convertAttrsToObject(tabs[1]);
 
-            expect(attrsObject0.id).toEqual('my-tab');
-            expect(attrsObject1.id).toEqual('my-tab-1');
+            expect(attrsObject0['data-diplodoc-id']).toEqual('my-tab');
+            expect(attrsObject1['data-diplodoc-id']).toEqual('my-tab-1');
             expect(attrsObject0['data-diplodoc-key']).toEqual('my-tab');
             expect(attrsObject1['data-diplodoc-key']).toEqual('my-tab');
         });
@@ -257,8 +257,8 @@ describe('plugin', () => {
             const attrsObject0 = convertAttrsToObject(tabs[0]);
             const attrsObject1 = convertAttrsToObject(tabs[1]);
 
-            expect(attrsObject0.id).toEqual('c');
-            expect(attrsObject1.id).toEqual('c-1');
+            expect(attrsObject0['data-diplodoc-id']).toEqual('c');
+            expect(attrsObject1['data-diplodoc-id']).toEqual('c-1');
             expect(attrsObject0['data-diplodoc-key']).toEqual('c%23');
             expect(attrsObject1['data-diplodoc-key']).toEqual('c%2b%2b');
         });

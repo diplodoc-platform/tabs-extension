@@ -13,6 +13,8 @@ import {
     TABS_CLASSNAME,
     TABS_LIST_CLASSNAME,
     TAB_CLASSNAME,
+    TAB_DATA_ID,
+    TAB_DATA_KEY,
     TAB_PANEL_CLASSNAME,
 } from '../common';
 
@@ -156,8 +158,8 @@ function insertTabs(
         tabClose.block = true;
         tabPanelOpen.block = true;
         tabPanelClose.block = true;
-        tabOpen.attrSet('id', tabId);
-        tabOpen.attrSet('data-diplodoc-key', tabKey);
+        tabOpen.attrSet(TAB_DATA_ID, tabId);
+        tabOpen.attrSet(TAB_DATA_KEY, tabKey);
         tabOpen.attrSet('class', TAB_CLASSNAME);
         tabOpen.attrSet('role', 'tab');
         tabOpen.attrSet('aria-controls', tabPanelId);
