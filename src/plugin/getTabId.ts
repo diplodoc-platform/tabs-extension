@@ -1,4 +1,4 @@
-import GithubSlugger, {slug} from 'github-slugger';
+import GithubSlugger from 'github-slugger';
 
 import {Tab} from './transform';
 
@@ -18,9 +18,9 @@ export function getTabId(tab: Tab, {runId}: {runId: string}) {
         sluggersStorage.set(runId, slugger);
     }
 
-    return slugger.slug(getTabKey(tab));
+    return slugger.slug(getCustomId(tab.name) || tab.name);
 }
 
 export function getTabKey(tab: Tab) {
-    return getCustomId(tab.name) || slug(tab.name);
+    return encodeURIComponent(getCustomId(tab.name) || tab.name).toLocaleLowerCase();
 }

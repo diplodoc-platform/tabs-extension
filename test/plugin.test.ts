@@ -206,8 +206,8 @@ describe('plugin', () => {
             expect(attrsObject1.id).toEqual('tab-with-list');
             expect(attrsObject2.id).toEqual('tab-with-list-1');
             expect(attrsObject0['data-diplodoc-key']).toEqual('python');
-            expect(attrsObject1['data-diplodoc-key']).toEqual('tab-with-list');
-            expect(attrsObject2['data-diplodoc-key']).toEqual('tab-with-list');
+            expect(attrsObject1['data-diplodoc-key']).toEqual('tab%20with%20list');
+            expect(attrsObject2['data-diplodoc-key']).toEqual('tab%20with%20list');
         });
 
         test('should set custom anchors for tabs', () => {
