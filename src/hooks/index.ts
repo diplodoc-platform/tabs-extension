@@ -1,1 +1,1 @@
-export {useDiplodocTabs} from './useDiplodocTabs';
+export {useDiplodocTabs, Tab, UseDiplodocTabsCallback} from './useDiplodocTabs';
