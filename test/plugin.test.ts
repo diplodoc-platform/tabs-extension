@@ -234,5 +234,33 @@ describe('plugin', () => {
             expect(attrsObject0['data-diplodoc-key']).toEqual('my-tab');
             expect(attrsObject1['data-diplodoc-key']).toEqual('my-tab');
         });
+
+        test('should process tabs with special letters', () => {
+            // ACT
+            const {tokens: result} = makeTransform({
+                content: [
+                    '{% list tabs %}',
+                    '',
+                    '',
+                    '- C#',
+                    '',
+                    '',
+                    '- C++',
+                    '',
+                    '',
+                    '{% endlist %}',
+                ],
+            });
+
+            // ASSERT
+            const tabs = result.filter(({type}) => type === 'tab_open');
+            const attrsObject0 = convertAttrsToObject(tabs[0]);
+            const attrsObject1 = convertAttrsToObject(tabs[1]);
+
+            expect(attrsObject0.id).toEqual('c');
+            expect(attrsObject1.id).toEqual('c-1');
+            expect(attrsObject0['data-diplodoc-key']).toEqual('c%23');
+            expect(attrsObject1['data-diplodoc-key']).toEqual('c%2b%2b');
+        });
     });
 });
