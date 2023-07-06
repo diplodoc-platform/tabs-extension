@@ -28,6 +28,8 @@ export class TabsController extends EventTarget {
 
         this._document = document;
         this._document.addEventListener('click', (event) => {
+            event.preventDefault();
+
             const target = getEventTarget(event) as HTMLElement;
 
             if (isCustom(event) || !this.isValidTabElement(target)) {
