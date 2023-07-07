@@ -97,7 +97,7 @@ export class TabsController extends EventTarget {
         });
 
         this.dispatchEvent(
-            new CustomEvent<SelectedTabEvent>(SELECT_TAB_EVENT_NAME, {detail: {currentTabId}}),
+            new CustomEvent<SelectedTabEvent>(SELECT_TAB_EVENT_NAME, {detail: {tab, currentTabId}}),
         );
     }
 
