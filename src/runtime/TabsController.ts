@@ -39,7 +39,7 @@ export class TabsController extends EventTarget {
 
             const tab = this.getTabDataFromHTMLElement(target);
             if (tab) {
-                this.selectTab(tab, target.id);
+                this.selectTab(tab, target.dataset.diplodocId!);
             }
         });
     }
@@ -102,7 +102,10 @@ export class TabsController extends EventTarget {
     }
 
     private isValidTabElement(element: HTMLElement) {
-        const tabList = element.matches(Selector.TAB) ? element.closest(Selector.TAB_LIST) : null;
+        const tabList =
+            element.matches(Selector.TAB) && element.dataset.diplodocId
+                ? element.closest(Selector.TAB_LIST)
+                : null;
         return tabList?.closest(Selector.TABS);
     }
 
