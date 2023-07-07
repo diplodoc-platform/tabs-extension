@@ -59,7 +59,7 @@ export class TabsController extends EventTarget {
         }
     }
 
-    private selectTab(tab: Tab, currentTabId: string) {
+    selectTab(tab: Tab, currentTabId?: string) {
         const {group, key} = tab;
         if (this._selectedTabByGroup.get(group)?.key === key) {
             return;

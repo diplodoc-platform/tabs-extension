@@ -16,5 +16,6 @@ export interface Tab {
 }
 
 export interface SelectedTabEvent {
-    currentTabId: string;
+    tab: Tab;
+    currentTabId?: string;
 }

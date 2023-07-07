@@ -8,7 +8,8 @@ The extension contains some parts:
 - [React hook for smart control](#react-hook-for-smart-control)
 
 ## Quickstart
-Attach plugin to transformer
+
+Attach the plugin to the transformer:
 
 ```js
 import tabsExtension from '@diplodoc/tabs-extension';
@@ -68,6 +69,52 @@ Options:
 - `containerClasses` - additional classes which will be added to tab's container node. It allows to customize the tabs view.<br>
   Example: `my-own-class and-other-class`<br>
 
-## React hook for smart control of Tabs
+## Tabs API
 
-TBD
+You can synchronize the opening of tabs between different tabs groups on the page. To do this, you just need to add optional property `group=<group_key>` in `list tab` command. The active tabs with the same keys in groups in one group will be synchronized.
+
+Example:
+```
+{% list tabs group=group_1 %}
+- Tab 1
+- Tab 2
+- Tab 3
+{% endlist %}
+
+{% list tabs group=group_1 %}
+- Tab 1
+- Tab 2
+- Tab 3
+{% endlist %}
+```
+
+Keys of tabs are generated automatically based on 
+
+-- TODO about keys
+-- TODO about API ro control it
+
+## React hook for smart control
+
+You can use the React hook to handle active tab changing or to select opened tab programmatically.
+
+```
+import React, { useEffect } from 'react'
+import {UseDiplodocTabsCallback, useDiplodocTabs} from '@diplodoc/tabs-extension/hooks';
+
+export const App: React.FC = () => {
+    const selectTabHandler = useCallback<UseDiplodocTabsCallback>(
+        (tab: Tab, currentTabId?: string) => {
+            // ...
+        },
+        [],
+    );
+
+    const {selectTab, selectTabById} = useDiplodocTabs(selectTabHandler);
+
+    useEffect(() => {
+        selectTab({ group: 'group_1', key: 'my-key' });
+        // selectTabById("my-key-2");
+    }, [selectTab, selectTabById]);
+    
+}
+```
