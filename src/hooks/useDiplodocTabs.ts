@@ -2,7 +2,7 @@ import {useEffect, useRef} from 'react';
 import {SELECT_TAB_EVENT_NAME, SelectedTabEvent, Tab} from '../common';
 
 export {Tab};
-export type UseDiplodocTabsCallback = (tab: Tab, currentTabId: string) => void;
+export type UseDiplodocTabsCallback = (currentTabId: string) => void;
 
 export function useDiplodocTabs(callback: UseDiplodocTabsCallback) {
     const callbackRef = useRef<UseDiplodocTabsCallback>();
@@ -12,8 +12,8 @@ export function useDiplodocTabs(callback: UseDiplodocTabsCallback) {
     }, [callback]);
 
     function selectTabHandle(event: Event) {
-        const {tab, currentTabId} = (event as CustomEvent<SelectedTabEvent>).detail;
-        callbackRef.current?.(tab, currentTabId);
+        const {currentTabId} = (event as CustomEvent<SelectedTabEvent>).detail;
+        callbackRef.current?.(currentTabId);
     }
 
     useEffect(() => {

@@ -6,6 +6,7 @@ import {
     TABS_CLASSNAME,
     TABS_LIST_CLASSNAME,
     TAB_CLASSNAME,
+    TAB_DATA_ID,
     TAB_DATA_KEY,
     TAB_PANEL_CLASSNAME,
     Tab,
@@ -44,7 +45,10 @@ export class TabsController extends EventTarget {
     }
 
     selectTabById(id: string) {
-        const target = this._document.getElementById(id);
+        const target = this._document.querySelector(
+            `${Selector.TABS}[${Selector.TAB}[${TAB_DATA_ID}="${id}"]`,
+        ) as HTMLElement;
+
         if (!target || !this.isValidTabElement(target)) {
             return;
         }
@@ -63,7 +67,7 @@ export class TabsController extends EventTarget {
 
         this._selectedTabByGroup.set(group, tab);
 
-        const _selectedTabs = document.querySelectorAll(
+        const _selectedTabs = this._document.querySelectorAll(
             `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
         );
 
@@ -93,7 +97,7 @@ export class TabsController extends EventTarget {
         });
 
         this.dispatchEvent(
-            new CustomEvent<SelectedTabEvent>(SELECT_TAB_EVENT_NAME, {detail: {tab, currentTabId}}),
+            new CustomEvent<SelectedTabEvent>(SELECT_TAB_EVENT_NAME, {detail: {currentTabId}}),
         );
     }
 
