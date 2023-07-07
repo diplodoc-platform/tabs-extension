@@ -74,7 +74,7 @@ Options:
 
 ### Syntax
 
-You can synchronize the opening of tabs between different tabs groups on the page. To do this, you just need to add optional property `group=<group_key>` in `list tab` command. The active tabs with the same keys in groups in one group will be synchronized.
+You can synchronize the opening of tabs between different tabs groups on the page. To do this, you just need to add optional property `group=<group_key>` in `list tab` command. The active tabs with the same keys in one tabs group will be synchronized.
 
 Example:
 ```

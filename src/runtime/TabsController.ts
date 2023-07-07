@@ -71,11 +71,15 @@ export class TabsController extends EventTarget {
             `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
         );
 
+        let tabsWasFound = false;
+
         _selectedTabs.forEach((element) => {
             const htmlElem = element as HTMLElement;
             if (!this.isValidTabElement(htmlElem) || element.classList.contains(ACTIVE_CLASSNAME)) {
                 return;
             }
+
+            tabsWasFound = true;
 
             const tab = element;
             const tabList = tab.parentNode;
@@ -96,9 +100,13 @@ export class TabsController extends EventTarget {
             }
         });
 
-        this.dispatchEvent(
-            new CustomEvent<SelectedTabEvent>(SELECT_TAB_EVENT_NAME, {detail: {tab, currentTabId}}),
-        );
+        if (tabsWasFound) {
+            this.dispatchEvent(
+                new CustomEvent<SelectedTabEvent>(SELECT_TAB_EVENT_NAME, {
+                    detail: {tab, currentTabId},
+                }),
+            );
+        }
     }
 
     private isValidTabElement(element: HTMLElement) {
