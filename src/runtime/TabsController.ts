@@ -46,7 +46,7 @@ export class TabsController extends EventTarget {
 
     selectTabById(id: string) {
         const target = this._document.querySelector(
-            `${Selector.TABS}[${Selector.TAB}[${TAB_DATA_ID}="${id}"]`,
+            `${Selector.TAB}[${TAB_DATA_ID}="${id}"]`,
         ) as HTMLElement;
 
         if (!target || !this.isValidTabElement(target)) {
