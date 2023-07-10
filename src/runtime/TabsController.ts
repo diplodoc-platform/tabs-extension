@@ -65,11 +65,11 @@ export class TabsController extends EventTarget {
             return;
         }
 
-        const _selectedTabs = this._document.querySelectorAll(
+        const tabs = this._document.querySelectorAll(
             `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
         );
 
-        _selectedTabs.forEach((element) => {
+        tabs.forEach((element) => {
             const htmlElem = element as HTMLElement;
             if (!this.isValidTabElement(htmlElem) || element.classList.contains(ACTIVE_CLASSNAME)) {
                 return;
@@ -94,7 +94,7 @@ export class TabsController extends EventTarget {
             }
         });
 
-        if (_selectedTabs.length > 0) {
+        if (tabs.length > 0) {
             this._selectedTabByGroup.set(group, tab);
             this.dispatchEvent(
                 new CustomEvent<SelectedTabEvent>(SELECT_TAB_EVENT_NAME, {
