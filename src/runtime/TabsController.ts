@@ -65,8 +65,6 @@ export class TabsController extends EventTarget {
             return;
         }
 
-        this._selectedTabByGroup.set(group, tab);
-
         const _selectedTabs = this._document.querySelectorAll(
             `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
         );
@@ -96,11 +94,14 @@ export class TabsController extends EventTarget {
             }
         });
 
-        this.dispatchEvent(
-            new CustomEvent<SelectedTabEvent>(SELECT_TAB_EVENT_NAME, {
-                detail: {tab, currentTabId},
-            }),
-        );
+        if (_selectedTabs.length > 0) {
+            this._selectedTabByGroup.set(group, tab);
+            this.dispatchEvent(
+                new CustomEvent<SelectedTabEvent>(SELECT_TAB_EVENT_NAME, {
+                    detail: {tab, currentTabId},
+                }),
+            );
+        }
     }
 
     private isValidTabElement(element: HTMLElement) {
