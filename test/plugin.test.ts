@@ -195,7 +195,7 @@ describe('plugin', () => {
             const {tokens: result} = makeTransform({
                 transformOptions: {
                     defaultGroupName: 'default_group_test',
-                }
+                },
             });
 
             // ASSERT
