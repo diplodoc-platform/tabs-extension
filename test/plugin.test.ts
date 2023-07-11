@@ -189,6 +189,20 @@ describe('plugin', () => {
             const attrsObject = convertAttrsToObject(tabsContainer[0]);
             expect(attrsObject['data-diplodoc-group']).toEqual('group_1');
         });
+
+        test('should set custom default group name', () => {
+            // ACT
+            const {tokens: result} = makeTransform({
+                transformOptions: {
+                    defaultGroupName: 'default_group_test',
+                }
+            });
+
+            // ASSERT
+            const tabs = result.filter(({type}) => type === 'tabs_open');
+            const attrsObject = convertAttrsToObject(tabs[0]);
+            expect(attrsObject['data-diplodoc-group']).toMatch('default_group_test');
+        });
     });
 
     describe('tabs anchors', () => {
