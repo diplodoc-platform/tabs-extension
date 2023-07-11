@@ -20,6 +20,10 @@ const Selector = {
     TAB_PANEL: `.${TAB_PANEL_CLASSNAME}`,
 };
 
+export interface ISelectTabByIdOptions {
+    scrollToElement: boolean;
+}
+
 export class TabsController extends EventTarget {
     private _selectedTabByGroup: Map<string, Tab> = new Map();
     private _document: Document;
@@ -44,7 +48,7 @@ export class TabsController extends EventTarget {
         });
     }
 
-    selectTabById(id: string) {
+    selectTabById(id: string, options?: ISelectTabByIdOptions) {
         const target = this._document.querySelector(
             `${Selector.TAB}[${TAB_DATA_ID}="${id}"]`,
         ) as HTMLElement;
@@ -56,6 +60,10 @@ export class TabsController extends EventTarget {
         const tab = this.getTabDataFromHTMLElement(target);
         if (tab) {
             this.selectTab(tab, id);
+        }
+
+        if (options?.scrollToElement) {
+            target.scrollIntoView();
         }
     }
 
