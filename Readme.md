@@ -126,7 +126,7 @@ And also `window.diplodocTabs` has methods to change the active tab programmatic
 // Select active tab by group and key
 window.diplodocTabs.selectTab({ group: 'group_1', key: 'my-key' });
 // Select tab by unique tab's id. You can receive tab's id in the 'selecttab' event handler.
-window.diplodocTabs.selectTabById('my-key-1');
+window.diplodocTabs.selectTabById('my-key-1', {scrollToElement: false});
 ```
 
 ## React hook for smart control
