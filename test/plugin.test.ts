@@ -169,7 +169,7 @@ describe('plugin', () => {
             // ASSERT
             const tabs = result.filter(({type}) => type === 'tabs_open');
             const attrsObject = convertAttrsToObject(tabs[0]);
-            expect(attrsObject['data-diplodoc-group']).toMatch(/[a-z0-9]{8}/);
+            expect(attrsObject['data-diplodoc-group']).toMatch(/^defaultTabsGroup-[a-z0-9]{8}$/);
         });
 
         test('should set a specific group name for the tabs container', () => {

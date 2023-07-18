@@ -112,7 +112,11 @@ import {UseDiplodocTabsCallback, useDiplodocTabs, Tab} from '@diplodoc/tabs-exte
 export const App: React.FC = () => {
     const selectTabHandler = useCallback<UseDiplodocTabsCallback>(
         (tab: Tab, currentTabId?: string) => {
-            // ...
+            const {group, key} = tab;
+            // Group could be empty
+            if (group) {
+                // ...
+            }
         },
         [],
     );

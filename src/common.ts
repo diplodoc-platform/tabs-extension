@@ -12,8 +12,10 @@ export const TAB_DATA_ID = 'data-diplodoc-id';
 
 export const SELECT_TAB_EVENT_NAME = 'selecttab';
 
+export const DEFAULT_TABS_GROUP_PREFIX = 'defaultTabsGroup-';
+
 export interface Tab {
-    group: string;
+    group?: string;
     key: string;
 }
 

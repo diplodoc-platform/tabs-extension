@@ -1,5 +1,6 @@
 import {
     ACTIVE_CLASSNAME,
+    DEFAULT_TABS_GROUP_PREFIX,
     GROUP_DATA_KEY,
     SELECT_TAB_EVENT_NAME,
     SelectedTabEvent,
@@ -67,7 +68,7 @@ export class TabsController extends EventTarget {
 
     selectTab(tab: Tab, currentTabId?: string) {
         const {group, key} = tab;
-        if (this._selectedTabByGroup.get(group)?.key === key) {
+        if (!group || this._selectedTabByGroup.get(group)?.key === key) {
             return;
         }
 
@@ -102,9 +103,12 @@ export class TabsController extends EventTarget {
 
         if (tabs.length > 0) {
             this._selectedTabByGroup.set(group, tab);
+            const eventTab: Tab = group.startsWith(DEFAULT_TABS_GROUP_PREFIX)
+                ? {key: tab.key}
+                : tab;
             this.dispatchEvent(
                 new CustomEvent<SelectedTabEvent>(SELECT_TAB_EVENT_NAME, {
-                    detail: {tab, currentTabId},
+                    detail: {tab: eventTab, currentTabId},
                 }),
             );
         }
