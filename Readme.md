@@ -70,10 +70,6 @@ Options:
 - `containerClasses` - additional classes which will be added to tab's container node. It allows to customize the tabs view.<br>
   Example: `my-own-class and-other-class`<br>
 
-- `defaultGroupName` - the default name for tabs group if itselft was not provided<br>
-  (Default: `undefined`)<br>
-
-
 ## API
 
 ### Syntax
