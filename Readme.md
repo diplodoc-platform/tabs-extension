@@ -101,30 +101,6 @@ You can set your own keys for tabs with this statement:
 {% endlist %}
 ```
 
-### JS API
-
-The diplodoc tabs provides API to manager tabs state with `window.diplodocTabs` object.
-You can subscribe on the 'selecttab' event to handle the tab selection.
-The event contains two fields:
-- `tab` - selected tab
-- `currentTabId` - unique tab's id which has been clicked.
-
-```JavaScript
-window.diplodocTabs.addEventListener('selecttab', (event) => {
-    const { tab, currentTabId } = event.detail.tab;
-    const { group, key } = tab;
-});
-```
-
-And also `window.diplodocTabs` has methods to change the active tab programmatically.
-
-```JavaScript
-// Select active tab by group and key
-window.diplodocTabs.selectTab({ group: 'group_1', key: 'my-key' });
-// Select tab by unique tab's id. You can receive tab's id in the 'selecttab' event handler.
-window.diplodocTabs.selectTabById('my-key-1', {scrollToElement: false});
-```
-
 ## React hook for smart control
 
 You can use the React hook to handle active tab changing or to select opened tab programmatically.

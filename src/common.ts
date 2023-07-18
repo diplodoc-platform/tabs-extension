@@ -1,3 +1,5 @@
+import {TabsController} from './runtime/TabsController';
+
 export const TABS_CLASSNAME = 'yfm-tabs';
 export const TABS_LIST_CLASSNAME = 'yfm-tab-list';
 export const TAB_CLASSNAME = 'yfm-tab';
@@ -18,4 +20,12 @@ export interface Tab {
 export interface SelectedTabEvent {
     tab: Tab;
     currentTabId?: string;
+}
+
+export const GLOBAL_SYMBOL: unique symbol = Symbol.for('diplodocTabs');
+
+declare global {
+    interface Window {
+        [GLOBAL_SYMBOL]: TabsController;
+    }
 }

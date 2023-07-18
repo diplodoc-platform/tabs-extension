@@ -1,5 +1,5 @@
 import {useEffect, useRef} from 'react';
-import {SELECT_TAB_EVENT_NAME, SelectedTabEvent, Tab} from '../common';
+import {GLOBAL_SYMBOL, SELECT_TAB_EVENT_NAME, SelectedTabEvent, Tab} from '../common';
 import {ISelectTabByIdOptions} from '../runtime/TabsController';
 
 export {Tab};
@@ -19,15 +19,15 @@ export function useDiplodocTabs(callback: UseDiplodocTabsCallback) {
     }
 
     useEffect(() => {
-        window.diplodocTabs.addEventListener(SELECT_TAB_EVENT_NAME, selectTabHandle);
+        window[GLOBAL_SYMBOL].addEventListener(SELECT_TAB_EVENT_NAME, selectTabHandle);
         return () => {
-            window.diplodocTabs.removeEventListener(SELECT_TAB_EVENT_NAME, selectTabHandle);
+            window[GLOBAL_SYMBOL].removeEventListener(SELECT_TAB_EVENT_NAME, selectTabHandle);
         };
     }, []);
 
     return {
         selectTabById: (tabId: string, options?: ISelectTabByIdOptions) =>
-            window.diplodocTabs.selectTabById(tabId, options),
-        selectTab: (tab: Tab) => window.diplodocTabs.selectTab(tab),
+            window[GLOBAL_SYMBOL].selectTabById(tabId, options),
+        selectTab: (tab: Tab) => window[GLOBAL_SYMBOL].selectTab(tab),
     };
 }
