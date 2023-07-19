@@ -9,7 +9,7 @@ import {readFile} from 'node:fs/promises';
         output: './build',
         plugins: [
             tabs.transform({
-                bundle: false,
+                bundle: true,
             }),
         ],
     });
@@ -19,17 +19,9 @@ import {readFile} from 'node:fs/promises';
     <head>
         ${result.meta.script.map((scriptFile) => `<script src="${scriptFile}"></script>`)}
         ${result.meta.style.map((styleFile) => `<link rel="stylesheet" href="${styleFile}" />`)}
-        <script>
-            window.diplodocTabs.addEventListener('selecttab', (event) => {
-                const {group, key} = event.detail.tab;
-                console.log(\`Tabs with key=\${key} in group=\${group} were selected!\`);
-
-                // window.diplodocTabs.selectTab({group: 'group_1', key: 'python'});
-            });
-        </script>
     </head>
     <body>
-        ${result.html}    
+        ${result.html}
     </body>
 </html>    
     `;

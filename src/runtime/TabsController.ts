@@ -1,5 +1,6 @@
 import {
     ACTIVE_CLASSNAME,
+    DEFAULT_TABS_GROUP_PREFIX,
     GROUP_DATA_KEY,
     SELECT_TAB_EVENT_NAME,
     SelectedTabEvent,
@@ -33,8 +34,6 @@ export class TabsController extends EventTarget {
 
         this._document = document;
         this._document.addEventListener('click', (event) => {
-            event.preventDefault();
-
             const target = getEventTarget(event) as HTMLElement;
 
             if (isCustom(event) || !this.isValidTabElement(target)) {
@@ -69,7 +68,7 @@ export class TabsController extends EventTarget {
 
     selectTab(tab: Tab, currentTabId?: string) {
         const {group, key} = tab;
-        if (this._selectedTabByGroup.get(group)?.key === key) {
+        if (!group || this._selectedTabByGroup.get(group)?.key === key) {
             return;
         }
 
@@ -90,8 +89,7 @@ export class TabsController extends EventTarget {
             const allPanels = Array.from(tabsContainer?.querySelectorAll(Selector.TAB_PANEL) || []);
             const targetIndex = allTabs.indexOf(tab);
 
-            for (let i = 0; i < allTabs.length; i++) {
-                const tab = allTabs[i];
+            allTabs.forEach((tab, i) => {
                 const panel = allPanels[i];
                 const isTargetTab = i === targetIndex;
 
@@ -99,14 +97,17 @@ export class TabsController extends EventTarget {
                 tab.setAttribute('aria-selected', isTargetTab.toString());
                 tab.setAttribute('tabindex', isTargetTab ? '0' : '-1');
                 panel.classList.toggle(ACTIVE_CLASSNAME, isTargetTab);
-            }
+            });
         });
 
         if (tabs.length > 0) {
             this._selectedTabByGroup.set(group, tab);
+            const eventTab: Tab = group.startsWith(DEFAULT_TABS_GROUP_PREFIX)
+                ? {key: tab.key}
+                : tab;
             this.dispatchEvent(
                 new CustomEvent<SelectedTabEvent>(SELECT_TAB_EVENT_NAME, {
-                    detail: {tab, currentTabId},
+                    detail: {tab: eventTab, currentTabId},
                 }),
             );
         }
