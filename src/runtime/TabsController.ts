@@ -89,8 +89,7 @@ export class TabsController extends EventTarget {
             const allPanels = Array.from(tabsContainer?.querySelectorAll(Selector.TAB_PANEL) || []);
             const targetIndex = allTabs.indexOf(tab);
 
-            for (let i = 0; i < allTabs.length; i++) {
-                const tab = allTabs[i];
+            allTabs.forEach((tab, i) => {
                 const panel = allPanels[i];
                 const isTargetTab = i === targetIndex;
 
@@ -98,7 +97,7 @@ export class TabsController extends EventTarget {
                 tab.setAttribute('aria-selected', isTargetTab.toString());
                 tab.setAttribute('tabindex', isTargetTab ? '0' : '-1');
                 panel.classList.toggle(ACTIVE_CLASSNAME, isTargetTab);
-            }
+            });
         });
 
         if (tabs.length > 0) {
