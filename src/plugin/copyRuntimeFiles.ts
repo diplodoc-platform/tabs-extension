@@ -13,7 +13,7 @@ export function copyRuntimeFiles(
 ) {
     const runtimeFiles = {
         'index.js': runtimeJsPath,
-        'yfm.css': runtimeCssPath,
+        'dpl.css': runtimeCssPath,
     };
     for (const [originFile, outputFile] of Object.entries(runtimeFiles)) {
         const file = join(PATH_TO_RUNTIME, originFile);

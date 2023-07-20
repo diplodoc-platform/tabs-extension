@@ -18,7 +18,7 @@
   },
   "scripts": {
     "build": "npm run build:declarations && run-p build:*:*",
-    "build:runtime:css": "sass src/runtime/scss/yfm.scss runtime/yfm.css --style=compressed",
+    "build:runtime:css": "sass src/runtime/scss/dpl.scss runtime/dpl.css --style=compressed",
     "build:plugin:js": "./esbuild/plugin.sh",
     "build:react:js": "./esbuild/react.sh",
     "build:runtime:js": "./esbuild/runtime.sh",
