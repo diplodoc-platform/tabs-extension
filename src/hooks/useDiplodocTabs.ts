@@ -29,5 +29,6 @@ export function useDiplodocTabs(callback: UseDiplodocTabsCallback) {
         selectTabById: (tabId: string, options?: ISelectTabByIdOptions) =>
             window.diplodocTabs.selectTabById(tabId, options),
         selectTab: (tab: Tab) => window.diplodocTabs.selectTab(tab),
+        reset: () => window.diplodocTabs.reset(),
     };
 }

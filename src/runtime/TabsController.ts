@@ -112,6 +112,10 @@ export class TabsController extends EventTarget {
         }
     }
 
+    reset() {
+        this._selectedTabByGroup.clear();
+    }
+
     private isValidTabElement(element: HTMLElement) {
         const tabList =
             element.matches(Selector.TAB) && element.dataset.diplodocId
