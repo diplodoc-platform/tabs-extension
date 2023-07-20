@@ -1,4 +1,4 @@
-.dpl-tabs {
+.yfm-tabs {
     margin-bottom: 15px;
 
     ol {
@@ -14,7 +14,7 @@
     }
 }
 
-.dpl-tab-list {
+.yfm-tab-list {
     display: flex;
     flex-wrap: wrap;
     margin-bottom: 15px;
@@ -22,7 +22,7 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.07);
 }
 
-.dpl-tab {
+.yfm-tab {
     margin-bottom: -1px;
     margin-right: 20px;
     border-bottom: 2px solid transparent;
@@ -47,7 +47,7 @@
     }
 }
 
-.dpl-tab-panel {
+.yfm-tab-panel {
     display: none;
 
     &:first-child {

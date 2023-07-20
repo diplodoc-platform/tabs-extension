@@ -1,9 +1,9 @@
 import {TabsController} from './runtime/TabsController';
 
-export const TABS_CLASSNAME = 'dpl-tabs';
-export const TABS_LIST_CLASSNAME = 'dpl-tab-list';
-export const TAB_CLASSNAME = 'dpl-tab';
-export const TAB_PANEL_CLASSNAME = 'dpl-tab-panel';
+export const TABS_CLASSNAME = 'yfm-tabs';
+export const TABS_LIST_CLASSNAME = 'yfm-tab-list';
+export const TAB_CLASSNAME = 'yfm-tab';
+export const TAB_PANEL_CLASSNAME = 'yfm-tab-panel';
 export const ACTIVE_CLASSNAME = 'active';
 
 export const GROUP_DATA_KEY = 'data-diplodoc-group';
