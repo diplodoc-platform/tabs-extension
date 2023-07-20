@@ -1,4 +1,4 @@
-import {useEffect, useRef} from 'react';
+import {useEffect, useRef, useCallback} from 'react';
 import {SELECT_TAB_EVENT_NAME, SelectedTabEvent, Tab} from '../common';
 import {ISelectTabByIdOptions} from '../runtime/TabsController';
 
@@ -26,9 +26,12 @@ export function useDiplodocTabs(callback: UseDiplodocTabsCallback) {
     }, []);
 
     return {
-        selectTabById: (tabId: string, options?: ISelectTabByIdOptions) =>
-            window.diplodocTabs.selectTabById(tabId, options),
-        selectTab: (tab: Tab) => window.diplodocTabs.selectTab(tab),
-        reset: () => window.diplodocTabs.reset(),
+        selectTabById: useCallback(
+            (tabId: string, options?: ISelectTabByIdOptions) =>
+                window.diplodocTabs.selectTabById(tabId, options),
+            [],
+        ),
+        selectTab: useCallback((tab: Tab) => window.diplodocTabs.selectTab(tab), []),
+        reset: useCallback(() => window.diplodocTabs.reset(), []),
     };
 }
