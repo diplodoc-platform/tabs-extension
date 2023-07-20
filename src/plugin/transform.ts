@@ -23,7 +23,7 @@ export type PluginOptions = {
     runtimeJsPath: string;
     runtimeCssPath: string;
     containerClasses: string;
-    tmp_DefaultTabGroup: string;
+    defaultTabGroup: string;
     bundle: boolean;
 };
 
@@ -235,7 +235,7 @@ export function transform({
     runtimeJsPath = '_assets/tabs-extension.js',
     runtimeCssPath = '_assets/tabs-extension.css',
     containerClasses = '',
-    tmp_DefaultTabGroup = '',
+    defaultTabGroup = '',
     bundle = true,
 }: Partial<PluginOptions> = {}) {
     const tabs: MarkdownItPluginCb<{output: string}> = function (md: MarkdownIt, {output = '.'}) {
@@ -266,7 +266,7 @@ export function transform({
                     continue;
                 }
 
-                const tabsGroup = match[2] || tmp_DefaultTabGroup || `${DEFAULT_TABS_GROUP_PREFIX}${generateID()}`;
+                const tabsGroup = match[2] || defaultTabGroup || `${DEFAULT_TABS_GROUP_PREFIX}${generateID()}`;
 
                 const {tabs, index} = findTabs(state.tokens, i + 3);
 
