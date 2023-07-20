@@ -26,7 +26,6 @@ export interface ISelectTabByIdOptions {
 }
 
 export class TabsController extends EventTarget {
-    private _selectedTabByGroup: Map<string, Tab> = new Map();
     private _document: Document;
 
     constructor(document: Document) {
@@ -68,7 +67,8 @@ export class TabsController extends EventTarget {
 
     selectTab(tab: Tab, currentTabId?: string) {
         const {group, key} = tab;
-        if (!group || this._selectedTabByGroup.get(group)?.key === key) {
+
+        if (!group) {
             return;
         }
 
@@ -76,11 +76,15 @@ export class TabsController extends EventTarget {
             `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
         );
 
+        let found = 0;
+
         tabs.forEach((element) => {
             const htmlElem = element as HTMLElement;
             if (!this.isValidTabElement(htmlElem) || element.classList.contains(ACTIVE_CLASSNAME)) {
                 return;
             }
+
+            found++;
 
             const tab = element;
             const tabList = tab.parentNode;
@@ -100,8 +104,7 @@ export class TabsController extends EventTarget {
             });
         });
 
-        if (tabs.length > 0) {
-            this._selectedTabByGroup.set(group, tab);
+        if (found > 0) {
             const eventTab: Tab = group.startsWith(DEFAULT_TABS_GROUP_PREFIX)
                 ? {key: tab.key}
                 : tab;
@@ -111,10 +114,6 @@ export class TabsController extends EventTarget {
                 }),
             );
         }
-    }
-
-    reset() {
-        this._selectedTabByGroup.clear();
     }
 
     private isValidTabElement(element: HTMLElement) {

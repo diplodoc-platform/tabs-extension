@@ -18,9 +18,13 @@ export function getTabId(tab: Tab, {runId}: {runId: string}) {
         sluggersStorage.set(runId, slugger);
     }
 
-    return slugger.slug(getCustomId(tab.name) || tab.name);
+    return slugger.slug(getRawId(tab));
 }
 
 export function getTabKey(tab: Tab) {
-    return encodeURIComponent(getCustomId(tab.name) || tab.name).toLocaleLowerCase();
+    return encodeURIComponent(getRawId(tab)).toLocaleLowerCase();
+}
+
+function getRawId(tab: Tab): string {
+    return getCustomId(tab.name) || tab.name;
 }
