@@ -1,4 +1,4 @@
-import {useEffect, useRef} from 'react';
+import {useEffect, useRef, useCallback} from 'react';
 import {GLOBAL_SYMBOL, SELECT_TAB_EVENT_NAME, SelectedTabEvent, Tab} from '../common';
 import {ISelectTabByIdOptions} from '../runtime/TabsController';
 
@@ -26,8 +26,12 @@ export function useDiplodocTabs(callback: UseDiplodocTabsCallback) {
     }, []);
 
     return {
-        selectTabById: (tabId: string, options?: ISelectTabByIdOptions) =>
-            window[GLOBAL_SYMBOL].selectTabById(tabId, options),
-        selectTab: (tab: Tab) => window[GLOBAL_SYMBOL].selectTab(tab),
+        selectTabById: useCallback(
+            (tabId: string, options?: ISelectTabByIdOptions) =>
+                window[GLOBAL_SYMBOL].selectTabById(tabId, options),
+            [],
+        ),
+        selectTab: useCallback((tab: Tab) => window[GLOBAL_SYMBOL].selectTab(tab), []),
+        reset: useCallback(() => window[GLOBAL_SYMBOL].reset(), []),
     };
 }
