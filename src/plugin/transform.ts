@@ -266,7 +266,8 @@ export function transform({
                     continue;
                 }
 
-                const tabsGroup = match[2] || defaultTabGroup || `${DEFAULT_TABS_GROUP_PREFIX}${generateID()}`;
+                const tabsGroup =
+                    match[2] || defaultTabGroup || `${DEFAULT_TABS_GROUP_PREFIX}${generateID()}`;
 
                 const {tabs, index} = findTabs(state.tokens, i + 3);
 
