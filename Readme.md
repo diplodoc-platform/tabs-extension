@@ -107,7 +107,7 @@ You can use the React hook to handle active tab changing or to select opened tab
 
 ```TypeScript
 import React, { useEffect } from 'react'
-import {UseDiplodocTabsCallback, useDiplodocTabs, Tab} from '@diplodoc/tabs-extension/hooks';
+import {UseDiplodocTabsCallback, useDiplodocTabs, Tab} from '@diplodoc/tabs-extension/react';
 
 export const App: React.FC = () => {
     const selectTabHandler = useCallback<UseDiplodocTabsCallback>(

@@ -1,4 +1,4 @@
-esbuild src/hooks/index.ts --outfile=hooks/index.js \
+esbuild src/react/index.ts --outfile=react/index.js \
   --bundle --platform=neutral --target=es6 --format=cjs \
   --sourcemap \
   --external:react
