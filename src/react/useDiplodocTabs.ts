@@ -32,6 +32,5 @@ export function useDiplodocTabs(callback: UseDiplodocTabsCallback) {
             [],
         ),
         selectTab: useCallback((tab: Tab) => window[GLOBAL_SYMBOL].selectTab(tab), []),
-        reset: useCallback(() => window[GLOBAL_SYMBOL].reset(), []),
     };
 }
