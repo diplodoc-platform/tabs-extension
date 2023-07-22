@@ -22,6 +22,7 @@ import {
 export type PluginOptions = {
     runtimeJsPath: string;
     containerClasses: string;
+    defaultTabGroup: string;
     bundle: boolean;
 };
 
@@ -232,6 +233,7 @@ function matchOpenToken(tokens: Token[], i: number) {
 export function transform({
     runtimeJsPath = '_assets/tabs-extension.js',
     containerClasses = '',
+    defaultTabGroup = '',
     bundle = true,
 }: Partial<PluginOptions> = {}) {
     const tabs: MarkdownItPluginCb<{output: string}> = function (md: MarkdownIt, {output = '.'}) {
@@ -262,7 +264,8 @@ export function transform({
                     continue;
                 }
 
-                const tabsGroup = match[2] || `${DEFAULT_TABS_GROUP_PREFIX}${generateID()}`;
+                const tabsGroup =
+                    match[2] || defaultTabGroup || `${DEFAULT_TABS_GROUP_PREFIX}${generateID()}`;
 
                 const {tabs, index} = findTabs(state.tokens, i + 3);
 
