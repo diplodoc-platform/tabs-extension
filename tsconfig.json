@@ -14,7 +14,7 @@
     "noFallthroughCasesInSwitch": true,
     "noEmitOnError": true,
     "experimentalDecorators": true,
-    "declaration": true,
+    "declaration": true
   },
   "include": [
     "src"
