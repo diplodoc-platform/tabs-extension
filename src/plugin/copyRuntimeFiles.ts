@@ -4,16 +4,11 @@ import {mkdirSync, copyFileSync} from 'node:fs';
 const PATH_TO_RUNTIME = '../runtime';
 
 export function copyRuntimeFiles(
-    {
-        runtimeJsPath,
-        runtimeCssPath,
-        output,
-    }: {runtimeJsPath: string; runtimeCssPath: string; output: string},
+    {runtimeJsPath, output}: {runtimeJsPath: string; output: string},
     cache: Set<string>,
 ) {
     const runtimeFiles = {
         'index.js': runtimeJsPath,
-        'yfm.css': runtimeCssPath,
     };
     for (const [originFile, outputFile] of Object.entries(runtimeFiles)) {
         const file = join(PATH_TO_RUNTIME, originFile);

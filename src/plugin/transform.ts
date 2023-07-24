@@ -2,20 +2,32 @@ import MarkdownIt from 'markdown-it';
 import StateCore from 'markdown-it/lib/rules_core/state_core';
 import Token from 'markdown-it/lib/token';
 import type {MarkdownItPluginCb} from '@doc-tools/transform/lib/plugins/typings';
+import {v4 as uuidv4} from 'uuid';
 
 import {addHiddenProperty, generateID} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
+import {getTabId, getTabKey} from './getTabId';
+import {
+    ACTIVE_CLASSNAME,
+    DEFAULT_TABS_GROUP_PREFIX,
+    GROUP_DATA_KEY,
+    TABS_CLASSNAME,
+    TABS_LIST_CLASSNAME,
+    TAB_CLASSNAME,
+    TAB_DATA_ID,
+    TAB_DATA_KEY,
+    TAB_PANEL_CLASSNAME,
+} from '../common';
 
 export type PluginOptions = {
     runtimeJsPath: string;
-    runtimeCssPath: string;
     containerClasses: string;
     bundle: boolean;
 };
 
-const TAB_RE = /`?{% list (tabs) %}`?/;
+const TAB_RE = /`?{% list tabs( group=([^ ]*))? %}`?/;
 
-type Tab = {
+export type Tab = {
     name: string;
     tokens: Token[];
 };
@@ -101,7 +113,11 @@ function insertTabs(
     tabs: Tab[],
     state: StateCore,
     {start, end}: {start: number; end: number},
-    {containerClasses}: Partial<PluginOptions>,
+    {
+        containerClasses,
+        tabsGroup,
+        runId,
+    }: {containerClasses: string; tabsGroup: string; runId: string},
 ) {
     const tabsTokens = [];
     const tabListTokens = [];
@@ -115,8 +131,10 @@ function insertTabs(
     tabsClose.block = true;
     tabListOpen.block = true;
     tabListClose.block = true;
-    tabsOpen.attrSet('class', ['yfm-tabs', containerClasses].filter(Boolean).join(' '));
-    tabListOpen.attrSet('class', 'yfm-tab-list');
+
+    tabsOpen.attrSet('class', [TABS_CLASSNAME, containerClasses].filter(Boolean).join(' '));
+    tabsOpen.attrSet(GROUP_DATA_KEY, tabsGroup);
+    tabListOpen.attrSet('class', TABS_LIST_CLASSNAME);
     tabListOpen.attrSet('role', 'tablist');
 
     for (let i = 0; i < tabs.length; i++) {
@@ -127,7 +145,11 @@ function insertTabs(
         const tabPanelOpen = new state.Token('tab-panel_open', 'div', 1);
         const tabPanelClose = new state.Token('tab-panel_close', 'div', -1);
 
-        const tabId = generateID();
+        const tab = tabs[i];
+        const tabId = getTabId(tab, {runId});
+        const tabKey = getTabKey(tab);
+        tab.name = tab.name.replace(tabId, '');
+
         const tabPanelId = generateID();
 
         tabText.content = tabs[i].name;
@@ -136,23 +158,24 @@ function insertTabs(
         tabClose.block = true;
         tabPanelOpen.block = true;
         tabPanelClose.block = true;
-        tabOpen.attrSet('id', tabId);
-        tabOpen.attrSet('class', 'yfm-tab');
+        tabOpen.attrSet(TAB_DATA_ID, tabId);
+        tabOpen.attrSet(TAB_DATA_KEY, tabKey);
+        tabOpen.attrSet('class', TAB_CLASSNAME);
         tabOpen.attrSet('role', 'tab');
         tabOpen.attrSet('aria-controls', tabPanelId);
         tabOpen.attrSet('aria-selected', 'false');
         tabOpen.attrSet('tabindex', '-1');
         tabPanelOpen.attrSet('id', tabPanelId);
-        tabPanelOpen.attrSet('class', 'yfm-tab-panel');
+        tabPanelOpen.attrSet('class', TAB_PANEL_CLASSNAME);
         tabPanelOpen.attrSet('role', 'tabpanel');
         tabPanelOpen.attrSet('aria-labelledby', tabId);
-        tabPanelOpen.attrSet('data-title', tabs[i].name);
+        tabPanelOpen.attrSet('data-title', tab.name);
 
         if (i === 0) {
-            tabOpen.attrJoin('class', 'active');
+            tabOpen.attrJoin('class', ACTIVE_CLASSNAME);
             tabOpen.attrSet('aria-selected', 'true');
             tabOpen.attrSet('tabindex', '0');
-            tabPanelOpen.attrJoin('class', 'active');
+            tabPanelOpen.attrJoin('class', ACTIVE_CLASSNAME);
         }
 
         tabListTokens.push(tabOpen, tabInline, tabClose);
@@ -208,13 +231,13 @@ function matchOpenToken(tokens: Token[], i: number) {
 
 export function transform({
     runtimeJsPath = '_assets/tabs-extension.js',
-    runtimeCssPath = '_assets/tabs-extension.css',
     containerClasses = '',
     bundle = true,
 }: Partial<PluginOptions> = {}) {
     const tabs: MarkdownItPluginCb<{output: string}> = function (md: MarkdownIt, {output = '.'}) {
         const plugin = (state: StateCore) => {
             const {env, tokens} = state;
+            const runId = uuidv4();
 
             addHiddenProperty(env, 'bundled', new Set<string>());
 
@@ -239,10 +262,21 @@ export function transform({
                     continue;
                 }
 
+                const tabsGroup = match[2] || `${DEFAULT_TABS_GROUP_PREFIX}${generateID()}`;
+
                 const {tabs, index} = findTabs(state.tokens, i + 3);
 
                 if (tabs.length > 0) {
-                    i += insertTabs(tabs, state, {start: i, end: index + 3}, {containerClasses});
+                    i += insertTabs(
+                        tabs,
+                        state,
+                        {start: i, end: index + 3},
+                        {
+                            containerClasses,
+                            tabsGroup,
+                            runId,
+                        },
+                    );
                     tabsAreInserted = true;
                 } else {
                     state.tokens.splice(i, index - i);
@@ -252,12 +286,10 @@ export function transform({
             if (tabsAreInserted) {
                 env.meta = env.meta || {};
                 env.meta.script = env.meta.script || [];
-                env.meta.style = env.meta.style || [];
                 env.meta.script.push(runtimeJsPath);
-                env.meta.style.push(runtimeCssPath);
 
                 if (bundle) {
-                    copyRuntimeFiles({runtimeJsPath, runtimeCssPath, output}, env.bundled);
+                    copyRuntimeFiles({runtimeJsPath, output}, env.bundled);
                 }
             }
         };

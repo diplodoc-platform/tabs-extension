@@ -9,7 +9,7 @@ import {readFile} from 'node:fs/promises';
         output: './build',
         plugins: [
             tabs.transform({
-                bundled: true,
+                bundle: true,
             }),
         ],
     });
@@ -18,10 +18,9 @@ import {readFile} from 'node:fs/promises';
 <html>
     <head>
         ${result.meta.script.map((scriptFile) => `<script src="${scriptFile}"></script>`)}
-        ${result.meta.style.map((styleFile) => `<link rel="stylesheet" href="${styleFile}" />`)}
     </head>
     <body>
-        ${result.html}    
+        ${result.html}
     </body>
 </html>    
     `;
