@@ -41,7 +41,7 @@ export class TabsController extends EventTarget {
 
             const tab = this.getTabDataFromHTMLElement(target);
             if (tab) {
-                this.selectTab(tab, target.dataset.diplodocId!);
+                this._selectTab(tab, target);
             }
         });
     }
@@ -57,7 +57,7 @@ export class TabsController extends EventTarget {
 
         const tab = this.getTabDataFromHTMLElement(target);
         if (tab) {
-            this.selectTab(tab, id);
+            this._selectTab(tab, target);
         }
 
         if (options?.scrollToElement) {
@@ -65,7 +65,11 @@ export class TabsController extends EventTarget {
         }
     }
 
-    selectTab(tab: Tab, currentTabId?: string) {
+    selectTab(tab: Tab) {
+        this._selectTab(tab);
+    }
+
+    private _selectTab(tab: Tab, targetTab?: HTMLElement) {
         const {group, key} = tab;
 
         if (!group) {
@@ -110,7 +114,7 @@ export class TabsController extends EventTarget {
                 : tab;
             this.dispatchEvent(
                 new CustomEvent<SelectedTabEvent>(SELECT_TAB_EVENT_NAME, {
-                    detail: {tab: eventTab, currentTabId},
+                    detail: {tab: eventTab, currentTabId: targetTab?.dataset.diplodocId},
                 }),
             );
         }
