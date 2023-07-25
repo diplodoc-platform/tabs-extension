@@ -18,7 +18,7 @@
   },
   "scripts": {
     "build": "run-p build:*",
-    "build:css": "sass src/runtime/scss/tabs.scss runtime/style/index.css --style=compressed",
+    "build:css": "sass src/runtime/scss/tabs.scss runtime/styles.css --style=compressed",
     "build:js": "./esbuild/build.mjs",
     "build:declarations": "tsc --emitDeclarationOnly --outDir .",
     "lint": "npx eslint \"{src,example}/**/*.{js,ts}\"",
