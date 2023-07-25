@@ -21,6 +21,7 @@ import {
 
 export type PluginOptions = {
     runtimeJsPath: string;
+    runtimeCssPath: string;
     containerClasses: string;
     bundle: boolean;
 };
@@ -231,6 +232,7 @@ function matchOpenToken(tokens: Token[], i: number) {
 
 export function transform({
     runtimeJsPath = '_assets/tabs-extension.js',
+    runtimeCssPath = '_assets/tabs-extension.css',
     containerClasses = '',
     bundle = true,
 }: Partial<PluginOptions> = {}) {
@@ -286,10 +288,12 @@ export function transform({
             if (tabsAreInserted) {
                 env.meta = env.meta || {};
                 env.meta.script = env.meta.script || [];
+                env.meta.style = env.meta.style || [];
                 env.meta.script.push(runtimeJsPath);
+                env.meta.style.push(runtimeCssPath);
 
                 if (bundle) {
-                    copyRuntimeFiles({runtimeJsPath, output}, env.bundled);
+                    copyRuntimeFiles({runtimeJsPath, runtimeCssPath, output}, env.bundled);
                 }
             }
         };

@@ -129,11 +129,12 @@ describe('plugin', () => {
             expect(attrsObject['class']).toEqual('diplodoc-tabs');
         });
 
-        test('should return custom runtimeJsPath meta data', () => {
+        test('should return custom runtimeJsPath and runtimeCssPath meta data', () => {
             // ACT
             const result = makeTransform({
                 transformOptions: {
                     runtimeJsPath: 'path_1',
+                    runtimeCssPath: 'path_2',
                 },
             });
 
@@ -141,11 +142,12 @@ describe('plugin', () => {
             expect(result.env).toEqual({
                 meta: {
                     script: ['path_1'],
+                    style: ['path_2'],
                 },
             });
         });
 
-        test('should return default runtimeJsPath meta data', () => {
+        test('should return default runtimeJsPath and runtimeCssPath meta data', () => {
             // ACT
             const result = makeTransform();
 
@@ -153,6 +155,7 @@ describe('plugin', () => {
             expect(result.env).toEqual({
                 meta: {
                     script: ['_assets/tabs-extension.js'],
+                    style: ['_assets/tabs-extension.css'],
                 },
             });
         });

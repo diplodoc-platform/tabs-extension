@@ -17,7 +17,8 @@
     "./react": "./react/index.js"
   },
   "scripts": {
-    "build": "npm run build:declarations && npm run build:js",
+    "build": "run-p build:*",
+    "build:css": "sass src/runtime/scss/tabs.scss runtime/styles.css --style=compressed",
     "build:js": "./esbuild/build.mjs",
     "build:declarations": "tsc --emitDeclarationOnly --outDir .",
     "lint": "npx eslint \"{src,example}/**/*.{js,ts}\"",
@@ -52,7 +53,6 @@
     "@yandex-cloud/eslint-config": "^1.1.0",
     "@yandex-cloud/prettier-config": "^1.0.0",
     "esbuild": "^0.17.12",
-    "esbuild-inline-sass": "^0.4.1",
     "eslint": "^8.43.0",
     "github-slugger": "^2.0.0",
     "husky": "^8.0.3",
@@ -60,6 +60,7 @@
     "markdown-it": "^13.0.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.8.8",
+    "sass": "^1.64.1",
     "ts-jest": "^29.1.0",
     "typescript": "^5.0.2",
     "uuid": "^9.0.0"

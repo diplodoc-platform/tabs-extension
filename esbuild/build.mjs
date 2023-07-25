@@ -5,7 +5,6 @@ import {fileURLToPath} from 'url';
 import {dirname} from 'path';
 
 import {build} from 'esbuild';
-import {inlineScss} from 'esbuild-inline-sass';
 const tsconfigJson = readJSON('../tsconfig.json');
 const packageJson = readJSON('../package.json');
 
@@ -26,7 +25,6 @@ build({
     outfile: 'runtime/index.js',
     minify: true,
     platform: 'browser',
-    plugins: [inlineScss()],
 });
 
 build({
