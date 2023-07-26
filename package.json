@@ -24,7 +24,7 @@
     "lint": "npx eslint \"{src,example}/**/*.{js,ts}\"",
     "lint:fix": "npm run lint -- --fix",
     "precommit": "npm run lint && npm run test",
-    "prepack": "npm run lint && npm run build",
+    "prepack": "npm run lint && npm run test && npm run build",
     "test": "jest",
     "prepare": "husky install"
   },
