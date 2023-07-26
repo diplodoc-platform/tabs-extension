@@ -70,7 +70,7 @@ describe('plugin', () => {
             const attrsObject = convertAttrsToObject(tab);
 
             expect(Object.keys(attrsObject)).toEqual(attrs);
-            expect(attrsObject['class']).toEqual(`diplodoc-tab${i === 0 ? ' active' : ''}`);
+            expect(attrsObject['class']).toEqual(`yfm-tab${i === 0 ? ' active' : ''}`);
             expect(attrsObject['role']).toEqual('tab');
         });
     });
@@ -116,7 +116,7 @@ describe('plugin', () => {
             // ASSERT
             const tabsContainer = result.filter(({type}) => type === 'tabs_open');
             const attrsObject = convertAttrsToObject(tabsContainer[0]);
-            expect(attrsObject['class']).toEqual('diplodoc-tabs test_1 test_2');
+            expect(attrsObject['class']).toEqual('yfm-tabs test_1 test_2');
         });
 
         test('should return the default className for container node', () => {
@@ -126,7 +126,7 @@ describe('plugin', () => {
             // ASSERT
             const tabsContainer = result.filter(({type}) => type === 'tabs_open');
             const attrsObject = convertAttrsToObject(tabsContainer[0]);
-            expect(attrsObject['class']).toEqual('diplodoc-tabs');
+            expect(attrsObject['class']).toEqual('yfm-tabs');
         });
 
         test('should return custom runtimeJsPath and runtimeCssPath meta data', () => {
