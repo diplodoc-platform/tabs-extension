@@ -84,7 +84,7 @@ export class TabsController extends EventTarget {
 
         tabs.forEach((element) => {
             const htmlElem = element as HTMLElement;
-            if (!this.isValidTabElement(htmlElem) || element.classList.contains(ACTIVE_CLASSNAME)) {
+            if (!this.isValidTabElement(htmlElem) || htmlElem.dataset.isActive === 'true') {
                 return;
             }
 
@@ -100,6 +100,9 @@ export class TabsController extends EventTarget {
             allTabs.forEach((tab, i) => {
                 const panel = allPanels[i];
                 const isTargetTab = i === targetIndex;
+                const htmlElem = element as HTMLElement;
+
+                htmlElem.dataset.isActive = String(htmlElem === tab);
 
                 tab.classList.toggle(ACTIVE_CLASSNAME, isTargetTab);
                 tab.setAttribute('aria-selected', isTargetTab.toString());
