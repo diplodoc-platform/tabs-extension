@@ -54,6 +54,7 @@ describe('plugin', () => {
         const attrs = [
             'data-diplodoc-id',
             'data-diplodoc-key',
+            'data-diplodoc-is-active',
             'class',
             'role',
             'aria-controls',
@@ -169,7 +170,7 @@ describe('plugin', () => {
             // ASSERT
             const tabs = result.filter(({type}) => type === 'tabs_open');
             const attrsObject = convertAttrsToObject(tabs[0]);
-            expect(attrsObject['data-diplodoc-group']).toMatch('defaultTabsGroup-');
+            expect(attrsObject['data-diplodoc-group']).toMatch('test');
         });
 
         test('should set a specific group name for the tabs container', () => {
@@ -187,7 +188,7 @@ describe('plugin', () => {
             // ASSERT
             const tabsContainer = result.filter(({type}) => type === 'tabs_open');
             const attrsObject = convertAttrsToObject(tabsContainer[0]);
-            expect(attrsObject['data-diplodoc-group']).toEqual('defaultTabsGroup-');
+            expect(attrsObject['data-diplodoc-group']).toEqual('test');
         });
     });
 
@@ -208,6 +209,9 @@ describe('plugin', () => {
             expect(attrsObject0['data-diplodoc-key']).toEqual('python');
             expect(attrsObject1['data-diplodoc-key']).toEqual('tab%20with%20list');
             expect(attrsObject2['data-diplodoc-key']).toEqual('tab%20with%20list');
+            expect(attrsObject0['data-diplodoc-is-active']).toEqual('true');
+            expect(attrsObject1['data-diplodoc-is-active']).toEqual('false');
+            expect(attrsObject2['data-diplodoc-is-active']).toEqual('false');
         });
 
         test('should set custom anchors for tabs', () => {

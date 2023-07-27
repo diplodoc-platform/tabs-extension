@@ -9,10 +9,10 @@ import {copyRuntimeFiles} from './copyRuntimeFiles';
 import {getTabId, getTabKey} from './getTabId';
 import {
     ACTIVE_CLASSNAME,
-    DEFAULT_TABS_GROUP_PREFIX,
     GROUP_DATA_KEY,
     TABS_CLASSNAME,
     TABS_LIST_CLASSNAME,
+    TAB_ACTIVA_KEY,
     TAB_CLASSNAME,
     TAB_DATA_ID,
     TAB_DATA_KEY,
@@ -161,6 +161,7 @@ function insertTabs(
         tabPanelClose.block = true;
         tabOpen.attrSet(TAB_DATA_ID, tabId);
         tabOpen.attrSet(TAB_DATA_KEY, tabKey);
+        tabOpen.attrSet(TAB_ACTIVA_KEY, i === 0 ? 'true' : 'false');
         tabOpen.attrSet('class', TAB_CLASSNAME);
         tabOpen.attrSet('role', 'tab');
         tabOpen.attrSet('aria-controls', tabPanelId);
@@ -264,7 +265,7 @@ export function transform({
                     continue;
                 }
 
-                const tabsGroup = DEFAULT_TABS_GROUP_PREFIX; // TODO match[2] || `${DEFAULT_TABS_GROUP_PREFIX}${generateID()}`;
+                const tabsGroup = 'test'; // DEFAULT_TABS_GROUP_PREFIX; // TODO match[2] || `${DEFAULT_TABS_GROUP_PREFIX}${generateID()}`;
 
                 const {tabs, index} = findTabs(state.tokens, i + 3);
 
