@@ -54,6 +54,7 @@ describe('plugin', () => {
         const attrs = [
             'data-diplodoc-id',
             'data-diplodoc-key',
+            'data-diplodoc-is-active',
             'class',
             'role',
             'aria-controls',
@@ -208,6 +209,9 @@ describe('plugin', () => {
             expect(attrsObject0['data-diplodoc-key']).toEqual('python');
             expect(attrsObject1['data-diplodoc-key']).toEqual('tab%20with%20list');
             expect(attrsObject2['data-diplodoc-key']).toEqual('tab%20with%20list');
+            expect(attrsObject0['data-diplodoc-is-active']).toEqual('true');
+            expect(attrsObject1['data-diplodoc-is-active']).toEqual('false');
+            expect(attrsObject2['data-diplodoc-is-active']).toEqual('false');
         });
 
         test('should set custom anchors for tabs', () => {

@@ -11,6 +11,7 @@ import {
     ACTIVE_CLASSNAME,
     DEFAULT_TABS_GROUP_PREFIX,
     GROUP_DATA_KEY,
+    TAB_ACTIVA_KEY,
     TABS_CLASSNAME,
     TABS_LIST_CLASSNAME,
     TAB_CLASSNAME,
@@ -161,6 +162,7 @@ function insertTabs(
         tabPanelClose.block = true;
         tabOpen.attrSet(TAB_DATA_ID, tabId);
         tabOpen.attrSet(TAB_DATA_KEY, tabKey);
+        tabOpen.attrSet(TAB_ACTIVA_KEY, i === 0 ? 'true' : 'false');
         tabOpen.attrSet('class', TAB_CLASSNAME);
         tabOpen.attrSet('role', 'tab');
         tabOpen.attrSet('aria-controls', tabPanelId);
