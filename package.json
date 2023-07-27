@@ -25,6 +25,7 @@
     "lint:fix": "npm run lint -- --fix",
     "precommit": "npm run lint && npm run test",
     "prepack": "npm run lint && npm run test && npm run build",
+    "prepublish": "npm run lint && npm run test && npm run build",
     "test": "jest",
     "prepare": "husky install"
   },
