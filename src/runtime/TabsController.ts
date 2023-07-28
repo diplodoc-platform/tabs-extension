@@ -12,7 +12,13 @@ import {
     TAB_PANEL_CLASSNAME,
     Tab,
 } from '../common';
-import {isCustom, getEventTarget} from './utils';
+import {
+    isCustom,
+    getEventTarget,
+    getClosestScrollableParent,
+    getOffsetByScrollableParent,
+    ElementOffset,
+} from './utils';
 
 const Selector = {
     TABS: `.${TABS_CLASSNAME}`,
@@ -76,11 +82,29 @@ export class TabsController extends EventTarget {
             return;
         }
 
+        const scrollableParent = targetTab && getClosestScrollableParent(targetTab);
+        const previousTargetOffset =
+            scrollableParent && getOffsetByScrollableParent(targetTab, scrollableParent);
+
+        const updatedTabs = this.updateHTML({group, key});
+
+        if (updatedTabs > 0) {
+            if (previousTargetOffset) {
+                this.resetScroll(targetTab, scrollableParent, previousTargetOffset);
+            }
+
+            this.fireSelectTabEvent({group, key}, targetTab?.dataset.diplodocId);
+        }
+    }
+
+    private updateHTML(tab: Required<Tab>) {
+        const {group, key} = tab;
+
         const tabs = this._document.querySelectorAll(
             `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
         );
 
-        let found = 0;
+        let updated = 0;
 
         tabs.forEach((element) => {
             const htmlElem = element as HTMLElement;
@@ -88,7 +112,7 @@ export class TabsController extends EventTarget {
                 return;
             }
 
-            found++;
+            updated++;
 
             const tab = element;
             const tabList = tab.parentNode;
@@ -111,16 +135,30 @@ export class TabsController extends EventTarget {
             });
         });
 
-        if (found > 0) {
-            const eventTab: Tab = group.startsWith(DEFAULT_TABS_GROUP_PREFIX)
-                ? {key: tab.key}
-                : tab;
-            this.dispatchEvent(
-                new CustomEvent<SelectedTabEvent>(SELECT_TAB_EVENT_NAME, {
-                    detail: {tab: eventTab, currentTabId: targetTab?.dataset.diplodocId},
-                }),
-            );
-        }
+        return updated;
+    }
+
+    private resetScroll(
+        target: HTMLElement,
+        scrollableParent: HTMLElement,
+        previousTargetOffset: ElementOffset,
+    ) {
+        const targetOffset = getOffsetByScrollableParent(target, scrollableParent);
+        scrollableParent.scrollTo(
+            targetOffset.left + scrollableParent.scrollLeft - previousTargetOffset.left,
+            targetOffset.top + scrollableParent.scrollTop - previousTargetOffset.top,
+        );
+    }
+
+    private fireSelectTabEvent(tab: Required<Tab>, diplodocId?: string) {
+        const {group, key} = tab;
+
+        const eventTab: Tab = group.startsWith(DEFAULT_TABS_GROUP_PREFIX) ? {key} : tab;
+        this.dispatchEvent(
+            new CustomEvent<SelectedTabEvent>(SELECT_TAB_EVENT_NAME, {
+                detail: {tab: eventTab, currentTabId: diplodocId},
+            }),
+        );
     }
 
     private isValidTabElement(element: HTMLElement) {
