@@ -11,7 +11,7 @@ Then this documentation will be rendered by [@diplodoc/transform](https://github
 
 {% list tabs group=group_1 %}
 
-- Python
+- Python {#my-tab}
 
   About python
 
@@ -22,6 +22,8 @@ Then this documentation will be rendered by [@diplodoc/transform](https://github
 - TypeScript
   1. One
   2. Two
+
+- ipv4
 
 {% endlist %}
 

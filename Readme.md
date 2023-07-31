@@ -97,8 +97,8 @@ The keys for the tabs are generated automatically. They are based on the tab's n
 You can set your own keys for tabs with this statement:
 ```
 {% list tabs group=group_1 %}
-- Tab 1 #{my-tab-1}
-- Tab 2 #{my-tab-2}
+- Tab 1 {#my-tab-1}
+- Tab 2 {#my-tab-2}
 {% endlist %}
 ```
 

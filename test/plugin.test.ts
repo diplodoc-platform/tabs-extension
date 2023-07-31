@@ -203,6 +203,13 @@ describe('plugin', () => {
             const attrsObject1 = convertAttrsToObject(tabs[1]);
             const attrsObject2 = convertAttrsToObject(tabs[2]);
 
+            expect(result[result.indexOf(tabs[0]) + 1]?.children?.[0]?.content).toEqual('Python');
+            expect(result[result.indexOf(tabs[1]) + 1]?.children?.[0]?.content).toEqual(
+                'Tab with list',
+            );
+            expect(result[result.indexOf(tabs[2]) + 1]?.children?.[0]?.content).toEqual(
+                'Tab with list',
+            );
             expect(attrsObject0['data-diplodoc-id']).toEqual('python');
             expect(attrsObject1['data-diplodoc-id']).toEqual('tab-with-list');
             expect(attrsObject2['data-diplodoc-id']).toEqual('tab-with-list-1');
@@ -230,9 +237,12 @@ describe('plugin', () => {
 
             // ASSERT
             const tabs = result.filter(({type}) => type === 'tab_open');
+
             const attrsObject0 = convertAttrsToObject(tabs[0]);
             const attrsObject1 = convertAttrsToObject(tabs[1]);
 
+            expect(result[result.indexOf(tabs[0]) + 1]?.children?.[0]?.content).toEqual('Python');
+            expect(result[result.indexOf(tabs[1]) + 1]?.children?.[0]?.content).toEqual('Java');
             expect(attrsObject0['data-diplodoc-id']).toEqual('my-tab');
             expect(attrsObject1['data-diplodoc-id']).toEqual('my-tab-1');
             expect(attrsObject0['data-diplodoc-key']).toEqual('my-tab');
@@ -261,6 +271,8 @@ describe('plugin', () => {
             const attrsObject0 = convertAttrsToObject(tabs[0]);
             const attrsObject1 = convertAttrsToObject(tabs[1]);
 
+            expect(result[result.indexOf(tabs[0]) + 1]?.children?.[0]?.content).toEqual('C#');
+            expect(result[result.indexOf(tabs[1]) + 1]?.children?.[0]?.content).toEqual('C++');
             expect(attrsObject0['data-diplodoc-id']).toEqual('c');
             expect(attrsObject1['data-diplodoc-id']).toEqual('c-1');
             expect(attrsObject0['data-diplodoc-key']).toEqual('c%23');

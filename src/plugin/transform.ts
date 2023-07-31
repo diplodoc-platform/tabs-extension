@@ -6,7 +6,7 @@ import {v4 as uuidv4} from 'uuid';
 
 import {addHiddenProperty, generateID} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
-import {getTabId, getTabKey} from './getTabId';
+import {getName, getTabId, getTabKey} from './getTabId';
 import {
     ACTIVE_CLASSNAME,
     DEFAULT_TABS_GROUP_PREFIX,
@@ -150,7 +150,7 @@ function insertTabs(
         const tab = tabs[i];
         const tabId = getTabId(tab, {runId});
         const tabKey = getTabKey(tab);
-        tab.name = tab.name.replace(tabId, '');
+        tab.name = getName(tab);
 
         const tabPanelId = generateID();
 
