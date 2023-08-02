@@ -23,7 +23,7 @@ export function copyRuntimeFiles(
 }
 
 function copyFile(from: string, to: string) {
-    const {mkdirSync, copyFileSync} = require('node:fs');
+    const {mkdirSync, copyFileSync} = dynrequire('node:fs');
     const {dirname} = dynrequire('node:path');
     mkdirSync(dirname(to), {recursive: true});
     copyFileSync(from, to);
@@ -34,5 +34,6 @@ function copyFile(from: string, to: string) {
  * Used for nodejs api
  */
 function dynrequire(module: string) {
+    // eslint-disable-next-line no-eval
     return eval(`require('${module}')`);
 }
