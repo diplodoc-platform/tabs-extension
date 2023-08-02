@@ -1,7 +1,6 @@
-import {v4 as uuidv4} from 'uuid';
-
 export function generateID() {
-    return uuidv4().substring(0, 8);
+    const id = Math.random().toString(36).substr(2, 8);
+    return id.substring(id.length - 8);
 }
 
 export function addHiddenProperty<

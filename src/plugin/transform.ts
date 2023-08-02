@@ -2,7 +2,6 @@ import MarkdownIt from 'markdown-it';
 import StateCore from 'markdown-it/lib/rules_core/state_core';
 import Token from 'markdown-it/lib/token';
 import type {MarkdownItPluginCb} from '@doc-tools/transform/lib/plugins/typings';
-import {v4 as uuidv4} from 'uuid';
 
 import {addHiddenProperty, generateID} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
@@ -28,6 +27,8 @@ export type PluginOptions = {
 };
 
 const TAB_RE = /`?{% list tabs( group=([^ ]*))? %}`?/;
+
+let runsCounter = 0;
 
 export type Tab = {
     name: string;
@@ -241,7 +242,7 @@ export function transform({
     const tabs: MarkdownItPluginCb<{output: string}> = function (md: MarkdownIt, {output = '.'}) {
         const plugin = (state: StateCore) => {
             const {env, tokens} = state;
-            const runId = uuidv4();
+            const runId = String(++runsCounter);
 
             addHiddenProperty(env, 'bundled', new Set<string>());
 

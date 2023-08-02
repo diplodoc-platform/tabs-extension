@@ -1,6 +1,3 @@
-import {dirname, join, resolve} from 'node:path';
-import {mkdirSync, copyFileSync} from 'node:fs';
-
 const PATH_TO_RUNTIME = '../runtime';
 
 export function copyRuntimeFiles(
@@ -11,6 +8,7 @@ export function copyRuntimeFiles(
     }: {runtimeJsPath: string; runtimeCssPath: string; output: string},
     cache: Set<string>,
 ) {
+    const {join, resolve} = require('node:path');
     const runtimeFiles = {
         'index.js': runtimeJsPath,
         'styles.css': runtimeCssPath,
@@ -25,6 +23,8 @@ export function copyRuntimeFiles(
 }
 
 function copyFile(from: string, to: string) {
+    const {mkdirSync, copyFileSync} = require('node:fs');
+    const {dirname} = require('node:path');
     mkdirSync(dirname(to), {recursive: true});
     copyFileSync(from, to);
 }
