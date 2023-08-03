@@ -1,6 +1,3 @@
-import {dirname, join, resolve} from 'node:path';
-import {mkdirSync, copyFileSync} from 'node:fs';
-
 const PATH_TO_RUNTIME = '../runtime';
 
 export function copyRuntimeFiles(
@@ -11,6 +8,7 @@ export function copyRuntimeFiles(
     }: {runtimeJsPath: string; runtimeCssPath: string; output: string},
     cache: Set<string>,
 ) {
+    const {join, resolve} = dynrequire('node:path');
     const runtimeFiles = {
         'index.js': runtimeJsPath,
         'styles.css': runtimeCssPath,
@@ -25,6 +23,17 @@ export function copyRuntimeFiles(
 }
 
 function copyFile(from: string, to: string) {
+    const {mkdirSync, copyFileSync} = dynrequire('node:fs');
+    const {dirname} = dynrequire('node:path');
     mkdirSync(dirname(to), {recursive: true});
     copyFileSync(from, to);
+}
+
+/*
+ * Runtime require hidden for builders.
+ * Used for nodejs api
+ */
+function dynrequire(module: string) {
+    // eslint-disable-next-line no-eval
+    return eval(`require('${module}')`);
 }

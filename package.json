@@ -26,7 +26,7 @@
     "precommit": "npm run lint && npm run test",
     "prepack": "npm run lint && npm run test && npm run build",
     "test": "jest",
-    "prepare": "husky install"
+    "prepare": "husky install && npm run build"
   },
   "author": "",
   "license": "ISC",
@@ -49,7 +49,6 @@
     "@types/jest": "^29.5.2",
     "@types/markdown-it": "^12.2.3",
     "@types/react": "^18.2.14",
-    "@types/uuid": "^9.0.2",
     "@yandex-cloud/eslint-config": "^1.1.0",
     "@yandex-cloud/prettier-config": "^1.0.0",
     "esbuild": "^0.17.12",
@@ -62,7 +61,6 @@
     "prettier": "^2.8.8",
     "sass": "^1.64.1",
     "ts-jest": "^29.1.0",
-    "typescript": "^5.0.2",
-    "uuid": "^9.0.0"
+    "typescript": "^5.0.2"
   }
 }
