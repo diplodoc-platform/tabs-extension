@@ -35,6 +35,10 @@ export type Tab = {
     tokens: Token[];
 };
 
+type TransformOptions = {
+    output?: string;
+};
+
 function findTabs(tokens: Token[], idx: number) {
     const tabs = [];
     let i = idx,
@@ -239,7 +243,11 @@ export function transform({
     containerClasses = '',
     bundle = true,
 }: Partial<PluginOptions> = {}) {
-    const tabs: MarkdownItPluginCb<{output: string}> = function (md: MarkdownIt, {output = '.'}) {
+    const tabs: MarkdownItPluginCb<{output: string}> = function (
+        md: MarkdownIt,
+        options?: TransformOptions,
+    ) {
+        const {output = '.'} = options || {};
         const plugin = (state: StateCore) => {
             const {env, tokens} = state;
             const runId = String(++runsCounter);
