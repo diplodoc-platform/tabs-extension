@@ -33,6 +33,7 @@ let runsCounter = 0;
 export type Tab = {
     name: string;
     tokens: Token[];
+    listItem: Token;
 };
 
 type TransformOptions = {
@@ -43,7 +44,7 @@ function findTabs(tokens: Token[], idx: number) {
     const tabs = [];
     let i = idx,
         nestedLevel = -1,
-        pending: Tab = {name: '', tokens: []};
+        pending: Tab = {name: '', tokens: [], listItem: new Token('list_item_open', '', 0)};
 
     while (i < tokens.length) {
         const token = tokens[i];
@@ -60,7 +61,7 @@ function findTabs(tokens: Token[], idx: number) {
                 if (nestedLevel) {
                     pending.tokens.push(token);
                 } else {
-                    pending = {name: '', tokens: []};
+                    pending = {name: '', tokens: [], listItem: token};
                 }
                 break;
             case 'list_item_close':
@@ -134,6 +135,22 @@ function insertTabs(
     const tabListOpen = new state.Token('tab-list_open', 'div', 1);
     const tabListClose = new state.Token('tab-list_close', 'div', -1);
 
+    if (tabs.length) {
+        const [start] = tabs[0].listItem.map ?? [null];
+        // eslint-disable-next-line no-eq-null, eqeqeq
+        if (start == null) {
+            throw new Error('failed to parse line mapping');
+        }
+
+        const [_, end] = tabs[tabs.length - 1].listItem.map ?? [null, null];
+        // eslint-disable-next-line no-eq-null, eqeqeq
+        if (end == null) {
+            throw new Error('failed to parse line mapping');
+        }
+
+        tabListOpen.map = [start, end];
+    }
+
     tabsOpen.block = true;
     tabsClose.block = true;
     tabListOpen.block = true;
@@ -159,6 +176,7 @@ function insertTabs(
 
         const tabPanelId = generateID();
 
+        tabOpen.map = tabs[i].listItem.map;
         tabText.content = tabs[i].name;
         tabInline.children = [tabText];
         tabOpen.block = true;
