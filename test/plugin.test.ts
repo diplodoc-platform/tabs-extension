@@ -1,6 +1,7 @@
 import {PluginOptions, transform} from '../src/plugin/transform';
 import {callPlugin, tokenize} from './utils';
 import {base, escaped} from './data/tabs';
+// @ts-ignore
 import Token from 'markdown-it/lib/token';
 
 const defaultContent = [
