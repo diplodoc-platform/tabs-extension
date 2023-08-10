@@ -177,6 +177,7 @@ function insertTabs(
         const tabPanelId = generateID();
 
         tabOpen.map = tabs[i].listItem.map;
+        tabOpen.markup = tabs[i].listItem.markup;
         tabText.content = tabs[i].name;
         tabInline.children = [tabText];
         tabOpen.block = true;
