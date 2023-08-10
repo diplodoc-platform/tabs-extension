@@ -5,16 +5,19 @@
   "main": "plugin/index.js",
   "types": "plugin/index.d.ts",
   "exports": {
-    ".": "./plugin/index.js",
-    "./runtime": {
-      "require": {
-        "default": "./runtime/index.js"
-      },
-      "browser": {
-        "default": "./runtime/index.js"
-      }
+    ".": {
+      "types": "./plugin/index.d.ts",
+      "default": "./plugin/index.js"
     },
-    "./react": "./react/index.js"
+    "./runtime": {
+      "types": "./runtime/index.d.ts",
+      "style": "./runtime/styles.css",
+      "default": "./runtime/index.js"
+    },
+    "./react": {
+      "types": "./react/index.d.ts",
+      "default": "./react/index.js"
+    }
   },
   "scripts": {
     "build": "run-p build:*",
