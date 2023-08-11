@@ -53,7 +53,7 @@
     "@types/react": "^18.2.14",
     "@yandex-cloud/eslint-config": "^1.1.0",
     "@yandex-cloud/prettier-config": "^1.0.0",
-    "esbuild": "^0.17.12",
+    "esbuild": "^0.18.0",
     "esbuild-sass-plugin": "^2.10.0",
     "eslint": "^8.43.0",
     "github-slugger": "^2.0.0",
