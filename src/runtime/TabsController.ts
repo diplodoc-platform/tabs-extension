@@ -2,7 +2,6 @@ import {
     ACTIVE_CLASSNAME,
     DEFAULT_TABS_GROUP_PREFIX,
     GROUP_DATA_KEY,
-    SELECT_TAB_EVENT_NAME,
     SelectedTabEvent,
     TABS_CLASSNAME,
     TABS_LIST_CLASSNAME,
@@ -31,12 +30,14 @@ export interface ISelectTabByIdOptions {
     scrollToElement: boolean;
 }
 
-export class TabsController extends EventTarget {
+type Handler = (data: SelectedTabEvent) => void;
+
+export class TabsController {
     private _document: Document;
 
-    constructor(document: Document) {
-        super();
+    private _onSelectTabHandlers: Set<Handler> = new Set();
 
+    constructor(document: Document) {
         this._document = document;
         this._document.addEventListener('click', (event) => {
             const target = getEventTarget(event) as HTMLElement;
@@ -50,6 +51,14 @@ export class TabsController extends EventTarget {
                 this._selectTab(tab, target);
             }
         });
+    }
+
+    onSelectTab(handler: Handler) {
+        this._onSelectTabHandlers.add(handler);
+
+        return () => {
+            this._onSelectTabHandlers.delete(handler);
+        };
     }
 
     selectTabById(id: string, options?: ISelectTabByIdOptions) {
@@ -154,11 +163,10 @@ export class TabsController extends EventTarget {
         const {group, key} = tab;
 
         const eventTab: Tab = group.startsWith(DEFAULT_TABS_GROUP_PREFIX) ? {key} : tab;
-        this.dispatchEvent(
-            new CustomEvent<SelectedTabEvent>(SELECT_TAB_EVENT_NAME, {
-                detail: {tab: eventTab, currentTabId: diplodocId},
-            }),
-        );
+
+        this._onSelectTabHandlers.forEach((handler) => {
+            handler({tab: eventTab, currentTabId: diplodocId});
+        });
     }
 
     private isValidTabElement(element: HTMLElement) {
