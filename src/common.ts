@@ -1,4 +1,4 @@
-import {TabsController} from './runtime/TabsController';
+import type {TabsController} from './runtime/TabsController';
 
 export const TABS_CLASSNAME = 'yfm-tabs';
 export const TABS_LIST_CLASSNAME = 'yfm-tab-list';
@@ -10,8 +10,6 @@ export const GROUP_DATA_KEY = 'data-diplodoc-group';
 export const TAB_DATA_KEY = 'data-diplodoc-key';
 export const TAB_DATA_ID = 'data-diplodoc-id';
 export const TAB_ACTIVA_KEY = 'data-diplodoc-is-active';
-
-export const SELECT_TAB_EVENT_NAME = 'selecttab';
 
 export const DEFAULT_TABS_GROUP_PREFIX = 'defaultTabsGroup-';
 
