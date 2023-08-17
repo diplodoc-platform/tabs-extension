@@ -18,9 +18,11 @@ import transform from '@doc-tools/transform';
 
 const {result} = await transform(`
 {% list tabs %}
+
 - Tab 1
 - Tab 2
 - Tab 3
+
 {% endlist %}
 `, {
     plugins: [
@@ -80,15 +82,19 @@ You can synchronize the opening of tabs between different tabs groups on the pag
 Example:
 ```
 {% list tabs group=group_1 %}
+
 - Tab 1
 - Tab 2
 - Tab 3
+
 {% endlist %}
 
 {% list tabs group=group_1 %}
+
 - Tab 1
 - Tab 2
 - Tab 3
+
 {% endlist %}
 ```
 
@@ -97,8 +103,10 @@ The keys for the tabs are generated automatically. They are based on the tab's n
 You can set your own keys for tabs with this statement:
 ```
 {% list tabs group=group_1 %}
+
 - Tab 1 {#my-tab-1}
 - Tab 2 {#my-tab-2}
+
 {% endlist %}
 ```
 
