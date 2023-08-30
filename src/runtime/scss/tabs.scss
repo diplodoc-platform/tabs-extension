@@ -1,7 +1,7 @@
 .yfm-tabs {
     margin-bottom: 15px;
 
-    ol {
+    .yfm:not(.yfm_no-list-reset) & ol {
         counter-reset: tabs-list;
 
         & > li {
