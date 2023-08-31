@@ -60,10 +60,10 @@ Plugin for [@doc-tools/transform](https://github.com/diplodoc-platform/transform
 
 Options:
 - `runtimeJsPath` - name on runtime script which will be exposed in results `script` section.<br>
-  Default: `_assets/mermaid-extension.js`<br>
+  Default: `_assets/tabs-extension.js`<br>
 
 - `runtimeCssPath` - name on runtime css file which will be exposed in results `style` section.<br>
-  (Default: `_assets/mermaid-extension.css`)<br>
+  (Default: `_assets/tabs-extension.css`)<br>
 
 - `bundle` - boolean flag to enable/disable copying of bundled runtime to target directory.<br>
   Where target directore is `<transformer output option>/<plugin runtime option>`<br>
