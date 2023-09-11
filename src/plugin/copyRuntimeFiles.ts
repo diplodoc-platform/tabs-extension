@@ -11,7 +11,7 @@ export function copyRuntimeFiles(
     const {join, resolve} = dynrequire('node:path');
     const runtimeFiles = {
         'index.js': runtimeJsPath,
-        'styles.css': runtimeCssPath,
+        'index.css': runtimeCssPath,
     };
     for (const [originFile, outputFile] of Object.entries(runtimeFiles)) {
         const file = join(PATH_TO_RUNTIME, originFile);
