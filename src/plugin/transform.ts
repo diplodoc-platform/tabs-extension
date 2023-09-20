@@ -10,7 +10,7 @@ import {
     ACTIVE_CLASSNAME,
     DEFAULT_TABS_GROUP_PREFIX,
     GROUP_DATA_KEY,
-    TAB_ACTIVA_KEY,
+    TAB_ACTIVE_KEY,
     TABS_CLASSNAME,
     TABS_LIST_CLASSNAME,
     TAB_CLASSNAME,
@@ -186,12 +186,12 @@ function insertTabs(
         tabPanelClose.block = true;
         tabOpen.attrSet(TAB_DATA_ID, tabId);
         tabOpen.attrSet(TAB_DATA_KEY, tabKey);
-        tabOpen.attrSet(TAB_ACTIVA_KEY, i === 0 ? 'true' : 'false');
+        tabOpen.attrSet(TAB_ACTIVE_KEY, i === 0 ? 'true' : 'false');
         tabOpen.attrSet('class', TAB_CLASSNAME);
         tabOpen.attrSet('role', 'tab');
         tabOpen.attrSet('aria-controls', tabPanelId);
         tabOpen.attrSet('aria-selected', 'false');
-        tabOpen.attrSet('tabindex', '-1');
+        tabOpen.attrSet('tabindex', i === 0 ? '-1' : '0');
         tabPanelOpen.attrSet('id', tabPanelId);
         tabPanelOpen.attrSet('class', TAB_PANEL_CLASSNAME);
         tabPanelOpen.attrSet('role', 'tabpanel');
@@ -201,7 +201,6 @@ function insertTabs(
         if (i === 0) {
             tabOpen.attrJoin('class', ACTIVE_CLASSNAME);
             tabOpen.attrSet('aria-selected', 'true');
-            tabOpen.attrSet('tabindex', '0');
             tabPanelOpen.attrJoin('class', ACTIVE_CLASSNAME);
         }
 

@@ -139,7 +139,7 @@ export class TabsController {
 
                 tab.classList.toggle(ACTIVE_CLASSNAME, isTargetTab);
                 tab.setAttribute('aria-selected', isTargetTab.toString());
-                tab.setAttribute('tabindex', isTargetTab ? '0' : '-1');
+                tab.setAttribute('tabindex', isTargetTab ? '-1' : '0');
                 panel.classList.toggle(ACTIVE_CLASSNAME, isTargetTab);
             });
         });

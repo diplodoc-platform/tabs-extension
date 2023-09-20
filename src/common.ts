@@ -9,7 +9,7 @@ export const ACTIVE_CLASSNAME = 'active';
 export const GROUP_DATA_KEY = 'data-diplodoc-group';
 export const TAB_DATA_KEY = 'data-diplodoc-key';
 export const TAB_DATA_ID = 'data-diplodoc-id';
-export const TAB_ACTIVA_KEY = 'data-diplodoc-is-active';
+export const TAB_ACTIVE_KEY = 'data-diplodoc-is-active';
 
 export const DEFAULT_TABS_GROUP_PREFIX = 'defaultTabsGroup-';
 
