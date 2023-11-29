@@ -1,6 +1,6 @@
 import {PluginOptions, transform} from '../src/plugin/transform';
 import {callPlugin, tokenize} from './utils';
-import {base, escaped} from './data/tabs';
+import {base, escaped, nestedTokenTypes} from './data/tabs';
 // @ts-ignore
 import Token from 'markdown-it/lib/token';
 
@@ -105,6 +105,40 @@ describe('plugin', () => {
 
         // ASSERT
         expect(result).toEqual(escaped);
+    });
+
+    test('Should parse nested tabs', () => {
+        // ACT
+        const {tokens} = makeTransform({
+            content: [
+                '{% list tabs %}\n' +
+                    '\n' +
+                    '- tab1\n' +
+                    '\n' +
+                    '  content of tab1\n' +
+                    '\n' +
+                    '  {% list tabs %}\n' +
+                    '\n' +
+                    '  - nested_tab1\n' +
+                    '\n' +
+                    '    content of nested tab1\n' +
+                    '\n' +
+                    '  - nested_tab2\n' +
+                    '\n' +
+                    '    content of nested tab2\n' +
+                    '\n' +
+                    '  {% endlist %}\n' +
+                    '\n' +
+                    '- tab2\n' +
+                    '\n' +
+                    '  content of tab2\n' +
+                    '\n' +
+                    '{% endlist %}',
+            ],
+        });
+
+        // ASSERT
+        expect(tokens.map((token) => token.type)).toEqual(nestedTokenTypes);
     });
 
     describe('options', () => {

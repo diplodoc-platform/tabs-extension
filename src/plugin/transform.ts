@@ -298,7 +298,7 @@ export function transform({
                 const {tabs, index} = findTabs(state.tokens, i + 3);
 
                 if (tabs.length > 0) {
-                    i += insertTabs(
+                    insertTabs(
                         tabs,
                         state,
                         {start: i, end: index + 3},
@@ -308,6 +308,7 @@ export function transform({
                             runId,
                         },
                     );
+                    i++;
                     tabsAreInserted = true;
                 } else {
                     state.tokens.splice(i, index - i);
