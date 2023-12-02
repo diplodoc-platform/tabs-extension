@@ -48,7 +48,8 @@
 }
 
 .yfm-tab-panel {
-    display: none;
+    visibility: hidden;
+    height: 0;
 
     &:first-child {
         margin-top: 0 !important;
@@ -59,6 +60,7 @@
     }
 
     &.active {
-        display: block;
+        visibility: visible;
+        height: auto;
     }
 }
