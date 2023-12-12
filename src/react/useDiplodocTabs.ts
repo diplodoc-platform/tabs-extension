@@ -2,7 +2,7 @@ import {useCallback, useEffect} from 'react';
 import {GLOBAL_SYMBOL, SelectedTabEvent, Tab} from '../common';
 import {ISelectTabByIdOptions} from '../runtime/TabsController';
 
-export {Tab};
+export type {Tab};
 
 export type UseDiplodocTabsCallback = (tab: Tab, currentTabId?: string) => void;
 
