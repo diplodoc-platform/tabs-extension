@@ -54,7 +54,7 @@
     "@types/jest": "^29.5.2",
     "@types/markdown-it": "^12.2.3",
     "@types/react": "^18.2.14",
-    "esbuild": "^0.18.0",
+    "esbuild": "^0.19.9",
     "esbuild-sass-plugin": "^2.10.0",
     "github-slugger": "^2.0.0",
     "husky": "^8.0.3",
