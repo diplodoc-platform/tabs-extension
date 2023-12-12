@@ -12,11 +12,11 @@ import {
     Tab,
 } from '../common';
 import {
-    isCustom,
-    getEventTarget,
-    getClosestScrollableParent,
-    getOffsetByScrollableParent,
     ElementOffset,
+    getClosestScrollableParent,
+    getEventTarget,
+    getOffsetByScrollableParent,
+    isCustom,
 } from './utils';
 
 const Selector = {

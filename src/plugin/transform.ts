@@ -1,7 +1,7 @@
 import MarkdownIt from 'markdown-it';
 import StateCore from 'markdown-it/lib/rules_core/state_core';
 import Token from 'markdown-it/lib/token';
-import type {MarkdownItPluginCb} from '@doc-tools/transform/lib/plugins/typings';
+import type {MarkdownItPluginCb} from '@diplodoc/transform/lib/plugins/typings';
 
 import {addHiddenProperty, generateID} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
@@ -10,9 +10,9 @@ import {
     ACTIVE_CLASSNAME,
     DEFAULT_TABS_GROUP_PREFIX,
     GROUP_DATA_KEY,
-    TAB_ACTIVE_KEY,
     TABS_CLASSNAME,
     TABS_LIST_CLASSNAME,
+    TAB_ACTIVE_KEY,
     TAB_CLASSNAME,
     TAB_DATA_ID,
     TAB_DATA_KEY,

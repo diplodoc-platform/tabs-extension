@@ -5,7 +5,7 @@ import StateCore from 'markdown-it/lib/rules_core/state_core';
 import type {
     MarkdownItPluginCb,
     MarkdownItPluginOpts,
-} from '@doc-tools/transform/lib/plugins/typings';
+} from '@diplodoc/transform/lib/plugins/typings';
 
 const md = new MarkdownIt();
 

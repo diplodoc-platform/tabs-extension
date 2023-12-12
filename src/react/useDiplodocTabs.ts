@@ -1,4 +1,4 @@
-import {useEffect, useCallback} from 'react';
+import {useCallback, useEffect} from 'react';
 import {GLOBAL_SYMBOL, SelectedTabEvent, Tab} from '../common';
 import {ISelectTabByIdOptions} from '../runtime/TabsController';
 
