@@ -26,9 +26,9 @@
     "lint": "npx eslint \"{src,example}/**/*.{js,ts}\"",
     "lint:fix": "npm run lint -- --fix",
     "precommit": "npm run lint && npm run test",
-    "prepack": "npm run lint && npm run test && npm run build",
+    "prepublishOnly": "npm run lint && npm run test && npm run build",
     "test": "jest",
-    "prepare": "husky install && npm run build"
+    "init": "husky install && npm run build"
   },
   "author": "",
   "license": "ISC",
@@ -46,13 +46,14 @@
     }
   },
   "devDependencies": {
-    "@doc-tools/transform": "^2.16.4",
+    "@diplodoc/eslint-config": "^1.0.15",
+    "@diplodoc/prettier-config": "^1.0.0",
+    "@diplodoc/transform": "^4.7.0",
+    "@diplodoc/tsconfig": "^1.0.2",
     "@types/github-slugger": "^2.0.0",
     "@types/jest": "^29.5.2",
     "@types/markdown-it": "^12.2.3",
     "@types/react": "^18.2.14",
-    "@yandex-cloud/eslint-config": "^1.1.0",
-    "@yandex-cloud/prettier-config": "^1.0.0",
     "esbuild": "^0.18.0",
     "esbuild-sass-plugin": "^2.10.0",
     "eslint": "^8.43.0",
