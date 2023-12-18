@@ -31,7 +31,7 @@
     "init": "husky install && npm run build"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "files": [
     "plugin",
     "runtime",
