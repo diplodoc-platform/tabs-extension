@@ -48,7 +48,6 @@
   "devDependencies": {
     "@diplodoc/eslint-config": "^2.0.0",
     "@diplodoc/prettier-config": "^2.0.0",
-    "@diplodoc/transform": "^4.7.0",
     "@diplodoc/tsconfig": "^1.0.2",
     "@types/github-slugger": "^2.0.0",
     "@types/jest": "^29.5.2",

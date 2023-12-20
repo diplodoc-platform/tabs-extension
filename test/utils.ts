@@ -2,17 +2,13 @@
 import Token from 'markdown-it/lib/token';
 import MarkdownIt from 'markdown-it';
 import StateCore from 'markdown-it/lib/rules_core/state_core';
-import type {
-    MarkdownItPluginCb,
-    MarkdownItPluginOpts,
-} from '@diplodoc/transform/lib/plugins/typings';
 
 const md = new MarkdownIt();
 
 export function callPlugin<T extends {}>(
-    plugin: MarkdownItPluginCb<T>,
+    plugin: (md: MarkdownIt, opts: Partial<T>) => void,
     tokens: Token[],
-    opts?: Partial<MarkdownItPluginOpts & T>,
+    opts?: Partial<T>,
 ) {
     md.disable = () => md;
     md.enable = () => md;
@@ -42,7 +38,7 @@ export function callPlugin<T extends {}>(
                 lang: 'ru',
                 root: '',
             },
-            opts as MarkdownItPluginOpts & T,
+            opts as T,
         ),
     );
 

@@ -1,7 +1,6 @@
 import MarkdownIt from 'markdown-it';
 import StateCore from 'markdown-it/lib/rules_core/state_core';
 import Token from 'markdown-it/lib/token';
-import type {MarkdownItPluginCb} from '@diplodoc/transform/lib/plugins/typings';
 
 import {addHiddenProperty, generateID} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
@@ -261,10 +260,7 @@ export function transform({
     containerClasses = '',
     bundle = true,
 }: Partial<PluginOptions> = {}) {
-    const tabs: MarkdownItPluginCb<{output: string}> = function (
-        md: MarkdownIt,
-        options?: TransformOptions,
-    ) {
+    return function tabs(md: MarkdownIt, options?: TransformOptions) {
         const {output = '.'} = options || {};
         const plugin = (state: StateCore) => {
             const {env, tokens} = state;
@@ -334,6 +330,4 @@ export function transform({
             md.core.ruler.push('tabs', plugin);
         }
     };
-
-    return tabs;
 }
