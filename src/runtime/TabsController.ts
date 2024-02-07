@@ -126,8 +126,10 @@ export class TabsController {
             const tab = element;
             const tabList = tab.parentNode;
             const tabsContainer = tabList?.parentNode;
-            const allTabs = Array.from(tabsContainer?.querySelectorAll(Selector.TAB) || []);
-            const allPanels = Array.from(tabsContainer?.querySelectorAll(Selector.TAB_PANEL) || []);
+            const allTabs = Array.from(tabList?.querySelectorAll('>' + Selector.TAB) || []);
+            const allPanels = Array.from(
+                tabsContainer?.querySelectorAll('>' + Selector.TAB_PANEL) || [],
+            );
             const targetIndex = allTabs.indexOf(tab);
 
             allTabs.forEach((tab, i) => {
