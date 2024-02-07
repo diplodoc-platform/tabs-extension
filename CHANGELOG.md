@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.16](https://github.com/diplodoc-platform/tabs-extension/compare/v2.0.15...v2.0.16) (2024-02-07)
+
+
+### Bug Fixes
+
+* Invalid group selection for nested tabs ([5910a7f](https://github.com/diplodoc-platform/tabs-extension/commit/5910a7fea4e9e29e21b8e84c3fb8708d8090f290))
+* Long hidden tabs extends visual space ([d901dba](https://github.com/diplodoc-platform/tabs-extension/commit/d901dba8545fc4b8e549235bc8ef63c275b05dc7))
+
 ## [2.0.15](https://github.com/diplodoc-platform/tabs-extension/compare/v2.0.14...v2.0.15) (2023-12-12)
 
 
