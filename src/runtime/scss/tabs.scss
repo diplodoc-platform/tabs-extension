@@ -49,6 +49,7 @@
 
 .yfm-tab-panel {
     visibility: hidden;
+    overflow: hidden;
     height: 0;
 
     &:first-child {
