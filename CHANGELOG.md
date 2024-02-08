@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.17](https://github.com/diplodoc-platform/tabs-extension/compare/v2.0.16...v2.0.17) (2024-02-08)
+
+
+### Bug Fixes
+
+* Fix tabs opening ([90f7524](https://github.com/diplodoc-platform/tabs-extension/commit/90f752492debc2cb520187dd3b637ab864f9a3b0))
+
 ## [2.0.16](https://github.com/diplodoc-platform/tabs-extension/compare/v2.0.15...v2.0.16) (2024-02-07)
 
 
