@@ -52,6 +52,10 @@
     overflow: hidden;
     height: 0;
 
+    /*  for anchors */
+    padding-left: 30px;
+    transform: translateX(-30px);
+
     &:first-child {
         margin-top: 0 !important;
     }
