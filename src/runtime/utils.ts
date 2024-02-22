@@ -19,6 +19,8 @@ export const getClosestScrollableParent = (element: HTMLElement): HTMLElement | 
 export interface ElementOffset {
     top: number;
     left: number;
+    scrollTop: number;
+    scrollLeft: number;
 }
 
 export const getOffsetByScrollableParent = (
@@ -30,5 +32,7 @@ export const getOffsetByScrollableParent = (
     return {
         top: elementBounds.top - scrollableParentBounds.top,
         left: elementBounds.left - scrollableParentBounds.left,
+        scrollTop: scrollableParent.scrollTop,
+        scrollLeft: scrollableParent.scrollLeft,
     };
 };
