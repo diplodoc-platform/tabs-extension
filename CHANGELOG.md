@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.18](https://github.com/diplodoc-platform/tabs-extension/compare/v2.0.17...v2.0.18) (2024-02-22)
+
+
+### Bug Fixes
+
+* trigger release ([dcbe704](https://github.com/diplodoc-platform/tabs-extension/commit/dcbe70462d2a02330257fa4325c0cdaa20d81f20))
+
 ## [2.0.17](https://github.com/diplodoc-platform/tabs-extension/compare/v2.0.16...v2.0.17) (2024-02-08)
 
 
