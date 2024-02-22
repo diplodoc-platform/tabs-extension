@@ -98,11 +98,11 @@ export class TabsController {
         const updatedTabs = this.updateHTML({group, key});
 
         if (updatedTabs > 0) {
+            this.fireSelectTabEvent({group, key}, targetTab?.dataset.diplodocId);
+
             if (previousTargetOffset) {
                 this.resetScroll(targetTab, scrollableParent, previousTargetOffset);
             }
-
-            this.fireSelectTabEvent({group, key}, targetTab?.dataset.diplodocId);
         }
     }
 
@@ -155,9 +155,13 @@ export class TabsController {
         previousTargetOffset: ElementOffset,
     ) {
         const targetOffset = getOffsetByScrollableParent(target, scrollableParent);
+        const topDelta = targetOffset.top - previousTargetOffset.top;
+        const leftDelta = targetOffset.left - previousTargetOffset.left;
+        const scrollTopDelta = targetOffset.scrollTop - previousTargetOffset.scrollTop;
+        const scrollLeftDelta = targetOffset.scrollLeft - previousTargetOffset.scrollLeft;
         scrollableParent.scrollTo(
-            targetOffset.left + scrollableParent.scrollLeft - previousTargetOffset.left,
-            targetOffset.top + scrollableParent.scrollTop - previousTargetOffset.top,
+            scrollableParent.scrollLeft + leftDelta - scrollLeftDelta,
+            scrollableParent.scrollTop + topDelta - scrollTopDelta,
         );
     }
 
