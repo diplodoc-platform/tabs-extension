@@ -230,23 +230,23 @@ export class TabsController {
 
     private getTabs(target: HTMLElement): {tabs: Tab[]; nodes: NodeListOf<HTMLElement>} {
         const group = (target.closest(Selector.TABS) as HTMLElement)?.dataset.diplodocGroup;
-        const tabs = (
+        const nodes = (
             target.closest(Selector.TAB_LIST) as HTMLElement
         )?.querySelectorAll<HTMLElement>(Selector.TAB);
 
-        const result: Tab[] = [];
-        tabs.forEach((tabEl) => {
+        const tabs: Tab[] = [];
+        nodes.forEach((tabEl) => {
             const key = tabEl?.dataset.diplodocKey;
             if (!key) {
                 return;
             }
 
-            result.push({
+            tabs.push({
                 group,
                 key,
             });
         });
 
-        return {tabs: result, nodes: tabs};
+        return {tabs, nodes};
     }
 }
