@@ -32,6 +32,8 @@ export interface ISelectTabByIdOptions {
 
 type Handler = (data: SelectedTabEvent) => void;
 
+type TabSwitchDirection = 'left' | 'right';
+
 export class TabsController {
     private _document: Document;
 
@@ -51,6 +53,40 @@ export class TabsController {
                 this._selectTab(tab, target);
             }
         });
+        this._document.addEventListener('keydown', (event) => {
+            let direction: TabSwitchDirection |null = null;
+            switch (event.key) {
+                case 'ArrowLeft': {
+                    direction = 'left';
+                    break;
+                }
+                case 'ArrowRight': {
+                    direction = 'right';
+                    break;
+                }
+            }
+            if (!direction) {
+                return;
+            }
+
+            const target = getEventTarget(event) as HTMLElement;
+
+            if (isCustom(event) || !this.isValidTabElement(target)) {
+                return;
+            }
+
+            const {tabs, elements} = this.getTabs(target);
+            const currentTab = this.getTabDataFromHTMLElement(target);
+            const currentTabIndex = tabs.findIndex(({key}) => currentTab?.key && key === currentTab.key);
+            if (!currentTab || tabs.length <= 1 || currentTabIndex === -1) {
+                return;
+            }
+
+            const newIndex = ((currentTabIndex + (direction === 'left' ? -1 : 1) + tabs.length) % tabs.length);
+
+            this.selectTab(tabs[newIndex]);
+            elements[newIndex].focus();
+        })
     }
 
     onSelectTab(handler: Handler) {
@@ -60,6 +96,7 @@ export class TabsController {
             this._onSelectTabHandlers.delete(handler);
         };
     }
+
 
     selectTabById(id: string, options?: ISelectTabByIdOptions) {
         const target = this._document.querySelector(
@@ -141,7 +178,7 @@ export class TabsController {
 
                 tab.classList.toggle(ACTIVE_CLASSNAME, isTargetTab);
                 tab.setAttribute('aria-selected', isTargetTab.toString());
-                tab.setAttribute('tabindex', isTargetTab ? '-1' : '0');
+                tab.setAttribute('tabindex', isTargetTab ? '0' : '-1');
                 panel.classList.toggle(ACTIVE_CLASSNAME, isTargetTab);
             });
         });
@@ -187,5 +224,25 @@ export class TabsController {
         const key = target.dataset.diplodocKey;
         const group = (target.closest(Selector.TABS) as HTMLElement)?.dataset.diplodocGroup;
         return key && group ? {group, key} : null;
+    }
+
+    private getTabs(target: HTMLElement): {tabs: Tab[], elements: NodeListOf<HTMLElement> } {
+        const group = (target.closest(Selector.TABS) as HTMLElement)?.dataset.diplodocGroup;
+        const tabs = (target.closest(Selector.TAB_LIST) as HTMLElement)?.querySelectorAll<HTMLElement>(Selector.TAB);
+
+        const result: Tab[] = [];
+        tabs.forEach(tabEl => {
+            const key = tabEl?.dataset.diplodocKey;
+            if (!key) {
+                return;
+            }
+
+            result.push({
+                group,
+                key
+            })
+        })
+
+        return {tabs: result, elements: tabs};
     }
 }

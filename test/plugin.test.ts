@@ -74,7 +74,7 @@ describe('plugin', () => {
             expect(Object.keys(attrsObject)).toEqual(attrs);
             expect(attrsObject['class']).toEqual(`yfm-tab${i === 0 ? ' active' : ''}`);
             expect(attrsObject['role']).toEqual('tab');
-            expect(attrsObject['tabindex']).toEqual(i === 0 ? '-1' : '0');
+            expect(attrsObject['tabindex']).toEqual(i === 0 ? '0' : '-1');
         });
     });
 
