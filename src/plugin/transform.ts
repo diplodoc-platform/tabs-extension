@@ -190,7 +190,7 @@ function insertTabs(
         tabOpen.attrSet('role', 'tab');
         tabOpen.attrSet('aria-controls', tabPanelId);
         tabOpen.attrSet('aria-selected', 'false');
-        tabOpen.attrSet('tabindex', i === 0 ? '-1' : '0');
+        tabOpen.attrSet('tabindex', i === 0 ? '0' : '-1');
         tabPanelOpen.attrSet('id', tabPanelId);
         tabPanelOpen.attrSet('class', TAB_PANEL_CLASSNAME);
         tabPanelOpen.attrSet('role', 'tabpanel');
