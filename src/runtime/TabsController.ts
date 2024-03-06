@@ -75,7 +75,7 @@ export class TabsController {
                 return;
             }
 
-            const {tabs, elements} = this.getTabs(target);
+            const {tabs, nodes} = this.getTabs(target);
             const currentTab = this.getTabDataFromHTMLElement(target);
             const currentTabIndex = tabs.findIndex(
                 ({key}) => currentTab?.key && key === currentTab.key,
@@ -88,7 +88,7 @@ export class TabsController {
                 (currentTabIndex + (direction === 'left' ? -1 : 1) + tabs.length) % tabs.length;
 
             this.selectTab(tabs[newIndex]);
-            elements[newIndex].focus();
+            nodes[newIndex].focus();
         });
     }
 
@@ -228,7 +228,7 @@ export class TabsController {
         return key && group ? {group, key} : null;
     }
 
-    private getTabs(target: HTMLElement): {tabs: Tab[]; elements: NodeListOf<HTMLElement>} {
+    private getTabs(target: HTMLElement): {tabs: Tab[]; nodes: NodeListOf<HTMLElement>} {
         const group = (target.closest(Selector.TABS) as HTMLElement)?.dataset.diplodocGroup;
         const tabs = (
             target.closest(Selector.TAB_LIST) as HTMLElement
@@ -247,6 +247,6 @@ export class TabsController {
             });
         });
 
-        return {tabs: result, elements: tabs};
+        return {tabs: result, nodes: tabs};
     }
 }
