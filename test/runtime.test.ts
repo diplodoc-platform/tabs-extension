@@ -6,28 +6,55 @@ import {DOMWindow, JSDOM} from "jsdom";
 import {TabsController} from "../src/runtime/TabsController";
 
 const defaultContent = `
-{% list tabs %}
+{% list tabs group=g0 %}
 
 - Tab with unordered list
 
     Here is unordered list
+
     - Unordered list item 1
+
     - Unordered list item 2
+
     - Unordered list item 3
+
     - Unordered list item 4
+
 - Tab with ordered list
 
     Here is ordered list
-    1. Ordered list item 1
-    1. Ordered list item 2
-    1. Ordered list item 3
-    1. Ordered list item 4
-- Tab with text
 
-    Sample text
+    1. Ordered list item 1
+
+    1. Ordered list item 2
+
+    1. Ordered list item 3
+
+    1. Ordered list item 4
+
+- First level tab
+
+    Sample text inside first level tab
+
+    {% list tabs group=g1 %}
+
+    - Nested tab 1
+
+        Contents of nested tab 1
+
+    - Nested tab 2
+
+        Contents of nested tab 2
+
+    - Nested tab 3
+
+        Contents of nested tab 3
+
+    {% endlist %}
 
 {% endlist %}
 `;
+
 
 function makeTransform(params?: { transformOptions?: Partial<PluginOptions>; content?: string[] }) {
     return callPlugin(
