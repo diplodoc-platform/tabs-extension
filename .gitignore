@@ -2,6 +2,7 @@ node_modules
 /runtime
 /plugin
 /react
+.idea
 
 index.d.ts
 example/package-lock.json
