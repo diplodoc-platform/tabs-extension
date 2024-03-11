@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.1.0](https://github.com/diplodoc-platform/tabs-extension/compare/v2.0.18...v2.1.0) (2024-03-11)
+
+
+### Features
+
+* added roving tabindex ([d37c36e](https://github.com/diplodoc-platform/tabs-extension/commit/d37c36e34bd2754213f087197d7083384e95294f))
+
+
+### Bug Fixes
+
+* add .idea folder ot gitignore ([3e0eef6](https://github.com/diplodoc-platform/tabs-extension/commit/3e0eef6e45f08fff47b8c4c885b74fda2bf895ff))
+* example with nestedtabs ([eb3c920](https://github.com/diplodoc-platform/tabs-extension/commit/eb3c920f6617288f191cb0d75fd526a55ab88a9c))
+* example with nestedtabs ([13afb7c](https://github.com/diplodoc-platform/tabs-extension/commit/13afb7c85d1db2c1dadd8ac6b755a70be7fedfa7))
+* lint fix ([16196a9](https://github.com/diplodoc-platform/tabs-extension/commit/16196a951d95837af81d5257c3a1c6f611398e3e))
+* rename ([607ac58](https://github.com/diplodoc-platform/tabs-extension/commit/607ac58adbb95126fe85593d6970eee40508ca64))
+* rename ([e2bb1cc](https://github.com/diplodoc-platform/tabs-extension/commit/e2bb1cc8a0061945d96e66f6a7a7664306800648))
+
 ## [2.0.18](https://github.com/diplodoc-platform/tabs-extension/compare/v2.0.17...v2.0.18) (2024-02-22)
 
 
