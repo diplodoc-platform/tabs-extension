@@ -2,7 +2,6 @@ import {PluginOptions, transform} from '../src/plugin/transform';
 import {callPlugin, tokenize} from './utils';
 // @ts-ignore
 import Token from 'markdown-it/lib/token';
-import {DOMWindow, JSDOM} from "jsdom";
 import {TabsController} from "../src/runtime/TabsController";
 import {GROUP_DATA_KEY, TAB_CLASSNAME, TABS_LIST_CLASSNAME} from "../src/common";
 
@@ -61,28 +60,21 @@ function makeTransform(params?: { transformOptions?: Partial<PluginOptions>; con
 }
 
 describe('Testing runtime features', () => {
-    let dom: JSDOM;
-    let window: DOMWindow;
     let tabs: NodeListOf<HTMLElement>;
     let nestedTabs: NodeListOf<HTMLElement>;
 
     beforeEach(() => {
         const {tokens, env, md} = makeTransform();
-        const result = md.renderer.render(tokens, {}, env);
+        document.body.innerHTML = md.renderer.render(tokens, {}, env);
+        new TabsController(document);
 
-        const fragment = JSDOM.fragment(result);
-        dom = new JSDOM();
-        window = dom.window;
-        new TabsController(window.document);
-        window.document.body.append(fragment);
-
-        tabs = window.document.querySelectorAll(`[${GROUP_DATA_KEY}="g0"] > .${TABS_LIST_CLASSNAME} > .${TAB_CLASSNAME}`);
-        nestedTabs = window.document.querySelectorAll(`[${GROUP_DATA_KEY}="g1"] > .${TABS_LIST_CLASSNAME} > .${TAB_CLASSNAME}`);
+        tabs = document.querySelectorAll(`[${GROUP_DATA_KEY}="g0"] > .${TABS_LIST_CLASSNAME} > .${TAB_CLASSNAME}`);
+        nestedTabs = document.querySelectorAll(`[${GROUP_DATA_KEY}="g1"] > .${TABS_LIST_CLASSNAME} > .${TAB_CLASSNAME}`);
 
         if (!tabs.length) {
             throw new Error('No tabs found');
         }
-    })
+    });
 
     test.each([0, 1, 2])('click on tab', (tabToSelectIndex) => {
         expect(tabs[0].classList.contains('active')).toBeTruthy();

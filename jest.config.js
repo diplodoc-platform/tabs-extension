@@ -5,4 +5,5 @@ module.exports = {
         '^.+\\.(j|t)s?$': ['ts-jest', {tsconfig: '<rootDir>/test/tsconfig.json'}],
     },
     transformIgnorePatterns: [],
+    testEnvironment: 'jsdom',
 };
