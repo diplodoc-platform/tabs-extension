@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/diplodoc-platform/tabs-extension/compare/v2.1.0...v2.1.1) (2024-03-14)
+
+
+### Bug Fixes
+
+* remove jsdom and use jest jsdom environment ([f0aeab8](https://github.com/diplodoc-platform/tabs-extension/commit/f0aeab8d975b60fa21878394700becf17134398e))
+
 ## [2.1.0](https://github.com/diplodoc-platform/tabs-extension/compare/v2.0.18...v2.1.0) (2024-03-11)
 
 
