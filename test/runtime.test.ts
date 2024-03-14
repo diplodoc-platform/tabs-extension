@@ -66,7 +66,7 @@ describe('Testing runtime features', () => {
     let tabs: NodeListOf<HTMLElement>;
     let nestedTabs: NodeListOf<HTMLElement>;
 
-    beforeEach(() => {
+    beforeAll(() => {
         const {tokens, env, md} = makeTransform();
         const result = md.renderer.render(tokens, {}, env);
 
@@ -82,7 +82,11 @@ describe('Testing runtime features', () => {
         if (!tabs.length) {
             throw new Error('No tabs found');
         }
-    })
+    });
+
+    afterEach(() => {
+        tabs[0].click();
+    });
 
     test.each([0, 1, 2])('click on tab', (tabToSelectIndex) => {
         expect(tabs[0].classList.contains('active')).toBeTruthy();
