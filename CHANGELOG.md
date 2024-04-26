@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.2](https://github.com/diplodoc-platform/tabs-extension/compare/v2.1.1...v2.1.2) (2024-04-26)
+
+
+### Bug Fixes
+
+* added `position: relative` to tab-panel ([c15da34](https://github.com/diplodoc-platform/tabs-extension/commit/c15da346b15484be62041bce3a8ad4c6d14bef35))
+
 ## [2.1.1](https://github.com/diplodoc-platform/tabs-extension/compare/v2.1.0...v2.1.1) (2024-03-14)
 
 
