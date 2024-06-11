@@ -1,6 +1,6 @@
 import {PluginOptions, transform} from '../src/plugin/transform';
 import {callPlugin, tokenize} from './utils';
-import {base, escaped, nestedTokenTypes} from './data/tabs';
+import {base, escaped, nestedTokenTypes, vertical} from './data/tabs';
 // @ts-ignore
 import Token from 'markdown-it/lib/token';
 
@@ -8,6 +8,29 @@ const defaultContent = [
     '# Create a folder',
     '',
     '{% list tabs %}',
+    '',
+    '- Python',
+    '',
+    '  About python',
+    '',
+    '- Tab with list',
+    '  - One',
+    '  - Two',
+    '',
+    '- Tab with list',
+    '  1. One',
+    '  2. Two',
+    '',
+    '{% endlist %}',
+    '',
+    'After tabs',
+];
+
+
+const defaultVerticalContent = [
+    '# Create a folder',
+    '',
+    '{% list tabs vertical %}',
     '',
     '- Python',
     '',
@@ -41,6 +64,15 @@ function makeTransform(params?: {transformOptions?: Partial<PluginOptions>; cont
 }
 
 describe('plugin', () => {
+    test('should convert vertical tabs to correct new token array', () => {
+        // ACT
+        const {tokens: result} = makeTransform({content: defaultVerticalContent});
+
+        // ASSERT
+        const clearJSON = JSON.parse(JSON.stringify(result.map(({attrs: _, ...item}) => item)));
+        expect(clearJSON).toEqual(vertical);
+    })
+
     test('Should convert to correct new token array', () => {
         // ACT
         const {tokens: result} = makeTransform();
@@ -72,7 +104,7 @@ describe('plugin', () => {
             const attrsObject = convertAttrsToObject(tab);
 
             expect(Object.keys(attrsObject)).toEqual(attrs);
-            expect(attrsObject['class']).toEqual(`yfm-tab${i === 0 ? ' active' : ''}`);
+            expect(attrsObject['class']).toEqual(`yfm-tab yfm-tab-group${i === 0 ? ' active' : ''}`);
             expect(attrsObject['role']).toEqual('tab');
             expect(attrsObject['tabindex']).toEqual(i === 0 ? '0' : '-1');
         });

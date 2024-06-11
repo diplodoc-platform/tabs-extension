@@ -100,6 +100,25 @@ Example:
 {% endlist %}
 ```
 
+Additionally, you can use radiobatons using a contruction
+
+```
+{% list tabs vertical %}
+
+  - Tab 1
+
+    Text 1.
+
+    * You can use list
+    * And **other** features.
+
+  - Tab 2
+
+    Text 2.
+
+{% endlist %}
+```
+
 The keys for the tabs are generated automatically. They are based on the tab's names using the github anchors style.
 
 You can set your own keys for tabs with this statement:
