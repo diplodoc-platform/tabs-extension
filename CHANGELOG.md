@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/diplodoc-platform/tabs-extension/compare/v2.1.2...v2.2.0) (2024-06-11)
+
+
+### Features
+
+* add vertical tabs ([d686a01](https://github.com/diplodoc-platform/tabs-extension/commit/d686a0198505a99baece2059ba49ba9a19307ffe))
+
 ## [2.1.2](https://github.com/diplodoc-platform/tabs-extension/compare/v2.1.1...v2.1.2) (2024-04-26)
 
 
