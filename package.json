@@ -1,6 +1,6 @@
 {
   "name": "@diplodoc/tabs-extension",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "TBD",
   "main": "plugin/index.js",
   "types": "plugin/index.d.ts",
