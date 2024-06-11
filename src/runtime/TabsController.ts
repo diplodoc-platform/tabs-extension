@@ -5,12 +5,14 @@ import {
     SelectedTabEvent,
     TABS_CLASSNAME,
     TABS_LIST_CLASSNAME,
+    TABS_VERTICAL_CLASSNAME,
     TAB_CLASSNAME,
     TAB_DATA_ID,
     TAB_DATA_KEY,
     TAB_PANEL_CLASSNAME,
     Tab,
 } from '../common';
+import type {TabsOrientation} from '../plugin/transform';
 import {
     ElementOffset,
     getClosestScrollableParent,
@@ -24,6 +26,7 @@ const Selector = {
     TAB_LIST: `.${TABS_LIST_CLASSNAME}`,
     TAB: `.${TAB_CLASSNAME}`,
     TAB_PANEL: `.${TAB_PANEL_CLASSNAME}`,
+    VERTICAL_TABS: `.${TABS_VERTICAL_CLASSNAME}`,
 };
 
 export interface ISelectTabByIdOptions {
@@ -43,12 +46,18 @@ export class TabsController {
         this._document = document;
         this._document.addEventListener('click', (event) => {
             const target = getEventTarget(event) as HTMLElement;
+            const areVertical = this.areTabsVertical(target);
 
-            if (isCustom(event) || !this.isValidTabElement(target)) {
+            if (isCustom(event)) {
+                return;
+            }
+
+            if (!(this.isValidTabElement(target) || areVertical)) {
                 return;
             }
 
             const tab = this.getTabDataFromHTMLElement(target);
+
             if (tab) {
                 this._selectTab(tab, target);
             }
@@ -110,6 +119,7 @@ export class TabsController {
         }
 
         const tab = this.getTabDataFromHTMLElement(target);
+
         if (tab) {
             this._selectTab(tab, target);
         }
@@ -124,7 +134,7 @@ export class TabsController {
     }
 
     private _selectTab(tab: Tab, targetTab?: HTMLElement) {
-        const {group, key} = tab;
+        const {group, key, align} = tab;
 
         if (!group) {
             return;
@@ -134,10 +144,10 @@ export class TabsController {
         const previousTargetOffset =
             scrollableParent && getOffsetByScrollableParent(targetTab, scrollableParent);
 
-        const updatedTabs = this.updateHTML({group, key});
+        const updatedTabs = this.updateHTML({group, key, align}, align);
 
         if (updatedTabs > 0) {
-            this.fireSelectTabEvent({group, key}, targetTab?.dataset.diplodocId);
+            this.fireSelectTabEvent({group, key, align}, targetTab?.dataset.diplodocId);
 
             if (previousTargetOffset) {
                 this.resetScroll(targetTab, scrollableParent, previousTargetOffset);
@@ -145,7 +155,54 @@ export class TabsController {
         }
     }
 
-    private updateHTML(tab: Required<Tab>) {
+    private updateHTML(tab: Required<Tab>, align: TabsOrientation) {
+        switch (align) {
+            case 'vertical': {
+                return this.updateHTMLVertical(tab);
+            }
+            case 'horizontal': {
+                return this.updateHTMLHorizontal(tab);
+            }
+        }
+
+        return 0;
+    }
+
+    private updateHTMLVertical(tab: Required<Tab>) {
+        const {group, key} = tab;
+
+        const [tabs] = this._document.querySelectorAll(
+            `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
+        );
+
+        let updated = 0;
+        const root = tabs.parentNode!;
+        const elements = root.children;
+
+        for (let i = 0; i < elements.length; i += 2) {
+            const [title, content] = [elements.item(i), elements.item(i + 1)] as HTMLElement[];
+
+            const input = title.children.item(0) as HTMLInputElement;
+
+            if (input.hasAttribute('checked')) {
+                title.classList.remove('active');
+                content?.classList.remove('active');
+                input.removeAttribute('checked');
+            }
+
+            if (title === tabs) {
+                title.classList.add('active');
+                content?.classList.add('active');
+                input.setAttribute('checked', 'true');
+            }
+
+            updated++;
+        }
+
+        return updated;
+    }
+
+    private updateHTMLHorizontal(tab: Required<Tab>) {
         const {group, key} = tab;
 
         const tabs = this._document.querySelectorAll(
@@ -205,9 +262,9 @@ export class TabsController {
     }
 
     private fireSelectTabEvent(tab: Required<Tab>, diplodocId?: string) {
-        const {group, key} = tab;
+        const {group, key, align} = tab;
 
-        const eventTab: Tab = group.startsWith(DEFAULT_TABS_GROUP_PREFIX) ? {key} : tab;
+        const eventTab: Tab = group.startsWith(DEFAULT_TABS_GROUP_PREFIX) ? {key, align} : tab;
 
         this._onSelectTabHandlers.forEach((handler) => {
             handler({tab: eventTab, currentTabId: diplodocId});
@@ -219,13 +276,28 @@ export class TabsController {
             element.matches(Selector.TAB) && element.dataset.diplodocId
                 ? element.closest(Selector.TAB_LIST)
                 : null;
+
         return tabList?.closest(Selector.TABS);
     }
 
+    private areTabsVertical(target: HTMLElement) {
+        const parent = target.parentElement;
+
+        return target.dataset.diplodocVerticalTab || Boolean(parent?.dataset.diplodocVerticalTab);
+    }
+
     private getTabDataFromHTMLElement(target: HTMLElement): Tab | null {
+        if (this.areTabsVertical(target)) {
+            const tab = target.dataset.diplodocVerticalTab ? target : target.parentElement!;
+
+            const key = tab.dataset.diplodocKey;
+            const group = (tab.closest(Selector.TABS) as HTMLElement)?.dataset.diplodocGroup;
+            return key && group ? {group, key, align: 'vertical'} : null;
+        }
+
         const key = target.dataset.diplodocKey;
         const group = (target.closest(Selector.TABS) as HTMLElement)?.dataset.diplodocGroup;
-        return key && group ? {group, key} : null;
+        return key && group ? {group, key, align: 'horizontal'} : null;
     }
 
     private getTabs(target: HTMLElement): {tabs: Tab[]; nodes: NodeListOf<HTMLElement>} {
@@ -241,9 +313,11 @@ export class TabsController {
                 return;
             }
 
+            /** horizontal-only supported feature (used in left/right button click) */
             tabs.push({
                 group,
                 key,
+                align: 'horizontal',
             });
         });
 

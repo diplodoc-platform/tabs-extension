@@ -11,11 +11,14 @@ import {
     GROUP_DATA_KEY,
     TABS_CLASSNAME,
     TABS_LIST_CLASSNAME,
+    TABS_VERTICAL_CLASSNAME,
     TAB_ACTIVE_KEY,
     TAB_CLASSNAME,
     TAB_DATA_ID,
     TAB_DATA_KEY,
+    TAB_DATA_VERTICAL_TAB,
     TAB_PANEL_CLASSNAME,
+    VERTICAL_TAB_CLASSNAME,
 } from '../common';
 
 export type PluginOptions = {
@@ -25,7 +28,9 @@ export type PluginOptions = {
     bundle: boolean;
 };
 
-const TAB_RE = /`?{% list tabs( group=([^ ]*))? %}`?/;
+export type TabsOrientation = 'vertical' | 'horizontal';
+
+const TAB_RE = /`?{% list tabs( group=([^ ]*))?( (vertical)|(horizontal))? %}`?/;
 
 let runsCounter = 0;
 
@@ -119,6 +124,7 @@ function findTabs(tokens: Token[], idx: number) {
 function insertTabs(
     tabs: Tab[],
     state: StateCore,
+    align: TabsOrientation,
     {start, end}: {start: number; end: number},
     {
         containerClasses,
@@ -155,10 +161,19 @@ function insertTabs(
     tabListOpen.block = true;
     tabListClose.block = true;
 
-    tabsOpen.attrSet('class', [TABS_CLASSNAME, containerClasses].filter(Boolean).join(' '));
+    const areTabsVerticalClass = align === 'vertical' && TABS_VERTICAL_CLASSNAME;
+
+    tabsOpen.attrSet(
+        'class',
+        [TABS_CLASSNAME, containerClasses, areTabsVerticalClass].filter(Boolean).join(' '),
+    );
     tabsOpen.attrSet(GROUP_DATA_KEY, tabsGroup);
     tabListOpen.attrSet('class', TABS_LIST_CLASSNAME);
     tabListOpen.attrSet('role', 'tablist');
+
+    if (align === 'vertical') {
+        tabsTokens.push(tabsOpen);
+    }
 
     for (let i = 0; i < tabs.length; i++) {
         const tabOpen = new state.Token('tab_open', 'div', 1);
@@ -168,12 +183,23 @@ function insertTabs(
         const tabPanelOpen = new state.Token('tab-panel_open', 'div', 1);
         const tabPanelClose = new state.Token('tab-panel_close', 'div', -1);
 
+        const verticalTabOpen = new state.Token('tab_open', 'input', 0);
+        const verticalTabLabelOpen = new state.Token('label_open', 'label', 1);
+
+        tabOpen.map = tabs[i].listItem.map;
+        tabOpen.markup = tabs[i].listItem.markup;
+
         const tab = tabs[i];
         const tabId = getTabId(tab, {runId});
         const tabKey = getTabKey(tab);
         tab.name = getName(tab);
 
         const tabPanelId = generateID();
+
+        verticalTabOpen.block = true;
+
+        verticalTabOpen.attrJoin('class', 'radio');
+        verticalTabOpen.attrSet('type', 'radio');
 
         tabOpen.map = tabs[i].listItem.map;
         tabOpen.markup = tabs[i].listItem.markup;
@@ -187,6 +213,7 @@ function insertTabs(
         tabOpen.attrSet(TAB_DATA_KEY, tabKey);
         tabOpen.attrSet(TAB_ACTIVE_KEY, i === 0 ? 'true' : 'false');
         tabOpen.attrSet('class', TAB_CLASSNAME);
+        tabOpen.attrJoin('class', 'yfm-tab-group');
         tabOpen.attrSet('role', 'tab');
         tabOpen.attrSet('aria-controls', tabPanelId);
         tabOpen.attrSet('aria-selected', 'false');
@@ -197,21 +224,39 @@ function insertTabs(
         tabPanelOpen.attrSet('aria-labelledby', tabId);
         tabPanelOpen.attrSet('data-title', tab.name);
 
+        if (align === 'vertical') {
+            tabOpen.attrSet(TAB_DATA_VERTICAL_TAB, 'true');
+            tabOpen.attrJoin('class', VERTICAL_TAB_CLASSNAME);
+        }
+
         if (i === 0) {
-            tabOpen.attrJoin('class', ACTIVE_CLASSNAME);
-            tabOpen.attrSet('aria-selected', 'true');
+            if (align === 'horizontal') {
+                tabOpen.attrJoin('class', ACTIVE_CLASSNAME);
+                tabOpen.attrSet('aria-selected', 'true');
+            } else {
+                verticalTabOpen.attrSet('checked', 'true');
+            }
+
             tabPanelOpen.attrJoin('class', ACTIVE_CLASSNAME);
         }
 
-        tabListTokens.push(tabOpen, tabInline, tabClose);
-        tabPanelsTokens.push(tabPanelOpen, ...tabs[i].tokens, tabPanelClose);
+        if (align === 'vertical') {
+            tabsTokens.push(tabOpen, verticalTabOpen, verticalTabLabelOpen, tabInline, tabClose);
+            tabsTokens.push(tabPanelOpen, ...tabs[i].tokens, tabPanelClose);
+        } else {
+            tabListTokens.push(tabOpen, tabInline, tabClose);
+            tabPanelsTokens.push(tabPanelOpen, ...tabs[i].tokens, tabPanelClose);
+        }
     }
 
-    tabsTokens.push(tabsOpen);
-    tabsTokens.push(tabListOpen);
-    tabsTokens.push(...tabListTokens);
-    tabsTokens.push(tabListClose);
-    tabsTokens.push(...tabPanelsTokens);
+    if (align === 'horizontal') {
+        tabsTokens.push(tabsOpen);
+        tabsTokens.push(tabListOpen);
+        tabsTokens.push(...tabListTokens);
+        tabsTokens.push(tabListClose);
+        tabsTokens.push(...tabPanelsTokens);
+    }
+
     tabsTokens.push(tabsClose);
 
     state.tokens.splice(start, end - start + 1, ...tabsTokens);
@@ -290,6 +335,7 @@ export function transform({
                 }
 
                 const tabsGroup = match[2] || `${DEFAULT_TABS_GROUP_PREFIX}${generateID()}`;
+                const orientation = (match[4] || 'horizontal') as TabsOrientation;
 
                 const {tabs, index} = findTabs(state.tokens, i + 3);
 
@@ -297,6 +343,7 @@ export function transform({
                     insertTabs(
                         tabs,
                         state,
+                        orientation,
                         {start: i, end: index + 3},
                         {
                             containerClasses,
