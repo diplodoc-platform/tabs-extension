@@ -7,6 +7,6 @@
   },
   "dependencies": {
     "@diplodoc/tabs-extension": "..",
-    "@doc-tools/transform": "*"
+    "@diplodoc/transform": "*"
   }
 }
