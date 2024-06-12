@@ -1,4 +1,4 @@
-import transform from '@doc-tools/transform';
+import transform from '@diplodoc/transform';
 import tabs from '@diplodoc/tabs-extension';
 
 import {readFile} from 'node:fs/promises';
@@ -23,7 +23,7 @@ import {readFile} from 'node:fs/promises';
     <body>
         ${result.html}
     </body>
-</html>    
+</html>
     `;
 
     // eslint-disable-next-line no-console

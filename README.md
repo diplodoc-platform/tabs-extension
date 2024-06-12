@@ -16,7 +16,7 @@ Attach the plugin to the transformer:
 
 ```js
 import tabsExtension from '@diplodoc/tabs-extension';
-import transform from '@doc-tools/transform';
+import transform from '@diplodoc/transform';
 
 const {result} = await transform(`
 {% list tabs %}
@@ -58,7 +58,7 @@ import '@diplodoc/tabs-extension/runtime/styles.css'
 
 ## MarkdownIt transform plugin
 
-Plugin for [@doc-tools/transform](https://github.com/diplodoc-platform/transform) package.
+Plugin for [@diplodoc/transform](https://github.com/diplodoc-platform/transform) package.
 
 Options:
 - `runtimeJsPath` - name on runtime script which will be exposed in results `script` section.<br>
