@@ -22,7 +22,6 @@ export function useDiplodocTabs(callback: UseDiplodocTabsCallback) {
                 window[GLOBAL_SYMBOL].selectTabById(tabId, options),
             [],
         ),
-        // @todo remove
         selectTab: useCallback((tab: Tab) => window[GLOBAL_SYMBOL].selectTab(tab), []),
     };
 }
