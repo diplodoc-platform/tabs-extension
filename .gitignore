@@ -6,5 +6,4 @@ node_modules
 
 index.d.ts
 example/package-lock.json
-example/build
 *.d.ts
