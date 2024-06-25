@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.2.1](https://github.com/diplodoc-platform/tabs-extension/compare/v2.2.0...v2.2.1) (2024-06-25)
+
+
+### Bug Fixes
+
+* **example:** fixed build error ([9f314fb](https://github.com/diplodoc-platform/tabs-extension/commit/9f314fbc4f7643988c56277befafc5004b023fca))
+* remove forgotten comment ([cd81bc6](https://github.com/diplodoc-platform/tabs-extension/commit/cd81bc640b3941954c3165a332a98faa0a8020b0))
+
 ## [2.2.0](https://github.com/diplodoc-platform/tabs-extension/compare/v2.1.2...v2.2.0) (2024-06-11)
 
 
