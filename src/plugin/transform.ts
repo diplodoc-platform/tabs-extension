@@ -28,9 +28,9 @@ export type PluginOptions = {
     bundle: boolean;
 };
 
-export type TabsOrientation = 'vertical' | 'horizontal';
+export type TabsOrientation = 'radio' | 'horizontal';
 
-const TAB_RE = /`?{% list tabs( group=([^ ]*))?( (vertical)|(horizontal))? %}`?/;
+const TAB_RE = /`?{% list tabs( group=([^ ]*))?( (radio)|(horizontal))? %}`?/;
 
 let runsCounter = 0;
 
@@ -161,7 +161,7 @@ function insertTabs(
     tabListOpen.block = true;
     tabListClose.block = true;
 
-    const areTabsVerticalClass = align === 'vertical' && TABS_VERTICAL_CLASSNAME;
+    const areTabsVerticalClass = align === 'radio' && TABS_VERTICAL_CLASSNAME;
 
     tabsOpen.attrSet(
         'class',
@@ -171,7 +171,7 @@ function insertTabs(
     tabListOpen.attrSet('class', TABS_LIST_CLASSNAME);
     tabListOpen.attrSet('role', 'tablist');
 
-    if (align === 'vertical') {
+    if (align === 'radio') {
         tabsTokens.push(tabsOpen);
     }
 
@@ -224,7 +224,7 @@ function insertTabs(
         tabPanelOpen.attrSet('aria-labelledby', tabId);
         tabPanelOpen.attrSet('data-title', tab.name);
 
-        if (align === 'vertical') {
+        if (align === 'radio') {
             tabOpen.attrSet(TAB_DATA_VERTICAL_TAB, 'true');
             tabOpen.attrJoin('class', VERTICAL_TAB_CLASSNAME);
         }
@@ -240,7 +240,7 @@ function insertTabs(
             tabPanelOpen.attrJoin('class', ACTIVE_CLASSNAME);
         }
 
-        if (align === 'vertical') {
+        if (align === 'radio') {
             tabsTokens.push(tabOpen, verticalTabOpen, verticalTabLabelOpen, tabInline, tabClose);
             tabsTokens.push(tabPanelOpen, ...tabs[i].tokens, tabPanelClose);
         } else {

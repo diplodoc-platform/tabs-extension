@@ -30,7 +30,7 @@ const defaultContent = [
 const defaultVerticalContent = [
     '# Create a folder',
     '',
-    '{% list tabs vertical %}',
+    '{% list tabs radio %}',
     '',
     '- Python',
     '',
