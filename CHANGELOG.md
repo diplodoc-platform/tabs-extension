@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/diplodoc-platform/tabs-extension/compare/v2.2.1...v3.0.0) (2024-07-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* Prop "radio" is new way to render radio buttons. "vertical" is not supported anymore.
+
+### Features
+
+* rename vertical to radio prop ([70fe497](https://github.com/diplodoc-platform/tabs-extension/commit/70fe4970dad9c07d6be3349df4355781ac731be0))
+
 ## [2.2.1](https://github.com/diplodoc-platform/tabs-extension/compare/v2.2.0...v2.2.1) (2024-06-25)
 
 
