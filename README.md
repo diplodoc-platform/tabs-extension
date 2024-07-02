@@ -103,7 +103,7 @@ Example:
 Additionally, you can use radiobatons using a contruction
 
 ```
-{% list tabs vertical %}
+{% list tabs radio %}
 
   - Tab 1
 
