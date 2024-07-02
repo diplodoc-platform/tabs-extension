@@ -157,7 +157,7 @@ export class TabsController {
 
     private updateHTML(tab: Required<Tab>, align: TabsOrientation) {
         switch (align) {
-            case 'vertical': {
+            case 'radio': {
                 return this.updateHTMLVertical(tab);
             }
             case 'horizontal': {
@@ -292,7 +292,7 @@ export class TabsController {
 
             const key = tab.dataset.diplodocKey;
             const group = (tab.closest(Selector.TABS) as HTMLElement)?.dataset.diplodocGroup;
-            return key && group ? {group, key, align: 'vertical'} : null;
+            return key && group ? {group, key, align: 'radio'} : null;
         }
 
         const key = target.dataset.diplodocKey;

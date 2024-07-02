@@ -55,6 +55,7 @@
     }
 
     .yfm-vertical-tab > label:before {
+        font-family: initial !important;
         content: "";
         position: absolute;
         left: 0;
