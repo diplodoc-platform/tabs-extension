@@ -171,33 +171,36 @@ export class TabsController {
     private updateHTMLVertical(tab: Required<Tab>) {
         const {group, key} = tab;
 
-        const [tabs] = this._document.querySelectorAll(
+        const tabs = this._document.querySelectorAll(
             `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
         );
 
         let updated = 0;
-        const root = tabs.parentNode!;
-        const elements = root.children;
 
-        for (let i = 0; i < elements.length; i += 2) {
-            const [title, content] = [elements.item(i), elements.item(i + 1)] as HTMLElement[];
+        tabs.forEach((tab) => {
+            const root = tab.parentNode!;
+            const elements = root.children;
 
-            const input = title.children.item(0) as HTMLInputElement;
+            for (let i = 0; i < elements.length; i += 2) {
+                const [title, content] = [elements.item(i), elements.item(i + 1)] as HTMLElement[];
 
-            if (input.hasAttribute('checked')) {
-                title.classList.remove('active');
-                content?.classList.remove('active');
-                input.removeAttribute('checked');
+                const input = title.children.item(0) as HTMLInputElement;
+
+                if (input.hasAttribute('checked')) {
+                    title.classList.remove('active');
+                    content?.classList.remove('active');
+                    input.removeAttribute('checked');
+                }
+
+                if (title === tab) {
+                    title.classList.add('active');
+                    content?.classList.add('active');
+                    input.setAttribute('checked', 'true');
+                }
+
+                updated++;
             }
-
-            if (title === tabs) {
-                title.classList.add('active');
-                content?.classList.add('active');
-                input.setAttribute('checked', 'true');
-            }
-
-            updated++;
-        }
+        });
 
         return updated;
     }
