@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.0.0...v3.1.0) (2024-07-05)
+
+
+### Features
+
+* add group support ([911752c](https://github.com/diplodoc-platform/tabs-extension/commit/911752c40102d88c9daff8f4e30f721a46cb635c))
+
 ## [3.0.0](https://github.com/diplodoc-platform/tabs-extension/compare/v2.2.1...v3.0.0) (2024-07-02)
 
 
