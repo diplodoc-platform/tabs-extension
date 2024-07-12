@@ -337,14 +337,14 @@ export function transform({
                 const tabsGroup = match[2] || `${DEFAULT_TABS_GROUP_PREFIX}${generateID()}`;
                 const orientation = (match[4] || 'horizontal') as TabsOrientation;
 
-                const {tabs, index} = findTabs(state.tokens, i + 3);
+                const {tabs} = findTabs(state.tokens, i + 3);
 
                 if (tabs.length > 0) {
                     insertTabs(
                         tabs,
                         state,
                         orientation,
-                        {start: i, end: index + 3},
+                        {start: i, end: closeTokenIdx + 2},
                         {
                             containerClasses,
                             tabsGroup,
@@ -354,7 +354,7 @@ export function transform({
                     i++;
                     tabsAreInserted = true;
                 } else {
-                    state.tokens.splice(i, index - i);
+                    state.tokens.splice(i, closeTokenIdx - i + 3);
                 }
             }
 
