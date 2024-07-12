@@ -173,6 +173,79 @@ describe('plugin', () => {
         expect(tokens.map((token) => token.type)).toEqual(nestedTokenTypes);
     });
 
+    it('should return valid token stream if content without indentation', () => {
+        // ACT
+        const {tokens} = makeTransform({
+            content: [
+                '{% list tabs %}',
+                '',
+                '- tab1',
+                '',
+                '> quote',
+                '',
+                '{% endlist %}',
+            ],
+        });
+
+        // ASSERT
+        expect(tokens.map((token) => token.type)).toEqual([
+            'tabs_open',
+            'tab-list_open',
+            'tab_open',
+            'inline',
+            'tab_close',
+            'tab-list_close',
+            'tab-panel_open',
+            'tab-panel_close',
+            'tabs_close',
+        ]);
+    });
+
+    it('should remove empty tabs', () => {
+        // ACT
+        const {tokens} = makeTransform({
+            content: [
+                'before',
+                '',
+                '{% list tabs %}',
+                '',
+                '',
+                '',
+                '{% endlist %}',
+                '',
+                'after',
+            ],
+        });
+
+        // ASSERT
+        expect(tokens.map((token) => token.type)).toEqual([
+            "paragraph_open",
+            "inline",
+            "paragraph_close",
+            "paragraph_open",
+            "inline",
+            "paragraph_close",
+        ]);
+        expect(tokens[1].content).toBe('before');
+        expect(tokens[4].content).toBe('after')
+    });
+
+    it('should remove tabs with invalid markup inside', () => {
+        // ACT
+        const {tokens} = makeTransform({
+            content: [
+                '{% list tabs %}',
+                '',
+                '> 123',
+                '',
+                '{% endlist %}',
+            ],
+        });
+
+        // ASSERT
+        expect(tokens.map((token) => token.type)).toEqual([]);
+    });
+
     describe('options', () => {
         test('should add an extra className to container node', () => {
             // ACT
