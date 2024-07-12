@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.1](https://github.com/diplodoc-platform/tabs-extension/compare/v3.1.0...v3.1.1) (2024-07-12)
+
+
+### Bug Fixes
+
+* fixed parsing of tab contents without indentation ([f5f4b86](https://github.com/diplodoc-platform/tabs-extension/commit/f5f4b86105cfb273be9673e92a23c44b61c7b556))
+
 ## [3.1.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.0.0...v3.1.0) (2024-07-05)
 
 
