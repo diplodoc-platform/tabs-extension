@@ -73,6 +73,14 @@ export class TabsController {
                     direction = 'right';
                     break;
                 }
+                case 'ArrowUp': {
+                    direction = 'left';
+                    break;
+                }
+                case 'ArrowDown': {
+                    direction = 'right';
+                    break;
+                }
             }
             if (!direction) {
                 return;
