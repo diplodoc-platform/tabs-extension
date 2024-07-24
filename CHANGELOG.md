@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.1.1...v3.2.0) (2024-07-24)
+
+
+### Features
+
+* add keyboard navigation for up/down arrow keys ([d36f6b6](https://github.com/diplodoc-platform/tabs-extension/commit/d36f6b625975c76526e88c4bce65e786b2e9f2bf))
+
 ## [3.1.1](https://github.com/diplodoc-platform/tabs-extension/compare/v3.1.0...v3.1.1) (2024-07-12)
 
 
