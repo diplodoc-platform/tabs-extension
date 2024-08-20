@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.2.0...v3.3.0) (2024-08-20)
+
+
+### Features
+
+* support initial and hide ([3b59a67](https://github.com/diplodoc-platform/tabs-extension/commit/3b59a67951face2527fce0a9cd8645fe10d5eb9d))
+
 ## [3.2.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.1.1...v3.2.0) (2024-07-24)
 
 
