@@ -8,6 +8,7 @@ export const TAB_CLASSNAME = 'yfm-tab';
 export const TAB_PANEL_CLASSNAME = 'yfm-tab-panel';
 export const ACTIVE_CLASSNAME = 'active';
 export const VERTICAL_TAB_CLASSNAME = 'yfm-vertical-tab';
+export const VERTICAL_TAB_FORCED_OPEN = 'data-diplodoc-radio-forced';
 
 export const GROUP_DATA_KEY = 'data-diplodoc-group';
 export const TAB_DATA_KEY = 'data-diplodoc-key';
@@ -17,6 +18,7 @@ export const TAB_ACTIVE_KEY = 'data-diplodoc-is-active';
 export const TAB_RADIO_KEY = 'data-diplodoc-input';
 
 export const DEFAULT_TABS_GROUP_PREFIX = 'defaultTabsGroup-';
+export const ACTIVE_TAB_TEXT = '{selected}';
 
 export interface Tab {
     group?: string;
