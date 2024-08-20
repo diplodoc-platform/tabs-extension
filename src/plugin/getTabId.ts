@@ -1,6 +1,7 @@
 import GithubSlugger from 'github-slugger';
 
 import {Tab} from './transform';
+import {ACTIVE_TAB_TEXT} from '../common';
 
 const CUSTOM_ID_REGEXP = /\[?{ ?#(\S+) ?}]?/;
 
@@ -8,16 +9,24 @@ const sluggersStorage = new Map<string, GithubSlugger>();
 
 function parseName(name: string) {
     const parts = name.match(CUSTOM_ID_REGEXP);
-    if (!parts) {
-        return {
-            name,
-            customAnchor: null,
-        };
+    let customAnchor: string | null = null;
+    let pure = name;
+
+    if (parts) {
+        pure = name.replace(parts[0], '');
+        customAnchor = parts[1];
+    } else {
+        pure = name;
+        customAnchor = null;
+    }
+
+    if (pure.includes(ACTIVE_TAB_TEXT)) {
+        pure = pure.replace(ACTIVE_TAB_TEXT, '');
     }
 
     return {
-        name: name.replace(parts[0], '').trim(),
-        customAnchor: parts[1],
+        name: pure.trim(),
+        customAnchor,
     };
 }
 
@@ -40,5 +49,7 @@ export function getName(tab: Tab) {
 }
 
 function getRawId(tab: Tab): string {
-    return parseName(tab.name).customAnchor || tab.name;
+    const {customAnchor, name} = parseName(tab.name);
+
+    return customAnchor || name;
 }

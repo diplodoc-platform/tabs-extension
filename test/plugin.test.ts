@@ -87,12 +87,12 @@ describe('plugin', () => {
         const attrs = [
             'data-diplodoc-id',
             'data-diplodoc-key',
-            'data-diplodoc-is-active',
             'class',
             'role',
             'aria-controls',
             'aria-selected',
             'tabindex',
+            'data-diplodoc-is-active',
         ];
 
         // ACT

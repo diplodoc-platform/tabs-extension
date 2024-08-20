@@ -3,6 +3,14 @@ export function generateID() {
     return id.substring(id.length - 8);
 }
 
+export function trim(target: string) {
+    return target.trim();
+}
+
+export function unquote(target: string) {
+    return target.match(/^(["']).*\1$/) ? target.slice(1, -1) : target;
+}
+
 export function addHiddenProperty<
     B extends Record<string | symbol, unknown>,
     F extends string | symbol,

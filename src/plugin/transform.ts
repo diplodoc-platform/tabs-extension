@@ -2,11 +2,13 @@ import MarkdownIt from 'markdown-it';
 import StateCore from 'markdown-it/lib/rules_core/state_core';
 import Token from 'markdown-it/lib/token';
 
-import {addHiddenProperty, generateID} from './utils';
+import {addHiddenProperty, generateID, trim, unquote} from './utils';
 import {copyRuntimeFiles} from './copyRuntimeFiles';
 import {getName, getTabId, getTabKey} from './getTabId';
+
 import {
     ACTIVE_CLASSNAME,
+    ACTIVE_TAB_TEXT,
     DEFAULT_TABS_GROUP_PREFIX,
     GROUP_DATA_KEY,
     TABS_CLASSNAME,
@@ -19,6 +21,7 @@ import {
     TAB_DATA_VERTICAL_TAB,
     TAB_PANEL_CLASSNAME,
     VERTICAL_TAB_CLASSNAME,
+    VERTICAL_TAB_FORCED_OPEN,
 } from '../common';
 
 export type PluginOptions = {
@@ -30,7 +33,7 @@ export type PluginOptions = {
 
 export type TabsOrientation = 'radio' | 'horizontal';
 
-const TAB_RE = /`?{% list tabs( group=([^ ]*))?( (radio)|(horizontal))? %}`?/;
+const TAB_RE = /`?{% list tabs .*?%}`?/;
 
 let runsCounter = 0;
 
@@ -162,6 +165,13 @@ function insertTabs(
     tabListClose.block = true;
 
     const areTabsVerticalClass = align === 'radio' && TABS_VERTICAL_CLASSNAME;
+    const activeTabsCount = tabs.filter(isTabSelected).length;
+
+    if (activeTabsCount > 1) {
+        throw new Error('Unable to render tabs with more than 1 active element');
+    }
+
+    const hasDefaultOpenTab = activeTabsCount !== 0;
 
     tabsOpen.attrSet(
         'class',
@@ -192,6 +202,12 @@ function insertTabs(
         const tab = tabs[i];
         const tabId = getTabId(tab, {runId});
         const tabKey = getTabKey(tab);
+        const didTabHasActiveAttr = isTabSelected(tab);
+        /* if user did not provide default open tab we fallback to first tab (in default tabs only) */
+        const isTabActive = hasDefaultOpenTab
+            ? didTabHasActiveAttr
+            : align === 'horizontal' && i === 0;
+
         tab.name = getName(tab);
 
         const tabPanelId = generateID();
@@ -211,13 +227,13 @@ function insertTabs(
         tabPanelClose.block = true;
         tabOpen.attrSet(TAB_DATA_ID, tabId);
         tabOpen.attrSet(TAB_DATA_KEY, tabKey);
-        tabOpen.attrSet(TAB_ACTIVE_KEY, i === 0 ? 'true' : 'false');
         tabOpen.attrSet('class', TAB_CLASSNAME);
         tabOpen.attrJoin('class', 'yfm-tab-group');
         tabOpen.attrSet('role', 'tab');
         tabOpen.attrSet('aria-controls', tabPanelId);
         tabOpen.attrSet('aria-selected', 'false');
         tabOpen.attrSet('tabindex', i === 0 ? '0' : '-1');
+        tabOpen.attrSet(TAB_ACTIVE_KEY, 'false');
         tabPanelOpen.attrSet('id', tabPanelId);
         tabPanelOpen.attrSet('class', TAB_PANEL_CLASSNAME);
         tabPanelOpen.attrSet('role', 'tabpanel');
@@ -229,15 +245,17 @@ function insertTabs(
             tabOpen.attrJoin('class', VERTICAL_TAB_CLASSNAME);
         }
 
-        if (i === 0) {
-            if (align === 'horizontal') {
+        if (isTabActive) {
+            if (align === 'radio') {
+                tabOpen.attrSet(VERTICAL_TAB_FORCED_OPEN, 'true');
+                verticalTabOpen.attrSet('checked', 'true');
+                tabPanelOpen.attrJoin('class', ACTIVE_CLASSNAME);
+            } else {
+                tabOpen.attrSet(TAB_ACTIVE_KEY, i === 0 ? 'true' : 'false');
                 tabOpen.attrJoin('class', ACTIVE_CLASSNAME);
                 tabOpen.attrSet('aria-selected', 'true');
-            } else {
-                verticalTabOpen.attrSet('checked', 'true');
+                tabPanelOpen.attrJoin('class', ACTIVE_CLASSNAME);
             }
-
-            tabPanelOpen.attrJoin('class', ACTIVE_CLASSNAME);
         }
 
         if (align === 'radio') {
@@ -262,6 +280,12 @@ function insertTabs(
     state.tokens.splice(start, end - start + 1, ...tabsTokens);
 
     return tabsTokens.length;
+}
+
+function isTabSelected(tab: Tab) {
+    const {name} = tab;
+
+    return name.includes(ACTIVE_TAB_TEXT);
 }
 
 function findCloseTokenIdx(tokens: Token[], idx: number) {
@@ -291,14 +315,49 @@ function matchCloseToken(tokens: Token[], i: number) {
     );
 }
 
+type TabsProps = {
+    content: string;
+    orientation: TabsOrientation;
+    group: string;
+};
+
 function matchOpenToken(tokens: Token[], i: number) {
     return (
         tokens[i].type === 'paragraph_open' &&
         tokens[i + 1].type === 'inline' &&
-        tokens[i + 1].content.match(TAB_RE)
+        TAB_RE.test(tokens[i + 1].content) &&
+        props(tokens[i + 1].content)
     );
 }
 
+function props(target: string): TabsProps {
+    target = trim(target.replace('list tabs', ''));
+
+    const props = target.split(' ');
+    const result: TabsProps = {
+        content: target,
+        orientation: 'horizontal',
+        group: `${DEFAULT_TABS_GROUP_PREFIX}${generateID()}`,
+    };
+
+    for (const prop of props) {
+        const [key, value] = prop.split('=').map(trim);
+
+        switch (key) {
+            case 'horizontal':
+            case 'radio':
+                result.orientation = key as TabsOrientation;
+                break;
+            case 'group':
+                result.group = unquote(value);
+                break;
+            default:
+            // TODO: lint unknown tabs props
+        }
+    }
+
+    return result;
+}
 export function transform({
     runtimeJsPath = '_assets/tabs-extension.js',
     runtimeCssPath = '_assets/tabs-extension.css',
@@ -318,7 +377,7 @@ export function transform({
 
             while (i < tokens.length) {
                 const match = matchOpenToken(tokens, i);
-                const openTag = match && match[0];
+                const openTag = match && match.content;
                 const isNotEscaped = openTag && !(openTag.startsWith('`') && openTag.endsWith('`'));
 
                 if (!match || !isNotEscaped) {
@@ -334,8 +393,7 @@ export function transform({
                     continue;
                 }
 
-                const tabsGroup = match[2] || `${DEFAULT_TABS_GROUP_PREFIX}${generateID()}`;
-                const orientation = (match[4] || 'horizontal') as TabsOrientation;
+                const tabsGroup = match.group;
 
                 const {tabs} = findTabs(state.tokens, i + 3);
 
@@ -343,7 +401,7 @@ export function transform({
                     insertTabs(
                         tabs,
                         state,
-                        orientation,
+                        match.orientation,
                         {start: i, end: closeTokenIdx + 2},
                         {
                             containerClasses,

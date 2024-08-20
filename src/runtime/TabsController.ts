@@ -11,6 +11,7 @@ import {
     TAB_DATA_KEY,
     TAB_PANEL_CLASSNAME,
     Tab,
+    VERTICAL_TAB_FORCED_OPEN,
 } from '../common';
 import type {TabsOrientation} from '../plugin/transform';
 import {
@@ -152,7 +153,7 @@ export class TabsController {
         const previousTargetOffset =
             scrollableParent && getOffsetByScrollableParent(targetTab, scrollableParent);
 
-        const updatedTabs = this.updateHTML({group, key, align}, align);
+        const updatedTabs = this.updateHTML({group, key, align}, targetTab, align);
 
         if (updatedTabs > 0) {
             this.fireSelectTabEvent({group, key, align}, targetTab?.dataset.diplodocId);
@@ -163,10 +164,14 @@ export class TabsController {
         }
     }
 
-    private updateHTML(tab: Required<Tab>, align: TabsOrientation) {
+    private updateHTML(
+        tab: Required<Tab>,
+        target: HTMLElement | undefined,
+        align: TabsOrientation,
+    ) {
         switch (align) {
             case 'radio': {
-                return this.updateHTMLVertical(tab);
+                return this.updateHTMLVertical(tab, target);
             }
             case 'horizontal': {
                 return this.updateHTMLHorizontal(tab);
@@ -176,12 +181,22 @@ export class TabsController {
         return 0;
     }
 
-    private updateHTMLVertical(tab: Required<Tab>) {
+    private updateHTMLVertical(tab: Required<Tab>, target: HTMLElement | undefined) {
         const {group, key} = tab;
 
+        const {isForced, root} = this.didTabOpenForce(target);
+
+        const singleTabSelector = isForced
+            ? `.yfm-vertical-tab[${VERTICAL_TAB_FORCED_OPEN}="true"]`
+            : '';
+
         const tabs = this._document.querySelectorAll(
-            `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
+            `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]${singleTabSelector}`,
         );
+
+        if (isForced) {
+            root?.removeAttribute(VERTICAL_TAB_FORCED_OPEN);
+        }
 
         let updated = 0;
 
@@ -194,16 +209,29 @@ export class TabsController {
 
                 const input = title.children.item(0) as HTMLInputElement;
 
+                if (title === tab) {
+                    const checked = input.checked;
+
+                    if (checked) {
+                        title.classList.remove('active');
+                        content?.classList.remove('active');
+
+                        input.removeAttribute('checked');
+                    } else {
+                        title.classList.add('active');
+                        content?.classList.add('active');
+
+                        input.setAttribute('checked', 'true');
+                    }
+
+                    continue;
+                }
+
                 if (input.hasAttribute('checked')) {
                     title.classList.remove('active');
                     content?.classList.remove('active');
-                    input.removeAttribute('checked');
-                }
 
-                if (title === tab) {
-                    title.classList.add('active');
-                    content?.classList.add('active');
-                    input.setAttribute('checked', 'true');
+                    input.removeAttribute('checked');
                 }
 
                 updated++;
@@ -270,6 +298,18 @@ export class TabsController {
             scrollableParent.scrollLeft + leftDelta - scrollLeftDelta,
             scrollableParent.scrollTop + topDelta - scrollTopDelta,
         );
+    }
+
+    private didTabOpenForce(target?: HTMLElement) {
+        if (!target) {
+            return {};
+        }
+
+        const root = target.dataset.diplodocVerticalTab ? target : target.parentElement;
+
+        const isForced = typeof root?.dataset.diplodocRadioForced !== 'undefined';
+
+        return {root, isForced};
     }
 
     private fireSelectTabEvent(tab: Required<Tab>, diplodocId?: string) {
