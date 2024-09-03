@@ -1,3 +1,282 @@
+export const simpleTab = [
+    {
+        "block": true,
+        "children": null,
+        "content": "",
+        "hidden": false,
+        "info": "",
+        "level": 0,
+        "map": [
+            0,
+            1
+        ],
+        "markup": "#",
+        "meta": null,
+        "nesting": 1,
+        "tag": "h1",
+        "type": "heading_open"
+    },
+    {
+        "block": true,
+        "children": [
+            {
+                "attrs": null,
+                "block": false,
+                "children": null,
+                "content": "Create a folder",
+                "hidden": false,
+                "info": "",
+                "level": 0,
+                "map": null,
+                "markup": "",
+                "meta": null,
+                "nesting": 0,
+                "tag": "",
+                "type": "text"
+            }
+        ],
+        "content": "Create a folder",
+        "hidden": false,
+        "info": "",
+        "level": 1,
+        "map": [
+            0,
+            1
+        ],
+        "markup": "",
+        "meta": null,
+        "nesting": 0,
+        "tag": "",
+        "type": "inline"
+    },
+    {
+        "block": true,
+        "children": null,
+        "content": "",
+        "hidden": false,
+        "info": "",
+        "level": 0,
+        "map": null,
+        "markup": "#",
+        "meta": null,
+        "nesting": -1,
+        "tag": "h1",
+        "type": "heading_close"
+    },
+    {
+        "block": true,
+        "children": null,
+        "content": "",
+        "hidden": false,
+        "info": "",
+        "level": 0,
+        "map": null,
+        "markup": "",
+        "meta": null,
+        "nesting": 1,
+        "tag": "div",
+        "type": "tabs_open"
+    },
+    {
+        "block": true,
+        "children": null,
+        "content": "",
+        "hidden": false,
+        "info": "",
+        "level": 0,
+        "map": [
+            6,
+            8
+        ],
+        "markup": "",
+        "meta": null,
+        "nesting": 1,
+        "tag": "div",
+        "type": "tab-list_open"
+    },
+    {
+        "block": true,
+        "children": null,
+        "content": "",
+        "hidden": false,
+        "info": "",
+        "level": 0,
+        "map": [
+            6,
+            8
+        ],
+        "markup": "-",
+        "meta": null,
+        "nesting": 1,
+        "tag": "div",
+        "type": "tab_open"
+    },
+    {
+        "block": false,
+        "children": [
+            {
+                "attrs": null,
+                "block": false,
+                "children": null,
+                "content": "Tab with list",
+                "hidden": false,
+                "info": "",
+                "level": 0,
+                "map": null,
+                "markup": "",
+                "meta": null,
+                "nesting": 0,
+                "tag": "",
+                "type": "text"
+            }
+        ],
+        "content": "",
+        "hidden": false,
+        "info": "",
+        "level": 0,
+        "map": null,
+        "markup": "",
+        "meta": null,
+        "nesting": 0,
+        "tag": "",
+        "type": "inline"
+    },
+    {
+        "block": true,
+        "children": null,
+        "content": "",
+        "hidden": false,
+        "info": "",
+        "level": 0,
+        "map": null,
+        "markup": "",
+        "meta": null,
+        "nesting": -1,
+        "tag": "div",
+        "type": "tab_close"
+    },
+    {
+        "block": true,
+        "children": null,
+        "content": "",
+        "hidden": false,
+        "info": "",
+        "level": 0,
+        "map": null,
+        "markup": "",
+        "meta": null,
+        "nesting": -1,
+        "tag": "div",
+        "type": "tab-list_close"
+    },
+    {
+        "block": true,
+        "children": null,
+        "content": "",
+        "hidden": false,
+        "info": "",
+        "level": 0,
+        "map": null,
+        "markup": "",
+        "meta": null,
+        "nesting": 1,
+        "tag": "div",
+        "type": "tab-panel_open"
+    },
+    {
+        "block": true,
+        "children": null,
+        "content": "",
+        "hidden": false,
+        "info": "",
+        "level": 0,
+        "map": null,
+        "markup": "",
+        "meta": null,
+        "nesting": -1,
+        "tag": "div",
+        "type": "tab-panel_close"
+    },
+    {
+        "block": true,
+        "children": null,
+        "content": "",
+        "hidden": false,
+        "info": "",
+        "level": 0,
+        "map": null,
+        "markup": "",
+        "meta": null,
+        "nesting": -1,
+        "tag": "div",
+        "type": "tabs_close"
+    },
+    {
+        "block": true,
+        "children": null,
+        "content": "",
+        "hidden": false,
+        "info": "",
+        "level": 0,
+        "map": [
+            12,
+            13
+        ],
+        "markup": "",
+        "meta": null,
+        "nesting": 1,
+        "tag": "p",
+        "type": "paragraph_open"
+    },
+    {
+        "block": true,
+        "children": [
+            {
+                "attrs": null,
+                "block": false,
+                "children": null,
+                "content": "After tabs",
+                "hidden": false,
+                "info": "",
+                "level": 0,
+                "map": null,
+                "markup": "",
+                "meta": null,
+                "nesting": 0,
+                "tag": "",
+                "type": "text"
+            }
+        ],
+        "content": "After tabs",
+        "hidden": false,
+        "info": "",
+        "level": 1,
+        "map": [
+            12,
+            13
+        ],
+        "markup": "",
+        "meta": null,
+        "nesting": 0,
+        "tag": "",
+        "type": "inline"
+    },
+    {
+        "block": true,
+        "children": null,
+        "content": "",
+        "hidden": false,
+        "info": "",
+        "level": 0,
+        "map": null,
+        "markup": "",
+        "meta": null,
+        "nesting": -1,
+        "tag": "p",
+        "type": "paragraph_close"
+    }
+]
+
 export const base = [
     {
         type: 'heading_open',
