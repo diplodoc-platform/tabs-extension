@@ -1,6 +1,6 @@
 import {PluginOptions, transform} from '../src/plugin/transform';
 import {callPlugin, tokenize} from './utils';
-import {base, escaped, nestedTokenTypes, vertical} from './data/tabs';
+import {base, escaped, nestedTokenTypes, simpleTab, vertical} from './data/tabs';
 // @ts-ignore
 import Token from 'markdown-it/lib/token';
 
@@ -245,6 +245,69 @@ describe('plugin', () => {
         // ASSERT
         expect(tokens.map((token) => token.type)).toEqual([]);
     });
+
+    it('should handle simple tab with indents before closing tag', () => {
+        const indentsBeforeClosingTag = [
+            '# Create a folder',
+            '',
+            '{% list tabs %}',
+            '',
+            'aaa',
+            '',
+            '- Tab with list',
+            '',
+            'bbb',
+            '',
+            '   {% endlist %}',
+            '',
+            'After tabs',
+        ];
+
+        const {tokens: result} = makeTransform({content: indentsBeforeClosingTag});
+
+        // ASSERT
+        const clearJSON = JSON.parse(JSON.stringify(result.map(({attrs: _, ...item}) => item)));
+        expect(clearJSON).toEqual(simpleTab);
+    })
+
+    it('should handle complex tab with indents before closing tag', () => {
+        const indentsBeforeClosingTag = [
+            '# Create a folder',
+            '',
+            '{% list tabs %}',
+            '',
+            '- Python',
+            '',
+            '  About python',
+            '',
+            '- Tab with list',
+            '  - One',
+            '  - Two',
+            '',
+            '- Tab with list',
+            '  1. One',
+            '  2. Two',
+            '',
+            '   {% endlist %}',
+            '',
+            'After tabs',
+        ];
+
+        const {tokens: result} = makeTransform({content: indentsBeforeClosingTag});
+
+        // ASSERT
+        const clearJSON = JSON.parse(JSON.stringify(result.map(({attrs: _, ...item}) => item)));
+        /*
+        We finish collecting tokens for generating tabs as soon as we meet the last {% endlist %} tag.
+        If it was created with an indent, then in the current example it will be inside the list,
+        and after it there will be two additional closing tokens that we remove. This is expected behavior.
+         */
+        clearJSON[4].map[1]=16
+        clearJSON[11].map[1]=16
+        clearJSON.splice(49, 2)
+
+        expect(clearJSON).toEqual(base);
+    })
 
     describe('options', () => {
         test('should add an extra className to container node', () => {

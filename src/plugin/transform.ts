@@ -47,7 +47,7 @@ type TransformOptions = {
     output?: string;
 };
 
-function findTabs(tokens: Token[], idx: number) {
+function findTabs(tokens: Token[], idx: number, closeTokenIdx: number) {
     const tabs = [];
     let i = idx,
         nestedLevel = -1,
@@ -94,10 +94,14 @@ function findTabs(tokens: Token[], idx: number) {
                 break;
             case 'paragraph_open':
                 if (
-                    !pending &&
+                    i === closeTokenIdx &&
                     tokens[i + 1].content &&
                     tokens[i + 1].content.trim() === '{% endlist %}'
                 ) {
+                    if (pending && !nestedLevel) {
+                        tabs.push(pending);
+                    }
+
                     return {
                         tabs,
                         index: i + 2,
@@ -395,7 +399,7 @@ export function transform({
 
                 const tabsGroup = match.group;
 
-                const {tabs} = findTabs(state.tokens, i + 3);
+                const {tabs} = findTabs(state.tokens, i + 3, closeTokenIdx);
 
                 if (tabs.length > 0) {
                     insertTabs(
