@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.1](https://github.com/diplodoc-platform/tabs-extension/compare/v3.3.0...v3.3.1) (2024-09-04)
+
+
+### Bug Fixes
+
+* handle closing tag with indent ([7af6f57](https://github.com/diplodoc-platform/tabs-extension/commit/7af6f570282fb1688158d11ff25ed6473381a103))
+
 ## [3.3.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.2.0...v3.3.0) (2024-08-20)
 
 
