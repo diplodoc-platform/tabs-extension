@@ -25,7 +25,11 @@
     "build:declarations": "tsc --emitDeclarationOnly --outDir .",
     "prepublishOnly": "npm run lint && npm run test && npm run build",
     "test": "jest",
-    "init": "husky install && npm run build"
+    "init": "husky install && npm run build",
+    "lint": "lint update && lint",
+    "lint:fix": "lint update && lint fix",
+    "pre-commit": "lint update && lint-staged",
+    "prepare": "husky"
   },
   "author": "",
   "license": "MIT",
@@ -57,5 +61,8 @@
     "npm-run-all": "^4.1.5",
     "ts-jest": "^29.1.0",
     "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "@diplodoc/lint": "^1.1.3"
   }
 }

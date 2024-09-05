@@ -8,3 +8,13 @@ index.d.ts
 example/package-lock.json
 example/build
 *.d.ts
+
+.vscode
+.history
+.env
+.DS_Store
+/lib
+/dist
+/build
+/cache
+/coverage
