@@ -1,55 +1,54 @@
 #!/usr/bin/env node
 
-import {readFileSync} from 'node:fs';
-import {fileURLToPath} from 'url';
-import {dirname} from 'path';
 import {build} from 'esbuild';
 import {sassPlugin} from 'esbuild-sass-plugin';
-const tsconfigJson = readJSON('../tsconfig.json');
-const packageJson = readJSON('../package.json');
 
-const {
-    compilerOptions: {target},
-} = tsconfigJson;
+import tsconfigJson from '../tsconfig.json' assert {type: 'json'};
+import packageJson from '../package.json' assert {type: 'json'};
 
+const outDir = 'build';
+
+/** @type {import('esbuild').BuildOptions}*/
 const common = {
     bundle: true,
     sourcemap: true,
-    target,
+    target: tsconfigJson.compilerOptions.target,
     tsconfig: './tsconfig.json',
 };
 
-build({
+/** @type {import('esbuild').BuildOptions}*/
+const runtime = {
     ...common,
     entryPoints: ['src/runtime/index.ts'],
-    outfile: 'build/runtime/index.js',
+    outfile: outDir + '/runtime/index.js',
     minify: true,
     platform: 'browser',
     plugins: [sassPlugin()],
-});
+};
 
-build({
+/** @type {import('esbuild').BuildOptions}*/
+const react = {
     ...common,
     entryPoints: ['src/react/index.ts'],
-    outfile: 'build/react/index.js',
+    outfile: outDir + '/react/index.js',
     platform: 'neutral',
     external: ['react'],
     target: 'es6',
     format: 'cjs',
-});
+};
 
-build({
+/** @type {import('esbuild').BuildOptions}*/
+const plugin = {
     ...common,
     entryPoints: ['src/plugin/index.ts'],
-    outfile: 'build/plugin/index.js',
+    outfile: outDir + '/plugin/index.js',
     platform: 'node',
     external: ['markdown-it', 'node:*'],
     define: {
         PACKAGE: JSON.stringify(packageJson.name),
     },
-});
+};
 
-function readJSON(path) {
-    const currentFilename = fileURLToPath(import.meta.url);
-    return JSON.parse(readFileSync(`${dirname(currentFilename)}/${path}`));
-}
+build(plugin);
+build(runtime);
+build(react);
