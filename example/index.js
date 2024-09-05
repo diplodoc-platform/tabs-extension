@@ -1,6 +1,5 @@
 import transform from '@diplodoc/transform';
 import tabs from '@diplodoc/tabs-extension';
-
 import {readFile} from 'node:fs/promises';
 
 (async () => {

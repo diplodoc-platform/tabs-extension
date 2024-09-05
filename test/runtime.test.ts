@@ -1,9 +1,8 @@
 import {PluginOptions, transform} from '../src/plugin/transform';
+import {TabsController} from '../src/runtime/TabsController';
+import {GROUP_DATA_KEY, TABS_LIST_CLASSNAME, TAB_CLASSNAME} from '../src/common';
+
 import {callPlugin, tokenize} from './utils';
-// @ts-ignore
-import Token from 'markdown-it/lib/token';
-import {TabsController} from "../src/runtime/TabsController";
-import {GROUP_DATA_KEY, TAB_CLASSNAME, TABS_LIST_CLASSNAME} from "../src/common";
 
 const defaultContent = `
 {% list tabs group=g0 %}
@@ -51,8 +50,7 @@ const defaultContent = `
 {% endlist %}
 `;
 
-
-function makeTransform(params?: { transformOptions?: Partial<PluginOptions>; content?: string[] }) {
+function makeTransform(params?: {transformOptions?: Partial<PluginOptions>; content?: string[]}) {
     return callPlugin(
         transform({bundle: false, ...params?.transformOptions}),
         tokenize([defaultContent]),
@@ -66,10 +64,16 @@ describe('Testing runtime features', () => {
     beforeEach(() => {
         const {tokens, env, md} = makeTransform();
         document.body.innerHTML = md.renderer.render(tokens, {}, env);
+
+        // eslint-disable-next-line no-new
         new TabsController(document);
 
-        tabs = document.querySelectorAll(`[${GROUP_DATA_KEY}="g0"] > .${TABS_LIST_CLASSNAME} > .${TAB_CLASSNAME}`);
-        nestedTabs = document.querySelectorAll(`[${GROUP_DATA_KEY}="g1"] > .${TABS_LIST_CLASSNAME} > .${TAB_CLASSNAME}`);
+        tabs = document.querySelectorAll(
+            `[${GROUP_DATA_KEY}="g0"] > .${TABS_LIST_CLASSNAME} > .${TAB_CLASSNAME}`,
+        );
+        nestedTabs = document.querySelectorAll(
+            `[${GROUP_DATA_KEY}="g1"] > .${TABS_LIST_CLASSNAME} > .${TAB_CLASSNAME}`,
+        );
 
         if (!tabs.length) {
             throw new Error('No tabs found');
@@ -89,7 +93,7 @@ describe('Testing runtime features', () => {
             } else {
                 expect(tab.classList.contains('active')).not.toBeTruthy();
             }
-        })
+        });
     });
 
     test('roving tabindex on pressing right', () => {
@@ -98,7 +102,7 @@ describe('Testing runtime features', () => {
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
 
         tabs[0].focus();
-        let keyDownEvent = new window.KeyboardEvent('keydown', {key: 'ArrowRight'});
+        const keyDownEvent = new window.KeyboardEvent('keydown', {key: 'ArrowRight'});
         keyDownEvent.initEvent('keydown', true, true);
         tabs[0].dispatchEvent(keyDownEvent);
 
@@ -128,7 +132,7 @@ describe('Testing runtime features', () => {
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
 
         tabs[0].focus();
-        let keyDownEvent = new window.KeyboardEvent('keydown', {key: 'ArrowLeft'});
+        const keyDownEvent = new window.KeyboardEvent('keydown', {key: 'ArrowLeft'});
         keyDownEvent.initEvent('keydown', true, true);
         tabs[0].dispatchEvent(keyDownEvent);
 
@@ -161,7 +165,7 @@ describe('Testing runtime features', () => {
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
 
         fakeButton.focus();
-        let keyDownEvent = new window.KeyboardEvent('keydown', {key: 'ArrowLeft'});
+        const keyDownEvent = new window.KeyboardEvent('keydown', {key: 'ArrowLeft'});
         keyDownEvent.initEvent('keydown', true, true);
         fakeButton.dispatchEvent(keyDownEvent);
 
@@ -171,35 +175,38 @@ describe('Testing runtime features', () => {
         expect(window.document.activeElement).toBe(fakeButton);
     });
 
-    test.each(['ArrowRight', 'ArrowLeft'])('roving tabindex works on nested tabs when pressing right/left arrow keys', (key) => {
-        tabs[2].click();
-        nestedTabs[0].click();
-        nestedTabs[0].focus();
+    test.each(['ArrowRight', 'ArrowLeft'])(
+        'roving tabindex works on nested tabs when pressing right/left arrow keys',
+        (key) => {
+            tabs[2].click();
+            nestedTabs[0].click();
+            nestedTabs[0].focus();
 
-        expect(nestedTabs[0].classList.contains('active')).toBeTruthy();
-        expect(nestedTabs[1].classList.contains('active')).not.toBeTruthy();
-        expect(tabs[0].classList.contains('active')).not.toBeTruthy();
-        expect(tabs[1].classList.contains('active')).not.toBeTruthy();
-        expect(tabs[2].classList.contains('active')).toBeTruthy();
+            expect(nestedTabs[0].classList.contains('active')).toBeTruthy();
+            expect(nestedTabs[1].classList.contains('active')).not.toBeTruthy();
+            expect(tabs[0].classList.contains('active')).not.toBeTruthy();
+            expect(tabs[1].classList.contains('active')).not.toBeTruthy();
+            expect(tabs[2].classList.contains('active')).toBeTruthy();
 
-        let keyDownEvent = new window.KeyboardEvent('keydown', {key});
-        keyDownEvent.initEvent('keydown', true, true);
-        nestedTabs[0].dispatchEvent(keyDownEvent);
+            const keyDownEvent = new window.KeyboardEvent('keydown', {key});
+            keyDownEvent.initEvent('keydown', true, true);
+            nestedTabs[0].dispatchEvent(keyDownEvent);
 
-        expect(nestedTabs[0].classList.contains('active')).not.toBeTruthy();
-        expect(nestedTabs[1].classList.contains('active')).toBeTruthy();
-        expect(window.document.activeElement).toBe(nestedTabs[1]);
-        expect(tabs[0].classList.contains('active')).not.toBeTruthy();
-        expect(tabs[1].classList.contains('active')).not.toBeTruthy();
-        expect(tabs[2].classList.contains('active')).toBeTruthy();
+            expect(nestedTabs[0].classList.contains('active')).not.toBeTruthy();
+            expect(nestedTabs[1].classList.contains('active')).toBeTruthy();
+            expect(window.document.activeElement).toBe(nestedTabs[1]);
+            expect(tabs[0].classList.contains('active')).not.toBeTruthy();
+            expect(tabs[1].classList.contains('active')).not.toBeTruthy();
+            expect(tabs[2].classList.contains('active')).toBeTruthy();
 
-        nestedTabs[1].dispatchEvent(keyDownEvent);
+            nestedTabs[1].dispatchEvent(keyDownEvent);
 
-        expect(nestedTabs[0].classList.contains('active')).toBeTruthy();
-        expect(nestedTabs[1].classList.contains('active')).not.toBeTruthy();
-        expect(window.document.activeElement).toBe(nestedTabs[0]);
-        expect(tabs[0].classList.contains('active')).not.toBeTruthy();
-        expect(tabs[1].classList.contains('active')).not.toBeTruthy();
-        expect(tabs[2].classList.contains('active')).toBeTruthy();
-    });
+            expect(nestedTabs[0].classList.contains('active')).toBeTruthy();
+            expect(nestedTabs[1].classList.contains('active')).not.toBeTruthy();
+            expect(window.document.activeElement).toBe(nestedTabs[0]);
+            expect(tabs[0].classList.contains('active')).not.toBeTruthy();
+            expect(tabs[1].classList.contains('active')).not.toBeTruthy();
+            expect(tabs[2].classList.contains('active')).toBeTruthy();
+        },
+    );
 });

@@ -1,7 +1,8 @@
 import GithubSlugger from 'github-slugger';
 
-import {Tab} from './transform';
 import {ACTIVE_TAB_TEXT} from '../common';
+
+import {Tab} from './transform';
 
 const CUSTOM_ID_REGEXP = /\[?{ ?#(\S+) ?}]?/;
 

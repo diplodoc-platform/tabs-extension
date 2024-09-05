@@ -1,8 +1,9 @@
+import type Token from 'markdown-it/lib/token';
+
 import {PluginOptions, transform} from '../src/plugin/transform';
+
 import {callPlugin, tokenize} from './utils';
 import {base, escaped, nestedTokenTypes, simpleTab, vertical} from './data/tabs';
-// @ts-ignore
-import Token from 'markdown-it/lib/token';
 
 const defaultContent = [
     '# Create a folder',
@@ -25,7 +26,6 @@ const defaultContent = [
     '',
     'After tabs',
 ];
-
 
 const defaultVerticalContent = [
     '# Create a folder',
@@ -71,7 +71,7 @@ describe('plugin', () => {
         // ASSERT
         const clearJSON = JSON.parse(JSON.stringify(result.map(({attrs: _, ...item}) => item)));
         expect(clearJSON).toEqual(vertical);
-    })
+    });
 
     test('Should convert to correct new token array', () => {
         // ACT
@@ -104,7 +104,9 @@ describe('plugin', () => {
             const attrsObject = convertAttrsToObject(tab);
 
             expect(Object.keys(attrsObject)).toEqual(attrs);
-            expect(attrsObject['class']).toEqual(`yfm-tab yfm-tab-group${i === 0 ? ' active' : ''}`);
+            expect(attrsObject['class']).toEqual(
+                `yfm-tab yfm-tab-group${i === 0 ? ' active' : ''}`,
+            );
             expect(attrsObject['role']).toEqual('tab');
             expect(attrsObject['tabindex']).toEqual(i === 0 ? '0' : '-1');
         });
@@ -176,15 +178,7 @@ describe('plugin', () => {
     it('should return valid token stream if content without indentation', () => {
         // ACT
         const {tokens} = makeTransform({
-            content: [
-                '{% list tabs %}',
-                '',
-                '- tab1',
-                '',
-                '> quote',
-                '',
-                '{% endlist %}',
-            ],
+            content: ['{% list tabs %}', '', '- tab1', '', '> quote', '', '{% endlist %}'],
         });
 
         // ASSERT
@@ -204,42 +198,26 @@ describe('plugin', () => {
     it('should remove empty tabs', () => {
         // ACT
         const {tokens} = makeTransform({
-            content: [
-                'before',
-                '',
-                '{% list tabs %}',
-                '',
-                '',
-                '',
-                '{% endlist %}',
-                '',
-                'after',
-            ],
+            content: ['before', '', '{% list tabs %}', '', '', '', '{% endlist %}', '', 'after'],
         });
 
         // ASSERT
         expect(tokens.map((token) => token.type)).toEqual([
-            "paragraph_open",
-            "inline",
-            "paragraph_close",
-            "paragraph_open",
-            "inline",
-            "paragraph_close",
+            'paragraph_open',
+            'inline',
+            'paragraph_close',
+            'paragraph_open',
+            'inline',
+            'paragraph_close',
         ]);
         expect(tokens[1].content).toBe('before');
-        expect(tokens[4].content).toBe('after')
+        expect(tokens[4].content).toBe('after');
     });
 
     it('should remove tabs with invalid markup inside', () => {
         // ACT
         const {tokens} = makeTransform({
-            content: [
-                '{% list tabs %}',
-                '',
-                '> 123',
-                '',
-                '{% endlist %}',
-            ],
+            content: ['{% list tabs %}', '', '> 123', '', '{% endlist %}'],
         });
 
         // ASSERT
@@ -268,7 +246,7 @@ describe('plugin', () => {
         // ASSERT
         const clearJSON = JSON.parse(JSON.stringify(result.map(({attrs: _, ...item}) => item)));
         expect(clearJSON).toEqual(simpleTab);
-    })
+    });
 
     it('should handle complex tab with indents before closing tag', () => {
         const indentsBeforeClosingTag = [
@@ -302,12 +280,12 @@ describe('plugin', () => {
         If it was created with an indent, then in the current example it will be inside the list,
         and after it there will be two additional closing tokens that we remove. This is expected behavior.
          */
-        clearJSON[4].map[1]=16
-        clearJSON[11].map[1]=16
-        clearJSON.splice(49, 2)
+        clearJSON[4].map[1] = 16;
+        clearJSON[11].map[1] = 16;
+        clearJSON.splice(49, 2);
 
         expect(clearJSON).toEqual(base);
-    })
+    });
 
     describe('options', () => {
         test('should add an extra className to container node', () => {

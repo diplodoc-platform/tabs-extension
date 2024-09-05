@@ -3,7 +3,6 @@
 import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
-
 import {build} from 'esbuild';
 import {sassPlugin} from 'esbuild-sass-plugin';
 const tsconfigJson = readJSON('../tsconfig.json');
@@ -23,18 +22,16 @@ const common = {
 build({
     ...common,
     entryPoints: ['src/runtime/index.ts'],
-    outfile: 'runtime/index.js',
+    outfile: 'build/runtime/index.js',
     minify: true,
     platform: 'browser',
-    plugins: [
-        sassPlugin()
-    ],
+    plugins: [sassPlugin()],
 });
 
 build({
     ...common,
     entryPoints: ['src/react/index.ts'],
-    outfile: 'react/index.js',
+    outfile: 'build/react/index.js',
     platform: 'neutral',
     external: ['react'],
     target: 'es6',
@@ -44,7 +41,7 @@ build({
 build({
     ...common,
     entryPoints: ['src/plugin/index.ts'],
-    outfile: 'plugin/index.js',
+    outfile: 'build/plugin/index.js',
     platform: 'node',
     external: ['markdown-it', 'node:*'],
     define: {

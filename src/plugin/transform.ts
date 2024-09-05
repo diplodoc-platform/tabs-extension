@@ -2,10 +2,6 @@ import MarkdownIt from 'markdown-it';
 import StateCore from 'markdown-it/lib/rules_core/state_core';
 import Token from 'markdown-it/lib/token';
 
-import {addHiddenProperty, generateID, trim, unquote} from './utils';
-import {copyRuntimeFiles} from './copyRuntimeFiles';
-import {getName, getTabId, getTabKey} from './getTabId';
-
 import {
     ACTIVE_CLASSNAME,
     ACTIVE_TAB_TEXT,
@@ -23,6 +19,10 @@ import {
     VERTICAL_TAB_CLASSNAME,
     VERTICAL_TAB_FORCED_OPEN,
 } from '../common';
+
+import {addHiddenProperty, generateID, trim, unquote} from './utils';
+import {copyRuntimeFiles} from './copyRuntimeFiles';
+import {getName, getTabId, getTabKey} from './getTabId';
 
 export type PluginOptions = {
     runtimeJsPath: string;

@@ -1,3 +1,5 @@
+import type {TabsOrientation} from '../plugin/transform';
+
 import {
     ACTIVE_CLASSNAME,
     DEFAULT_TABS_GROUP_PREFIX,
@@ -13,7 +15,7 @@ import {
     Tab,
     VERTICAL_TAB_FORCED_OPEN,
 } from '../common';
-import type {TabsOrientation} from '../plugin/transform';
+
 import {
     ElementOffset,
     getClosestScrollableParent,
@@ -43,6 +45,7 @@ export class TabsController {
 
     private _onSelectTabHandlers: Set<Handler> = new Set();
 
+    // TODO: remove side effects from constructor
     constructor(document: Document) {
         this._document = document;
         this._document.addEventListener('click', (event) => {
@@ -201,6 +204,7 @@ export class TabsController {
         let updated = 0;
 
         tabs.forEach((tab) => {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const root = tab.parentNode!;
             const elements = root.children;
 
@@ -339,6 +343,7 @@ export class TabsController {
 
     private getTabDataFromHTMLElement(target: HTMLElement): Tab | null {
         if (this.areTabsVertical(target)) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const tab = target.dataset.diplodocVerticalTab ? target : target.parentElement!;
 
             const key = tab.dataset.diplodocKey;

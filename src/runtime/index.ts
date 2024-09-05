@@ -1,4 +1,5 @@
 import {GLOBAL_SYMBOL} from '../common';
+
 import {TabsController} from './TabsController';
 import './scss/tabs.scss';
 
