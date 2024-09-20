@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.3.2](https://github.com/diplodoc-platform/tabs-extension/compare/v3.3.1...v3.3.2) (2024-09-20)
+
+
+### Bug Fixes
+
+* bump lint plugin ([2d34cb3](https://github.com/diplodoc-platform/tabs-extension/commit/2d34cb3d9e15dc32b98bdd4122d376df2b4276fc))
+* jest ts config path ([b4c775c](https://github.com/diplodoc-platform/tabs-extension/commit/b4c775cfa83751eaa5a8942f5da35ca37965a2ee))
+* parsing arguments ([a965482](https://github.com/diplodoc-platform/tabs-extension/commit/a9654829111ed8fe217ecc1d5ac64b3ecc8c84cf))
+
 ## [3.3.1](https://github.com/diplodoc-platform/tabs-extension/compare/v3.3.0...v3.3.1) (2024-09-04)
 
 
