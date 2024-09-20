@@ -329,17 +329,22 @@ function matchOpenToken(tokens: Token[], i: number) {
     return (
         tokens[i].type === 'paragraph_open' &&
         tokens[i + 1].type === 'inline' &&
-        TAB_RE.test(tokens[i + 1].content) &&
         props(tokens[i + 1].content)
     );
 }
 
-function props(target: string): TabsProps {
-    target = trim(target.replace('list tabs', ''));
+function props(target: string): TabsProps | undefined {
+    const matched = target.match(TAB_RE);
 
-    const props = target.split(' ');
+    if (!matched) {
+        return undefined;
+    }
+
+    const clean = trim(matched[0].replace('list tabs', ''));
+
+    const props = clean.split(' ');
     const result: TabsProps = {
-        content: target,
+        content: clean,
         orientation: 'horizontal',
         group: `${DEFAULT_TABS_GROUP_PREFIX}${generateID()}`,
     };
