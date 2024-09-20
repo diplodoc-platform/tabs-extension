@@ -2,7 +2,7 @@
 module.exports = {
     preset: 'ts-jest',
     transform: {
-        '^.+\\.(j|t)s?$': ['ts-jest', {tsconfig: '<rootDir>/test/tsconfig.json'}],
+        '^.+\\.(j|t)s?$': ['ts-jest', {tsconfig: '<rootDir>/tsconfig.json'}],
     },
     transformIgnorePatterns: [],
     testEnvironment: 'jsdom',
