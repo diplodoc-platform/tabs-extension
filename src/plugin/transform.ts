@@ -197,8 +197,9 @@ function insertTabs(
         const tabPanelOpen = new state.Token('tab-panel_open', 'div', 1);
         const tabPanelClose = new state.Token('tab-panel_close', 'div', -1);
 
-        const verticalTabOpen = new state.Token('tab_open', 'input', 0);
-        const verticalTabLabelOpen = new state.Token('label_open', 'label', 1);
+        const verticalTabInput = new state.Token('tab-input', 'input', 0);
+        const verticalTabLabelOpen = new state.Token('tab-label_open', 'label', 1);
+        const verticalTabLabelClose = new state.Token('tab-label_close', 'label', -1);
 
         tabOpen.map = tabs[i].listItem.map;
         tabOpen.markup = tabs[i].listItem.markup;
@@ -216,10 +217,10 @@ function insertTabs(
 
         const tabPanelId = generateID();
 
-        verticalTabOpen.block = true;
+        verticalTabInput.block = true;
 
-        verticalTabOpen.attrJoin('class', 'radio');
-        verticalTabOpen.attrSet('type', 'radio');
+        verticalTabInput.attrJoin('class', 'radio');
+        verticalTabInput.attrSet('type', 'radio');
 
         tabOpen.map = tabs[i].listItem.map;
         tabOpen.markup = tabs[i].listItem.markup;
@@ -252,7 +253,7 @@ function insertTabs(
         if (isTabActive) {
             if (align === 'radio') {
                 tabOpen.attrSet(VERTICAL_TAB_FORCED_OPEN, 'true');
-                verticalTabOpen.attrSet('checked', 'true');
+                verticalTabInput.attrSet('checked', 'true');
                 tabPanelOpen.attrJoin('class', ACTIVE_CLASSNAME);
             } else {
                 tabOpen.attrSet(TAB_ACTIVE_KEY, i === 0 ? 'true' : 'false');
@@ -263,7 +264,14 @@ function insertTabs(
         }
 
         if (align === 'radio') {
-            tabsTokens.push(tabOpen, verticalTabOpen, verticalTabLabelOpen, tabInline, tabClose);
+            tabsTokens.push(
+                tabOpen,
+                verticalTabInput,
+                verticalTabLabelOpen,
+                tabInline,
+                verticalTabLabelClose,
+                tabClose,
+            );
             tabsTokens.push(tabPanelOpen, ...tabs[i].tokens, tabPanelClose);
         } else {
             tabListTokens.push(tabOpen, tabInline, tabClose);
