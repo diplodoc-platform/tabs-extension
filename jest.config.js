@@ -6,4 +6,5 @@ module.exports = {
     },
     transformIgnorePatterns: [],
     testEnvironment: 'jsdom',
+    snapshotSerializers: ['jest-serializer-html'],
 };

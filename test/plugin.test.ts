@@ -1,6 +1,9 @@
-import type Token from 'markdown-it/lib/token';
+import type MarkdownIt from 'markdown-it';
 
-import {PluginOptions, transform} from '../src/plugin/transform';
+import dedent from 'ts-dedent';
+import transform from '@diplodoc/transform';
+
+import * as tabsExtension from '../src/plugin/transform';
 
 import {callPlugin, tokenize} from './utils';
 import {base, escaped, nestedTokenTypes, simpleTab, vertical} from './data/tabs';
@@ -49,18 +52,30 @@ const defaultVerticalContent = [
     'After tabs',
 ];
 
-const convertAttrsToObject = ({attrs}: Token) =>
+const convertAttrsToObject = ({attrs}: MarkdownIt.Token) =>
     attrs?.reduce((acc: Record<string, string>, [name, value]) => {
         acc[name] = value;
 
         return acc;
     }, {}) || {};
 
-function makeTransform(params?: {transformOptions?: Partial<PluginOptions>; content?: string[]}) {
+function makeTransform(params?: {
+    transformOptions?: Partial<tabsExtension.PluginOptions>;
+    content?: string[];
+}) {
     return callPlugin(
-        transform({bundle: false, ...params?.transformOptions}),
+        tabsExtension.transform({bundle: false, ...params?.transformOptions}),
         tokenize(params?.content || defaultContent),
     );
+}
+
+function html(text: string, opts?: tabsExtension.PluginOptions) {
+    const {result} = transform(text, {
+        needToSanitizeHtml: false,
+        plugins: [tabsExtension.transform({bundle: false, ...opts})],
+    });
+
+    return result.html;
 }
 
 describe('plugin', () => {
@@ -459,6 +474,61 @@ describe('plugin', () => {
             expect(attrsObject1['data-diplodoc-id']).toEqual('c-1');
             expect(attrsObject0['data-diplodoc-key']).toEqual('c%23');
             expect(attrsObject1['data-diplodoc-key']).toEqual('c%2b%2b');
+        });
+    });
+
+    describe('html snapshots', () => {
+        beforeAll(() => {
+            let i = 0;
+            const values = [
+                0.123456789, 0.987654321, 0.678912345, 0.214365879, 0.456789123, 0.123789456,
+            ];
+
+            jest.spyOn(global.Math, 'random').mockImplementation(() => values[i++ % values.length]);
+        });
+
+        afterAll(() => {
+            jest.spyOn(global.Math, 'random').mockRestore();
+        });
+
+        it('should render common tabs', () => {
+            expect(
+                html(
+                    dedent`
+                    {% list tabs %}
+
+                    - Tab 1
+
+                      Content of tab 1
+
+                    - Tab 2
+
+                      Content of tab 2
+
+                    {% endlist %}
+                `,
+                ),
+            ).toMatchSnapshot();
+        });
+
+        it('should render radio tabs', () => {
+            expect(
+                html(
+                    dedent`
+                    {% list tabs radio %}
+
+                    - Radio 1
+
+                      Content of radio 1
+
+                    - Radio 2
+
+                      Content of radio 2
+
+                    {% endlist %}
+                `,
+                ),
+            ).toMatchSnapshot();
         });
     });
 });
