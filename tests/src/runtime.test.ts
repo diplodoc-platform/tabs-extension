@@ -1,6 +1,6 @@
-import {PluginOptions, transform} from '../src/plugin/transform';
-import {TabsController} from '../src/runtime/TabsController';
-import {GROUP_DATA_KEY, TABS_LIST_CLASSNAME, TAB_CLASSNAME} from '../src/common';
+import {PluginOptions, transform} from '../../src/plugin/transform';
+import {TabsController} from '../../src/runtime/TabsController';
+import {GROUP_DATA_KEY, TABS_LIST_CLASSNAME, TAB_CLASSNAME} from '../../src/common';
 
 import {callPlugin, tokenize} from './utils';
 

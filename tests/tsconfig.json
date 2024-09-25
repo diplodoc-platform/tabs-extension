@@ -4,6 +4,6 @@
     "target": "es2019",
     "declaration": true
   },
-  "include": ["src", "tests"],
+  "include": ["src"],
   "exclude": []
 }
