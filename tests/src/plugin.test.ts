@@ -3,7 +3,7 @@ import type MarkdownIt from 'markdown-it';
 import dedent from 'ts-dedent';
 import transform from '@diplodoc/transform';
 
-import * as tabsExtension from '../src/plugin/transform';
+import * as tabsExtension from '../../src/plugin/transform';
 
 import {callPlugin, tokenize} from './utils';
 import {base, escaped, nestedTokenTypes, simpleTab, vertical} from './data/tabs';
