@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.3.2...v3.4.0) (2024-09-25)
+
+
+### Features
+
+* **plugin:** improve names of token types and added missing closing token for label ([74237f8](https://github.com/diplodoc-platform/tabs-extension/commit/74237f83cffb00ceb6237a2af67452e3d1ce33c9))
+
 ## [3.3.2](https://github.com/diplodoc-platform/tabs-extension/compare/v3.3.1...v3.3.2) (2024-09-20)
 
 
