@@ -3,6 +3,7 @@
 exports[`plugin html snapshots should render common tabs 1`] = `
 <div class="yfm-tabs"
      data-diplodoc-group="defaultTabsGroup-4fzzzxjy"
+     data-diplodoc-variant="regular"
 >
   <div class="yfm-tab-list"
        role="tablist"
@@ -56,6 +57,7 @@ exports[`plugin html snapshots should render common tabs 1`] = `
 exports[`plugin html snapshots should render radio tabs 1`] = `
 <div class="yfm-tabs yfm-tabs-vertical"
      data-diplodoc-group="defaultTabsGroup-7ptgcyuj"
+     data-diplodoc-variant="radio"
 >
   <div data-diplodoc-id="radio-1"
        data-diplodoc-key="radio%201"

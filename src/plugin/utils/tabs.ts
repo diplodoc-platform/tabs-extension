@@ -1,8 +1,7 @@
 import GithubSlugger from 'github-slugger';
 
-import {ACTIVE_TAB_TEXT} from '../common';
-
-import {Tab} from './transform';
+import {ACTIVE_TAB_TEXT} from '../../common';
+import {RuntimeTab} from '../types';
 
 const CUSTOM_ID_REGEXP = /\[?{ ?#(\S+) ?}]?/;
 
@@ -31,7 +30,7 @@ function parseName(name: string) {
     };
 }
 
-export function getTabId(tab: Tab, {runId}: {runId: string}) {
+export function getTabId(tab: RuntimeTab, {runId}: {runId: string}) {
     let slugger = sluggersStorage.get(runId);
     if (!slugger) {
         slugger = new GithubSlugger();
@@ -41,15 +40,21 @@ export function getTabId(tab: Tab, {runId}: {runId: string}) {
     return slugger.slug(getRawId(tab));
 }
 
-export function getTabKey(tab: Tab) {
+export function isTabSelected(tab: RuntimeTab) {
+    const {name} = tab;
+
+    return name.includes(ACTIVE_TAB_TEXT);
+}
+
+export function getTabKey(tab: RuntimeTab) {
     return encodeURIComponent(getRawId(tab)).toLocaleLowerCase();
 }
 
-export function getName(tab: Tab) {
+export function getName(tab: RuntimeTab) {
     return parseName(tab.name).name;
 }
 
-function getRawId(tab: Tab): string {
+function getRawId(tab: RuntimeTab): string {
     const {customAnchor, name} = parseName(tab.name);
 
     return customAnchor || name;
