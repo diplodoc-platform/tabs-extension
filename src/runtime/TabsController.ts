@@ -1,19 +1,20 @@
-import type {TabsOrientation} from '../plugin/transform';
-
 import {
     ACTIVE_CLASSNAME,
     DEFAULT_TABS_GROUP_PREFIX,
     GROUP_DATA_KEY,
     SelectedTabEvent,
     TABS_CLASSNAME,
+    TABS_DROPDOWN_SELECT,
     TABS_LIST_CLASSNAME,
-    TABS_VERTICAL_CLASSNAME,
+    TABS_RADIO_CLASSNAME,
     TAB_CLASSNAME,
     TAB_DATA_ID,
     TAB_DATA_KEY,
+    TAB_DATA_VARIANT,
+    TAB_FORCED_OPEN,
     TAB_PANEL_CLASSNAME,
     Tab,
-    VERTICAL_TAB_FORCED_OPEN,
+    TabsVariants,
 } from '../common';
 
 import {
@@ -29,7 +30,7 @@ const Selector = {
     TAB_LIST: `.${TABS_LIST_CLASSNAME}`,
     TAB: `.${TAB_CLASSNAME}`,
     TAB_PANEL: `.${TAB_PANEL_CLASSNAME}`,
-    VERTICAL_TABS: `.${TABS_VERTICAL_CLASSNAME}`,
+    VERTICAL_TABS: `.${TABS_RADIO_CLASSNAME}`,
 };
 
 export interface ISelectTabByIdOptions {
@@ -42,21 +43,30 @@ type TabSwitchDirection = 'left' | 'right';
 
 export class TabsController {
     private _document: Document;
-
     private _onSelectTabHandlers: Set<Handler> = new Set();
 
     // TODO: remove side effects from constructor
     constructor(document: Document) {
         this._document = document;
+
         this._document.addEventListener('click', (event) => {
             const target = getEventTarget(event) as HTMLElement;
-            const areVertical = this.areTabsVertical(target);
+
+            if (event.target) {
+                this.hideAllDropdown(event.target as HTMLElement);
+            }
 
             if (isCustom(event)) {
                 return;
             }
 
-            if (!(this.isValidTabElement(target) || areVertical)) {
+            if (this.isElementDropdownSelect(target)) {
+                target.classList.toggle(ACTIVE_CLASSNAME);
+
+                return;
+            }
+
+            if (!this.isValidTabElement(target)) {
                 return;
             }
 
@@ -66,6 +76,7 @@ export class TabsController {
                 this._selectTab(tab, target);
             }
         });
+
         this._document.addEventListener('keydown', (event) => {
             let direction: TabSwitchDirection | null = null;
             switch (event.key) {
@@ -146,7 +157,7 @@ export class TabsController {
     }
 
     private _selectTab(tab: Tab, targetTab?: HTMLElement) {
-        const {group, key, align} = tab;
+        const {group, key, variant} = tab;
 
         if (!group) {
             return;
@@ -156,10 +167,10 @@ export class TabsController {
         const previousTargetOffset =
             scrollableParent && getOffsetByScrollableParent(targetTab, scrollableParent);
 
-        const updatedTabs = this.updateHTML({group, key, align}, targetTab, align);
+        const updatedTabs = this.updateHTML({group, key, variant}, targetTab, variant);
 
         if (updatedTabs > 0) {
-            this.fireSelectTabEvent({group, key, align}, targetTab?.dataset.diplodocId);
+            this.fireSelectTabEvent({group, key, variant}, targetTab?.dataset.diplodocId);
 
             if (previousTargetOffset) {
                 this.resetScroll(targetTab, scrollableParent, previousTargetOffset);
@@ -167,38 +178,38 @@ export class TabsController {
         }
     }
 
-    private updateHTML(
-        tab: Required<Tab>,
-        target: HTMLElement | undefined,
-        align: TabsOrientation,
-    ) {
-        switch (align) {
-            case 'radio': {
-                return this.updateHTMLVertical(tab, target);
+    private updateHTML(tab: Required<Tab>, target: HTMLElement | undefined, variant: TabsVariants) {
+        switch (variant) {
+            case TabsVariants.Radio: {
+                return this.updateHTMLRadio(tab, target);
             }
-            case 'horizontal': {
-                return this.updateHTMLHorizontal(tab);
+            case TabsVariants.Accordion: {
+                return this.updateHTMLAccordion(tab, target);
+            }
+            case TabsVariants.Regular: {
+                return this.updateHTMLRegular(tab);
+            }
+            case TabsVariants.Dropdown: {
+                return this.updateHTMLDropdown(tab);
             }
         }
 
         return 0;
     }
 
-    private updateHTMLVertical(tab: Required<Tab>, target: HTMLElement | undefined) {
+    private updateHTMLRadio(tab: Required<Tab>, target: HTMLElement | undefined) {
         const {group, key} = tab;
 
         const {isForced, root} = this.didTabOpenForce(target);
 
-        const singleTabSelector = isForced
-            ? `.yfm-vertical-tab[${VERTICAL_TAB_FORCED_OPEN}="true"]`
-            : '';
+        const singleTabSelector = isForced ? `.yfm-vertical-tab[${TAB_FORCED_OPEN}="true"]` : '';
 
         const tabs = this._document.querySelectorAll(
             `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]${singleTabSelector}`,
         );
 
         if (isForced) {
-            root?.removeAttribute(VERTICAL_TAB_FORCED_OPEN);
+            root?.removeAttribute(TAB_FORCED_OPEN);
         }
 
         let updated = 0;
@@ -245,7 +256,7 @@ export class TabsController {
         return updated;
     }
 
-    private updateHTMLHorizontal(tab: Required<Tab>) {
+    private updateHTMLRegular(tab: Required<Tab>) {
         const {group, key} = tab;
 
         const tabs = this._document.querySelectorAll(
@@ -288,6 +299,114 @@ export class TabsController {
         return updated;
     }
 
+    private updateHTMLDropdown(tab: Required<Tab>) {
+        const {group, key} = tab;
+
+        const tabs = this._document.querySelectorAll(
+            `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
+        );
+
+        let changed = 0;
+
+        tabs.forEach((tab) => {
+            const dropdown = tab.closest(`[${TAB_DATA_VARIANT}=${TabsVariants.Dropdown}]`);
+
+            if (!dropdown?.children) {
+                return;
+            }
+
+            const select = dropdown.children.item(0) as HTMLElement;
+            const menu = dropdown.children.item(1);
+
+            select?.classList.remove(ACTIVE_CLASSNAME);
+
+            /* first and second elements are select / menu, skipping them */
+            const changedIndex = Array.from(menu?.children || []).indexOf(tab) + 2;
+
+            for (let i = 2; i < dropdown.children.length; i++) {
+                const item = dropdown.children.item(i) as HTMLElement;
+                const menuItem = menu?.children.item(i - 2) as HTMLElement;
+
+                changed++;
+
+                if (changedIndex === i) {
+                    item?.classList.add(ACTIVE_CLASSNAME);
+                    menuItem.classList.add(ACTIVE_CLASSNAME);
+
+                    select.innerHTML = tab.innerHTML;
+                    select.classList.add('filled');
+
+                    continue;
+                }
+
+                menuItem.classList.remove(ACTIVE_CLASSNAME);
+                item.classList.remove(ACTIVE_CLASSNAME);
+            }
+        });
+
+        return changed;
+    }
+
+    private updateHTMLAccordion(tab: Required<Tab>, target: HTMLElement | undefined) {
+        const {group, key} = tab;
+
+        const tabs = this._document.querySelectorAll(
+            `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
+        );
+
+        let changed = 0;
+
+        tabs.forEach((tab) => {
+            const accordion = tab.closest(`[${TAB_DATA_VARIANT}=${TabsVariants.Accordion}]`);
+
+            if (!accordion?.children) {
+                return;
+            }
+
+            for (let i = 0; i < accordion.children.length; i += 2) {
+                const title = accordion.children.item(i);
+                const currentTab = accordion.children.item(i + 1);
+
+                changed++;
+
+                if (tab === title) {
+                    title?.classList.toggle(ACTIVE_CLASSNAME);
+                    currentTab?.classList.toggle(ACTIVE_CLASSNAME);
+
+                    continue;
+                }
+
+                title?.classList.remove(ACTIVE_CLASSNAME);
+                currentTab?.classList.remove(ACTIVE_CLASSNAME);
+            }
+        });
+
+        if (target && !this.checkVisible(target)) {
+            setTimeout(() => {
+                target.scrollIntoView({block: 'nearest'});
+            });
+        }
+
+        return changed;
+    }
+
+    private checkVisible(element: HTMLElement) {
+        const rect = element.getBoundingClientRect();
+        const viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+
+        return !(rect.bottom < 0 || rect.top - viewHeight >= 0);
+    }
+
+    private hideAllDropdown(target: HTMLElement) {
+        const dropdowns = this._document.querySelectorAll('.yfm-tabs-dropdown-select.active');
+
+        dropdowns.forEach((menu) => {
+            if (!menu.contains(target)) {
+                menu.classList.remove(ACTIVE_CLASSNAME);
+            }
+        });
+    }
+
     private resetScroll(
         target: HTMLElement,
         scrollableParent: HTMLElement,
@@ -309,51 +428,68 @@ export class TabsController {
             return {};
         }
 
+        if (target.dataset.diplodocForced) {
+            return {root: target, isForced: true};
+        }
+
         const root = target.dataset.diplodocVerticalTab ? target : target.parentElement;
 
-        const isForced = typeof root?.dataset.diplodocRadioForced !== 'undefined';
+        const isForced = typeof root?.dataset.diplodocForced !== 'undefined';
 
         return {root, isForced};
     }
 
     private fireSelectTabEvent(tab: Required<Tab>, diplodocId?: string) {
-        const {group, key, align} = tab;
+        const {group, key, variant: align} = tab;
 
-        const eventTab: Tab = group.startsWith(DEFAULT_TABS_GROUP_PREFIX) ? {key, align} : tab;
+        const eventTab: Tab = group.startsWith(DEFAULT_TABS_GROUP_PREFIX)
+            ? {key, variant: align}
+            : tab;
 
         this._onSelectTabHandlers.forEach((handler) => {
             handler({tab: eventTab, currentTabId: diplodocId});
         });
     }
 
-    private isValidTabElement(element: HTMLElement) {
-        const tabList =
-            element.matches(Selector.TAB) && element.dataset.diplodocId
-                ? element.closest(Selector.TAB_LIST)
-                : null;
+    private getTabsType(element: HTMLElement) {
+        const tabsRoot = element.closest(`[${TAB_DATA_VARIANT}]`) as HTMLElement | undefined;
 
-        return tabList?.closest(Selector.TABS);
+        if (!tabsRoot) {
+            return undefined;
+        }
+
+        return tabsRoot.dataset.diplodocVariant;
     }
 
-    private areTabsVertical(target: HTMLElement) {
-        const parent = target.parentElement;
+    private isValidTabElement(element: HTMLElement) {
+        return Boolean(this.getTabsType(element));
+    }
 
-        return target.dataset.diplodocVerticalTab || Boolean(parent?.dataset.diplodocVerticalTab);
+    private isElementDropdownSelect(target: HTMLElement) {
+        return target.classList.contains(TABS_DROPDOWN_SELECT);
     }
 
     private getTabDataFromHTMLElement(target: HTMLElement): Tab | null {
-        if (this.areTabsVertical(target)) {
+        const type = this.getTabsType(target);
+
+        if (type === TabsVariants.Radio) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const tab = target.dataset.diplodocVerticalTab ? target : target.parentElement!;
 
             const key = tab.dataset.diplodocKey;
             const group = (tab.closest(Selector.TABS) as HTMLElement)?.dataset.diplodocGroup;
-            return key && group ? {group, key, align: 'radio'} : null;
+            return key && group ? {group, key, variant: TabsVariants.Radio} : null;
+        }
+
+        if (type === TabsVariants.Dropdown || type === TabsVariants.Accordion) {
+            const key = target.dataset.diplodocKey;
+            const group = (target.closest(Selector.TABS) as HTMLElement)?.dataset.diplodocGroup;
+            return key && group ? {group, key, variant: type} : null;
         }
 
         const key = target.dataset.diplodocKey;
         const group = (target.closest(Selector.TABS) as HTMLElement)?.dataset.diplodocGroup;
-        return key && group ? {group, key, align: 'horizontal'} : null;
+        return key && group ? {group, key, variant: TabsVariants.Regular} : null;
     }
 
     private getTabs(target: HTMLElement): {tabs: Tab[]; nodes: NodeListOf<HTMLElement>} {
@@ -373,7 +509,7 @@ export class TabsController {
             tabs.push({
                 group,
                 key,
-                align: 'horizontal',
+                variant: TabsVariants.Regular,
             });
         });
 
