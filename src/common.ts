@@ -1,6 +1,7 @@
-import type {TabsOrientation} from './plugin/transform';
-import type {TabsController} from './runtime/TabsController';
+import {type TabsController} from './runtime/TabsController';
+import {type TabsOrientation} from './plugin/types';
 
+export const TAB_RE = /`?{% list tabs .*?%}`?/;
 export const TABS_CLASSNAME = 'yfm-tabs';
 export const TABS_VERTICAL_CLASSNAME = 'yfm-tabs-vertical';
 export const TABS_LIST_CLASSNAME = 'yfm-tab-list';
@@ -21,6 +22,7 @@ export const DEFAULT_TABS_GROUP_PREFIX = 'defaultTabsGroup-';
 export const ACTIVE_TAB_TEXT = '{selected}';
 
 export interface Tab {
+    name: string;
     group?: string;
     key: string;
     align: TabsOrientation;
