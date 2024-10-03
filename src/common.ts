@@ -10,6 +10,7 @@ export const TAB_PANEL_CLASSNAME = 'yfm-tab-panel';
 export const ACTIVE_CLASSNAME = 'active';
 export const VERTICAL_TAB_CLASSNAME = 'yfm-vertical-tab';
 export const VERTICAL_TAB_FORCED_OPEN = 'data-diplodoc-radio-forced';
+export const TAB_GROUP_CLASSNAME = 'yfm-tab-group';
 
 export const GROUP_DATA_KEY = 'data-diplodoc-group';
 export const TAB_DATA_KEY = 'data-diplodoc-key';

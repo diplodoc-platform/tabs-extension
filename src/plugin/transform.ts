@@ -2,8 +2,8 @@ import type StateCore from 'markdown-it/lib/rules_core/state_core';
 import type MarkdownIt from 'markdown-it';
 
 import {addHiddenProperty, copyRuntimeFiles} from './utils';
-import {insertTabs} from './generate';
-import {findTabs, props, tryToFindTabs} from './steps/find';
+import {generateTabsTokens} from './generate';
+import {findTabs, props, tryToFindTabs} from './find';
 
 export type PluginOptions = {
     runtimeJsPath: string;
@@ -40,6 +40,7 @@ export function transform({
 
                 if ('step' in result) {
                     i += result.step;
+
                     continue;
                 }
 
@@ -50,17 +51,14 @@ export function transform({
                 const tabs = findTabs(state.tokens, i + 3, closeTokenIndex);
 
                 if (tabs.length > 0) {
-                    insertTabs(
-                        tabs,
-                        state,
-                        {start: i, end: closeTokenIndex + 2},
-                        {
-                            containerClasses,
-                            tabsGroup: group,
-                            orientation,
-                            runId,
-                        },
-                    );
+                    const tabsTokens = generateTabsTokens(tabs, state, {
+                        containerClasses,
+                        tabsGroup: group,
+                        orientation,
+                        runId,
+                    });
+
+                    state.tokens.splice(i, closeTokenIndex - i + 3, ...tabsTokens);
 
                     i++;
                     tabsAreInserted = true;
