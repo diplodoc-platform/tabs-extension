@@ -3,15 +3,15 @@ import {
     GROUP_DATA_KEY,
     TABS_CLASSNAME,
     TABS_LIST_CLASSNAME,
-    TABS_VERTICAL_CLASSNAME,
     TAB_ACTIVE_KEY,
     TAB_CLASSNAME,
     TAB_DATA_ID,
     TAB_DATA_KEY,
+    TAB_DATA_VARIANT,
     TAB_DATA_VERTICAL_TAB,
+    TAB_FORCED_OPEN,
     TAB_PANEL_CLASSNAME,
     VERTICAL_TAB_CLASSNAME,
-    VERTICAL_TAB_FORCED_OPEN,
 } from '../../common';
 import {generateID, getName, getTabId, getTabKey, isTabSelected} from '../utils';
 
@@ -51,7 +51,6 @@ export const regular: TabsTokensGenerator = (
     tabListOpen.block = true;
     tabListClose.block = true;
 
-    const areTabsVerticalClass = orientation === 'radio' && TABS_VERTICAL_CLASSNAME;
     const activeTabsCount = tabs.filter(isTabSelected).length;
 
     if (activeTabsCount > 1) {
@@ -62,9 +61,11 @@ export const regular: TabsTokensGenerator = (
 
     tabsOpen.attrSet(
         'class',
-        [TABS_CLASSNAME, containerClasses, areTabsVerticalClass].filter(Boolean).join(' '),
+        [TABS_CLASSNAME, containerClasses].filter(Boolean).join(' '),
     );
     tabsOpen.attrSet(GROUP_DATA_KEY, tabsGroup);
+    tabsOpen.attrSet(TAB_DATA_VARIANT, 'regular');
+
     tabListOpen.attrSet('class', TABS_LIST_CLASSNAME);
     tabListOpen.attrSet('role', 'tablist');
 
@@ -94,7 +95,7 @@ export const regular: TabsTokensGenerator = (
         /* if user did not provide default open tab we fallback to first tab (in default tabs only) */
         const isTabActive = hasDefaultOpenTab
             ? didTabHasActiveAttr
-            : orientation === 'horizontal' && i === 0;
+            : i === 0;
 
         tab.name = getName(tab);
 
@@ -135,7 +136,7 @@ export const regular: TabsTokensGenerator = (
 
         if (isTabActive) {
             if (orientation === 'radio') {
-                tabOpen.attrSet(VERTICAL_TAB_FORCED_OPEN, 'true');
+                tabOpen.attrSet(TAB_FORCED_OPEN, 'true');
                 verticalTabInput.attrSet('checked', 'true');
                 tabPanelOpen.attrJoin('class', ACTIVE_CLASSNAME);
             } else {
@@ -162,14 +163,11 @@ export const regular: TabsTokensGenerator = (
         }
     }
 
-    if (orientation === 'horizontal') {
-        tabsTokens.push(tabsOpen);
-        tabsTokens.push(tabListOpen);
-        tabsTokens.push(...tabListTokens);
-        tabsTokens.push(tabListClose);
-        tabsTokens.push(...tabPanelsTokens);
-    }
-
+    tabsTokens.push(tabsOpen);
+    tabsTokens.push(tabListOpen);
+    tabsTokens.push(...tabListTokens);
+    tabsTokens.push(tabListClose);
+    tabsTokens.push(...tabPanelsTokens);
     tabsTokens.push(tabsClose);
 
     return tabsTokens;

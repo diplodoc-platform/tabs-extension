@@ -3,25 +3,24 @@ import type StateCore from 'markdown-it/lib/rules_core/state_core';
 import {
     ACTIVE_CLASSNAME,
     GROUP_DATA_KEY,
+    TABS_ACCORDION_CLASSNAME,
     TABS_CLASSNAME,
-    TABS_RADIO_CLASSNAME,
     TAB_ACTIVE_KEY,
     TAB_CLASSNAME,
     TAB_DATA_ID,
     TAB_DATA_KEY,
     TAB_DATA_VARIANT,
-    TAB_DATA_VERTICAL_TAB,
     TAB_FORCED_OPEN,
     TAB_GROUP_CLASSNAME,
     TAB_PANEL_CLASSNAME,
-    VERTICAL_TAB_CLASSNAME,
+    TabsVariants,
 } from '../../common';
 import {generateID,getName, getTabId, getTabKey, isTabSelected} from '../utils';
 import {type RuntimeTab} from '../types';
 
 import {type TabsTokensGenerator} from './types';
 
-export const radio: TabsTokensGenerator = (
+export const accordion: TabsTokensGenerator = (
     tabs: RuntimeTab[],
     state: StateCore,
     {containerClasses, tabsGroup, runId},
@@ -55,11 +54,11 @@ export const radio: TabsTokensGenerator = (
 
     tabsOpen.attrSet(
         'class',
-        [TABS_CLASSNAME, containerClasses, TABS_RADIO_CLASSNAME].filter(Boolean).join(' '),
+        [TABS_CLASSNAME, containerClasses, TABS_ACCORDION_CLASSNAME].filter(Boolean).join(' '),
     );
 
     tabsOpen.attrSet(GROUP_DATA_KEY, tabsGroup);
-    tabsOpen.attrSet(TAB_DATA_VARIANT, 'radio');
+    tabsOpen.attrSet(TAB_DATA_VARIANT, TabsVariants.Accordion);
     tabsTokens.push(tabsOpen);
 
     for (let i = 0; i < tabs.length; i++) {
@@ -69,10 +68,6 @@ export const radio: TabsTokensGenerator = (
         const tabClose = new state.Token('tab_close', 'div', -1);
         const tabPanelOpen = new state.Token('tab-panel_open', 'div', 1);
         const tabPanelClose = new state.Token('tab-panel_close', 'div', -1);
-
-        const verticalTabInput = new state.Token('tab-input', 'input', 0);
-        const verticalTabLabelOpen = new state.Token('tab-label_open', 'label', 1);
-        const verticalTabLabelClose = new state.Token('tab-label_close', 'label', -1);
 
         tabOpen.map = tabs[i].listItem.map;
         tabOpen.markup = tabs[i].listItem.markup;
@@ -86,11 +81,6 @@ export const radio: TabsTokensGenerator = (
 
         const tabPanelId = generateID();
 
-        verticalTabInput.block = true;
-
-        verticalTabInput.attrJoin('class', 'radio');
-        verticalTabInput.attrSet('type', 'radio');
-
         tabOpen.map = tabs[i].listItem.map;
         tabOpen.markup = tabs[i].listItem.markup;
         tabText.content = tabs[i].name;
@@ -103,7 +93,7 @@ export const radio: TabsTokensGenerator = (
         tabOpen.attrSet(TAB_DATA_KEY, tabKey);
         tabOpen.attrSet(
             'class',
-            [TAB_CLASSNAME, TAB_GROUP_CLASSNAME, VERTICAL_TAB_CLASSNAME].join(' '),
+            [TAB_CLASSNAME, TAB_GROUP_CLASSNAME].join(' '),
         );
         tabOpen.attrSet('role', 'tab');
         tabOpen.attrSet('aria-controls', tabPanelId);
@@ -115,20 +105,15 @@ export const radio: TabsTokensGenerator = (
         tabPanelOpen.attrSet('role', 'tabpanel');
         tabPanelOpen.attrSet('aria-labelledby', tabId);
         tabPanelOpen.attrSet('data-title', tab.name);
-        tabOpen.attrSet(TAB_DATA_VERTICAL_TAB, 'true');
 
         if (didTabHasActiveAttr) {
-            tabOpen.attrSet(TAB_FORCED_OPEN, 'true');
-            verticalTabInput.attrSet('checked', 'true');
+            tabPanelOpen.attrSet(TAB_FORCED_OPEN, 'true');
             tabPanelOpen.attrJoin('class', ACTIVE_CLASSNAME);
         }
 
         tabsTokens.push(
             tabOpen,
-            verticalTabInput,
-            verticalTabLabelOpen,
             tabInline,
-            verticalTabLabelClose,
             tabClose,
         );
 

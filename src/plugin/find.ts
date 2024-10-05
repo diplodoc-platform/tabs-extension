@@ -1,8 +1,8 @@
 import Token from 'markdown-it/lib/token';
 
-import {DEFAULT_TABS_GROUP_PREFIX, TAB_RE} from '../common';
+import {DEFAULT_TABS_GROUP_PREFIX, TAB_RE, TabsVariants} from '../common';
 
-import {RuntimeTab, TabsOrientation, TabsProps} from './types';
+import {RuntimeTab, TabsProps} from './types';
 import {generateID, trim, unquote} from './utils';
 
 function findCloseTokenIndex(tokens: Token[], idx: number) {
@@ -46,7 +46,7 @@ export function props(content: string): TabsProps {
     const props = clean.split(' ');
     const result: TabsProps = {
         content: clean,
-        orientation: 'horizontal',
+        orientation: TabsVariants.Regular,
         group: `${DEFAULT_TABS_GROUP_PREFIX}${generateID()}`,
     };
 
@@ -56,7 +56,9 @@ export function props(content: string): TabsProps {
         switch (key) {
             case 'horizontal':
             case 'radio':
-                result.orientation = key as TabsOrientation;
+            case 'dropdown':
+            case 'accordion':
+                result.orientation = key as TabsVariants;
                 break;
             case 'group':
                 result.group = unquote(value);

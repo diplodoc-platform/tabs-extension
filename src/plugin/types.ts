@@ -1,4 +1,5 @@
-import Token from 'markdown-it/lib/token';
+import type Token from 'markdown-it/lib/token';
+import type {TabsVariants} from '../common';
 
 export type RuntimeTab = {
     name: string;
@@ -6,10 +7,8 @@ export type RuntimeTab = {
     listItem: Token;
 };
 
-export type TabsOrientation = 'radio' | 'horizontal' | 'dropdown';
-
 export type TabsProps = {
     content: string;
-    orientation: TabsOrientation;
+    orientation: TabsVariants;
     group: string;
 };
