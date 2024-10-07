@@ -15,7 +15,7 @@ import {
     TAB_PANEL_CLASSNAME,
     TabsVariants,
 } from '../../common';
-import {generateID,getName, getTabId, getTabKey, isTabSelected} from '../utils';
+import {generateID, getName, getTabId, getTabKey, isTabSelected} from '../utils';
 import {type RuntimeTab} from '../types';
 
 import {type TabsTokensGenerator} from './types';
@@ -91,10 +91,7 @@ export const accordion: TabsTokensGenerator = (
         tabPanelClose.block = true;
         tabOpen.attrSet(TAB_DATA_ID, tabId);
         tabOpen.attrSet(TAB_DATA_KEY, tabKey);
-        tabOpen.attrSet(
-            'class',
-            [TAB_CLASSNAME, TAB_GROUP_CLASSNAME].join(' '),
-        );
+        tabOpen.attrSet('class', [TAB_CLASSNAME, TAB_GROUP_CLASSNAME].join(' '));
         tabOpen.attrSet('role', 'tab');
         tabOpen.attrSet('aria-controls', tabPanelId);
         tabOpen.attrSet('aria-selected', 'false');
@@ -111,11 +108,7 @@ export const accordion: TabsTokensGenerator = (
             tabPanelOpen.attrJoin('class', ACTIVE_CLASSNAME);
         }
 
-        tabsTokens.push(
-            tabOpen,
-            tabInline,
-            tabClose,
-        );
+        tabsTokens.push(tabOpen, tabInline, tabClose);
 
         tabsTokens.push(tabPanelOpen, ...tabs[i].tokens, tabPanelClose);
     }

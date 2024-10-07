@@ -1,11 +1,10 @@
-
-import { TabsVariants } from '../../common';
+import {TabsVariants} from '../../common';
 
 import {regular} from './regular';
 import {radio} from './radio';
 import {TabsTokensGenerator} from './types';
-import { dropdown } from './dropdown';
-import { accordion } from './accordion';
+import {dropdown} from './dropdown';
+import {accordion} from './accordion';
 
 const generateByType: Record<TabsVariants, TabsTokensGenerator> = {
     regular,

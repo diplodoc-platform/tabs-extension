@@ -16,7 +16,7 @@ import {
     TAB_PANEL_CLASSNAME,
     VERTICAL_TAB_CLASSNAME,
 } from '../../common';
-import {generateID,getName, getTabId, getTabKey, isTabSelected} from '../utils';
+import {generateID, getName, getTabId, getTabKey, isTabSelected} from '../utils';
 import {type RuntimeTab} from '../types';
 
 import {type TabsTokensGenerator} from './types';

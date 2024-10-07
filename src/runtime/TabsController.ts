@@ -43,12 +43,12 @@ type TabSwitchDirection = 'left' | 'right';
 
 export class TabsController {
     private _document: Document;
-
     private _onSelectTabHandlers: Set<Handler> = new Set();
 
     // TODO: remove side effects from constructor
     constructor(document: Document) {
         this._document = document;
+
         this._document.addEventListener('click', (event) => {
             const target = getEventTarget(event) as HTMLElement;
 
@@ -61,17 +61,14 @@ export class TabsController {
             }
 
             if (this.isElementDropdownSelect(target)) {
-                target.classList.toggle(ACTIVE_CLASSNAME)
-                
+                target.classList.toggle(ACTIVE_CLASSNAME);
 
                 return;
             }
 
-            if (!(this.isValidTabElement(target))) {
+            if (!this.isValidTabElement(target)) {
                 return;
             }
-
-            console.log('tab is valid');
 
             const tab = this.getTabDataFromHTMLElement(target);
 
@@ -181,12 +178,7 @@ export class TabsController {
         }
     }
 
-    private updateHTML(
-        tab: Required<Tab>,
-        target: HTMLElement | undefined,
-        variant: TabsVariants,
-    ) {
-        console.log(tab);
+    private updateHTML(tab: Required<Tab>, target: HTMLElement | undefined, variant: TabsVariants) {
         switch (variant) {
             case TabsVariants.Radio: {
                 return this.updateHTMLRadio(tab, target);
@@ -210,9 +202,7 @@ export class TabsController {
 
         const {isForced, root} = this.didTabOpenForce(target);
 
-        const singleTabSelector = isForced
-            ? `.yfm-vertical-tab[${TAB_FORCED_OPEN}="true"]`
-            : '';
+        const singleTabSelector = isForced ? `.yfm-vertical-tab[${TAB_FORCED_OPEN}="true"]` : '';
 
         const tabs = this._document.querySelectorAll(
             `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]${singleTabSelector}`,
@@ -311,7 +301,7 @@ export class TabsController {
 
     private updateHTMLDropdown(tab: Required<Tab>) {
         const {group, key} = tab;
-        
+
         const tabs = this._document.querySelectorAll(
             `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
         );
@@ -320,14 +310,14 @@ export class TabsController {
 
         tabs.forEach((tab) => {
             const dropdown = tab.closest(`[${TAB_DATA_VARIANT}=${TabsVariants.Dropdown}]`);
-            
+
             if (!dropdown?.children) {
                 return;
             }
-            
+
             const select = dropdown.children.item(0);
             const menu = dropdown.children.item(1);
-            
+
             select?.classList.remove(ACTIVE_CLASSNAME);
 
             /* first and second elements are select / menu, skipping them */
@@ -350,50 +340,59 @@ export class TabsController {
                 menuItem.style.fontWeight = '500';
                 item?.classList.remove(ACTIVE_CLASSNAME);
             }
-        })
+        });
 
         return changed;
     }
 
     private updateHTMLAccordion(tab: Required<Tab>, target: HTMLElement | undefined) {
         const {group, key} = tab;
-        
+
         const tabs = this._document.querySelectorAll(
             `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
         );
 
         let changed = 0;
 
-        (() => target)()
-
         tabs.forEach((tab) => {
             const accordion = tab.closest(`[${TAB_DATA_VARIANT}=${TabsVariants.Accordion}]`);
-            
 
             if (!accordion?.children) {
                 return;
             }
 
-            
             for (let i = 0; i < accordion.children.length; i += 2) {
-               const title = accordion.children.item(i);
-               const currentTab = accordion.children.item(i + 1);
+                const title = accordion.children.item(i);
+                const currentTab = accordion.children.item(i + 1);
 
-               changed++
+                changed++;
 
-               if (tab === title) {
+                if (tab === title) {
                     title?.classList.toggle(ACTIVE_CLASSNAME);
                     currentTab?.classList.toggle(ACTIVE_CLASSNAME);
 
                     continue;
-               }
+                }
 
-               title?.classList.remove(ACTIVE_CLASSNAME);
-               currentTab?.classList.remove(ACTIVE_CLASSNAME);
+                title?.classList.remove(ACTIVE_CLASSNAME);
+                currentTab?.classList.remove(ACTIVE_CLASSNAME);
             }
-        })
+        });
+
+        if (target && !this.checkVisible(target)) {
+            setTimeout(() => {
+                target.scrollIntoView({block: 'nearest'});
+            });
+        }
 
         return changed;
+    }
+
+    private checkVisible(element: HTMLElement) {
+        const rect = element.getBoundingClientRect();
+        const viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+
+        return !(rect.bottom < 0 || rect.top - viewHeight >= 0);
     }
 
     private hideAllDropdown(target: HTMLElement) {
@@ -403,7 +402,7 @@ export class TabsController {
             if (!menu.contains(target)) {
                 menu.classList.remove(ACTIVE_CLASSNAME);
             }
-        })
+        });
     }
 
     private resetScroll(
@@ -441,7 +440,9 @@ export class TabsController {
     private fireSelectTabEvent(tab: Required<Tab>, diplodocId?: string) {
         const {group, key, variant: align} = tab;
 
-        const eventTab: Tab = group.startsWith(DEFAULT_TABS_GROUP_PREFIX) ? {key, variant: align} : tab;
+        const eventTab: Tab = group.startsWith(DEFAULT_TABS_GROUP_PREFIX)
+            ? {key, variant: align}
+            : tab;
 
         this._onSelectTabHandlers.forEach((handler) => {
             handler({tab: eventTab, currentTabId: diplodocId});

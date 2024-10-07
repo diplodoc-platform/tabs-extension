@@ -179,6 +179,8 @@
 
         transition: all 200ms;
 
+        scroll-margin-top: 20px;
+
         &::after {
             content: '';
             position: absolute;

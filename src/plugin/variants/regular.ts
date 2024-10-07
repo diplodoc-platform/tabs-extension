@@ -59,10 +59,7 @@ export const regular: TabsTokensGenerator = (
 
     const hasDefaultOpenTab = activeTabsCount !== 0;
 
-    tabsOpen.attrSet(
-        'class',
-        [TABS_CLASSNAME, containerClasses].filter(Boolean).join(' '),
-    );
+    tabsOpen.attrSet('class', [TABS_CLASSNAME, containerClasses].filter(Boolean).join(' '));
     tabsOpen.attrSet(GROUP_DATA_KEY, tabsGroup);
     tabsOpen.attrSet(TAB_DATA_VARIANT, 'regular');
 
@@ -93,9 +90,7 @@ export const regular: TabsTokensGenerator = (
         const tabKey = getTabKey(tab);
         const didTabHasActiveAttr = isTabSelected(tab);
         /* if user did not provide default open tab we fallback to first tab (in default tabs only) */
-        const isTabActive = hasDefaultOpenTab
-            ? didTabHasActiveAttr
-            : i === 0;
+        const isTabActive = hasDefaultOpenTab ? didTabHasActiveAttr : i === 0;
 
         tab.name = getName(tab);
 

@@ -14,7 +14,7 @@ import {
     TAB_DATA_VARIANT,
     TAB_PANEL_CLASSNAME,
 } from '../../common';
-import {generateID,getName, getTabId, getTabKey, isTabSelected} from '../utils';
+import {generateID, getName, getTabId, getTabKey, isTabSelected} from '../utils';
 import {type RuntimeTab} from '../types';
 
 import {type TabsTokensGenerator} from './types';
@@ -31,7 +31,6 @@ export const dropdown: TabsTokensGenerator = (
     const dropdownSelectInline = new state.Token('inline', '', 0);
     const dropdownSelectText = new state.Token('text', '', 0);
     const dropdownSelectClose = new state.Token('dropdown-select_open', 'div', -1);
-
 
     if (tabs.length) {
         const [start] = tabs[0].listItem.map ?? [null];
@@ -68,13 +67,14 @@ export const dropdown: TabsTokensGenerator = (
     dropdownSelectOpen.attrSet('role', 'tablist');
     dropdownSelectOpen.attrSet('class', TABS_DROPDOWN_SELECT);
 
-    
     dropdownSelectText.content = activeTab ? activeTab.name : '-';
     dropdownSelectInline.children = [dropdownSelectText];
 
     dropdownTokens.push(
-        dropdownOpen, 
-        dropdownSelectOpen, dropdownSelectInline, dropdownSelectClose
+        dropdownOpen,
+        dropdownSelectOpen,
+        dropdownSelectInline,
+        dropdownSelectClose,
     );
 
     const dropdownMenuOpen = new state.Token('dropdown-menu_open', 'ul', 1);
@@ -129,7 +129,6 @@ export const dropdown: TabsTokensGenerator = (
         if (didTabHasActiveAttr) {
             tabPanelOpen.attrJoin('class', ACTIVE_CLASSNAME);
         }
-
 
         dropdownTokens.push(tabPanelOpen, ...tabs[i].tokens, tabPanelClose);
     }
