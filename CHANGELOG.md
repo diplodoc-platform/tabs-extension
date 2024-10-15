@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.5.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.4.0...v3.5.0) (2024-10-15)
+
+
+### Features
+
+* support select and accordeon, refactor extension ([a4537c3](https://github.com/diplodoc-platform/tabs-extension/commit/a4537c33fd263e7ffb1fdb6031c223ba293828ee))
+
 ## [3.4.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.3.2...v3.4.0) (2024-09-25)
 
 
