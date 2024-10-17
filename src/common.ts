@@ -35,6 +35,8 @@ export enum TabsVariants {
     Accordion = 'accordion',
 }
 
+export type EnabledVariants = Partial<Record<TabsVariants, boolean>>;
+
 export interface Tab {
     group?: string;
     key: string;

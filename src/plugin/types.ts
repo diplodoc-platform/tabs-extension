@@ -9,6 +9,6 @@ export type RuntimeTab = {
 
 export type TabsProps = {
     content: string;
-    orientation: TabsVariants;
+    variant: TabsVariants;
     group: string;
 };

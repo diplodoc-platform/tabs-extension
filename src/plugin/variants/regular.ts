@@ -20,7 +20,7 @@ import {TabsTokensGenerator} from './types';
 export const regular: TabsTokensGenerator = (
     tabs,
     state,
-    {containerClasses, tabsGroup, runId, orientation},
+    {containerClasses, tabsGroup, runId, variant: orientation},
 ) => {
     const tabsTokens = [];
     const tabListTokens = [];
