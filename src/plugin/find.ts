@@ -46,7 +46,7 @@ export function props(content: string): TabsProps {
     const props = clean.split(' ');
     const result: TabsProps = {
         content: clean,
-        orientation: TabsVariants.Regular,
+        variant: TabsVariants.Regular,
         group: `${DEFAULT_TABS_GROUP_PREFIX}${generateID()}`,
     };
 
@@ -58,7 +58,7 @@ export function props(content: string): TabsProps {
             case 'radio':
             case 'dropdown':
             case 'accordion':
-                result.orientation = key as TabsVariants;
+                result.variant = key as TabsVariants;
                 break;
             case 'group':
                 result.group = unquote(value);

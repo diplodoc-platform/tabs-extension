@@ -9,7 +9,7 @@ export function generateTabsTokens(
     state: StateCore,
     props: TabsGenerationProps,
 ) {
-    const tokens = generateTokensByType(props.orientation)(tabs, state, props);
+    const tokens = generateTokensByType(props.variant)(tabs, state, props);
 
     return tokens;
 }
