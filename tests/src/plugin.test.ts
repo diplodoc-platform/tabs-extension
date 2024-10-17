@@ -64,7 +64,11 @@ function makeTransform(params?: {
     content?: string[];
 }) {
     return callPlugin(
-        tabsExtension.transform({bundle: false, ...params?.transformOptions}),
+        tabsExtension.transform({
+            bundle: false,
+            features: {enabledVariants: {radio: true, regular: true}},
+            ...params?.transformOptions,
+        }),
         tokenize(params?.content || defaultContent),
     );
 }
@@ -72,7 +76,13 @@ function makeTransform(params?: {
 function html(text: string, opts?: tabsExtension.PluginOptions) {
     const {result} = transform(text, {
         needToSanitizeHtml: false,
-        plugins: [tabsExtension.transform({bundle: false, ...opts})],
+        plugins: [
+            tabsExtension.transform({
+                bundle: false,
+                features: {enabledVariants: {radio: true, regular: true}},
+                ...opts,
+            }),
+        ],
     });
 
     return result.html;

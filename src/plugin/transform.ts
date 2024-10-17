@@ -1,6 +1,8 @@
 import type StateCore from 'markdown-it/lib/rules_core/state_core';
 import type MarkdownIt from 'markdown-it';
 
+import {EnabledVariants, TabsVariants} from '../common';
+
 import {addHiddenProperty, copyRuntimeFiles} from './utils';
 import {generateTabsTokens} from './generate';
 import {findTabs, props, tryToFindTabs} from './find';
@@ -10,7 +12,16 @@ export type PluginOptions = {
     runtimeCssPath: string;
     containerClasses: string;
     bundle: boolean;
+    features: {
+        enabledVariants: EnabledVariants;
+    };
 };
+
+const defaultFeatures = {
+    enabledVariants: {
+        regular: true,
+    },
+} satisfies PluginOptions['features'];
 
 let runsCounter = 0;
 
@@ -23,6 +34,7 @@ export function transform({
     runtimeCssPath = '_assets/tabs-extension.css',
     containerClasses = '',
     bundle = true,
+    features = defaultFeatures,
 }: Partial<PluginOptions> = {}) {
     return function tabs(md: MarkdownIt, options?: TransformOptions) {
         const {output = '.'} = options || {};
@@ -46,15 +58,19 @@ export function transform({
 
                 const {content, closeTokenIndex} = result;
 
-                const {group, orientation} = props(content);
+                const parsedProps = props(content);
+
+                if (!features.enabledVariants[parsedProps.variant]) {
+                    parsedProps.variant = TabsVariants.Regular;
+                }
 
                 const tabs = findTabs(state.tokens, i + 3, closeTokenIndex);
 
                 if (tabs.length > 0) {
                     const tabsTokens = generateTabsTokens(tabs, state, {
                         containerClasses,
-                        tabsGroup: group,
-                        orientation,
+                        tabsGroup: parsedProps.group,
+                        variant: parsedProps.variant,
                         runId,
                     });
 

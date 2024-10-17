@@ -13,7 +13,7 @@ export type TabsGenerationProps = {
     containerClasses: string;
     tabsGroup: string;
     runId: string;
-    orientation: TabsVariants;
+    variant: TabsVariants;
 };
 
 export type TabsTokensGenerator = (
