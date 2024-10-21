@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.5.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.4.0...v3.5.0) (2024-10-21)
+
+
+### Features
+
+* support render flags ([7a06347](https://github.com/diplodoc-platform/tabs-extension/commit/7a0634704b006a6cf098251ad4aaf1e6e6c1207a))
+* support select and accordeon, refactor extension ([a4537c3](https://github.com/diplodoc-platform/tabs-extension/commit/a4537c33fd263e7ffb1fdb6031c223ba293828ee))
+
+
+### Bug Fixes
+
+* add radio to default eanbled ([53e3036](https://github.com/diplodoc-platform/tabs-extension/commit/53e30364f5d4cb9d12b93dcf1f0a624c671283cf))
+
 ## [3.4.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.3.2...v3.4.0) (2024-09-25)
 
 
