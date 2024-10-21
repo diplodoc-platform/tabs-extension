@@ -20,6 +20,7 @@ export type PluginOptions = {
 const defaultFeatures = {
     enabledVariants: {
         regular: true,
+        radio: true,
     },
 } satisfies PluginOptions['features'];
 
