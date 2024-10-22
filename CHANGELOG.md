@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.5.1](https://github.com/diplodoc-platform/tabs-extension/compare/v3.5.0...v3.5.1) (2024-10-22)
+
+
+### Bug Fixes
+
+* **package:** add exports for runtime styles ([67b4c2d](https://github.com/diplodoc-platform/tabs-extension/commit/67b4c2d7b87608cfed3ca33c163fc34a2653006a))
+
 ## [3.5.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.4.0...v3.5.0) (2024-10-21)
 
 
