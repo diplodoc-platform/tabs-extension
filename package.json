@@ -21,6 +21,19 @@
       "default": "./build/react/index.js"
     }
   },
+  "typesVersions": {
+    "*": {
+      "index.d.ts": [
+        "./build/plugin/index.d.ts"
+      ],
+      "runtime": [
+        "./build/runtime/index.d.ts"
+      ],
+      "react": [
+        "./build/react/index.d.ts"
+      ]
+    }
+  },
   "scripts": {
     "build": "run-p build:*",
     "build:js": "./esbuild/build.mjs",
