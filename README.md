@@ -100,10 +100,10 @@ Example:
 {% endlist %}
 ```
 
-Additionally, you can use radiobatons using a contruction
+Additionally, you can use different render mosed using a contruction
 
 ```
-{% list tabs radio %}
+{% list tabs <regular | radio | dropdown> %}
 
   - Tab 1
 
