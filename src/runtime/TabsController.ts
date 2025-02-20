@@ -122,6 +122,10 @@ export class TabsController {
             this.selectTab(tabs[newIndex]);
             nodes[newIndex].focus();
         });
+
+        this._document.addEventListener('DOMContentLoaded', () => {
+            this.restoreTabsPreferred();
+        });
     }
 
     onSelectTab(handler: Handler) {
@@ -163,6 +167,8 @@ export class TabsController {
             return;
         }
 
+        this.saveTabPreferred({group, key, variant});
+
         const scrollableParent = targetTab && getClosestScrollableParent(targetTab);
         const previousTargetOffset =
             scrollableParent && getOffsetByScrollableParent(targetTab, scrollableParent);
@@ -193,8 +199,25 @@ export class TabsController {
                 return this.updateHTMLDropdown(tab);
             }
         }
+    }
 
-        return 0;
+    private saveTabPreferred(tab: Required<Tab>) {
+        const tabsHistory = JSON.parse(localStorage.getItem('tabsHistory') || '{}');
+        tabsHistory[tab.group] = {key: tab.key, variant: tab.variant};
+        localStorage.setItem('tabsHistory', JSON.stringify(tabsHistory));
+    }
+
+    private restoreTabsPreferred() {
+        const tabsHistory = JSON.parse(localStorage.getItem('tabsHistory') || '{}') as Record<
+            string,
+            {key: string; variant: TabsVariants}
+        >;
+        for (const [group, fields] of Object.entries(tabsHistory)) {
+            if (group) {
+                const tab = {group, ...fields};
+                this.selectTab(tab);
+            }
+        }
     }
 
     private updateHTMLRadio(tab: Required<Tab>, target: HTMLElement | undefined) {
