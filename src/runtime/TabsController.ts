@@ -41,6 +41,8 @@ type Handler = (data: SelectedTabEvent) => void;
 
 type TabSwitchDirection = 'left' | 'right';
 
+type TabsHistory = Record<string, {key: string; variant: TabsVariants}>;
+
 export class TabsController {
     private _document: Document;
     private _onSelectTabHandlers: Set<Handler> = new Set();
@@ -123,9 +125,13 @@ export class TabsController {
             nodes[newIndex].focus();
         });
 
-        this._document.addEventListener('DOMContentLoaded', () => {
+        if (this._document.readyState === 'loading') {
+            this._document.addEventListener('DOMContentLoaded', () => {
+                this.restoreTabsPreferred();
+            });
+        } else {
             this.restoreTabsPreferred();
-        });
+        }
     }
 
     onSelectTab(handler: Handler) {
@@ -198,6 +204,9 @@ export class TabsController {
             case TabsVariants.Dropdown: {
                 return this.updateHTMLDropdown(tab);
             }
+            default: {
+                return 0;
+            }
         }
     }
 
@@ -205,13 +214,40 @@ export class TabsController {
         const tabsHistory = JSON.parse(localStorage.getItem('tabsHistory') || '{}');
         tabsHistory[tab.group] = {key: tab.key, variant: tab.variant};
         localStorage.setItem('tabsHistory', JSON.stringify(tabsHistory));
+
+        this.updateQueryParamWithTabs(tabsHistory);
+    }
+
+    private updateQueryParamWithTabs(tabsHistory: TabsHistory) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tabsArray = Object.entries(tabsHistory).map(
+            ([group, {key, variant}]) => `${group}_${key}_${variant}`,
+        );
+        urlParams.set('tabs', tabsArray.join(','));
+
+        // Update the URL without reloading the page
+        const newUrl = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`;
+        window.history.replaceState({}, document.title, newUrl);
     }
 
     private restoreTabsPreferred() {
-        const tabsHistory = JSON.parse(localStorage.getItem('tabsHistory') || '{}') as Record<
-            string,
-            {key: string; variant: TabsVariants}
-        >;
+        const tabsHistory = JSON.parse(localStorage.getItem('tabsHistory') || '{}') as TabsHistory;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('tabs')) {
+            const tabsFromQuery = urlParams.get('tabs') || '';
+            const tabConfigs = tabsFromQuery.split(',');
+
+            tabConfigs.forEach((config) => {
+                const [group, key, variant] = config.split('_');
+
+                if (group && key && Object.values(TabsVariants).includes(variant as TabsVariants)) {
+                    const keyWithSpaces = key;
+                    tabsHistory[group] = {key: keyWithSpaces, variant: variant as TabsVariants};
+                }
+            });
+        }
+
         for (const [group, fields] of Object.entries(tabsHistory)) {
             if (group) {
                 const tab = {group, ...fields};
@@ -228,7 +264,7 @@ export class TabsController {
         const singleTabSelector = isForced ? `.yfm-vertical-tab[${TAB_FORCED_OPEN}="true"]` : '';
 
         const tabs = this._document.querySelectorAll(
-            `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]${singleTabSelector}`,
+            `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}^="${key}"]${singleTabSelector}`,
         );
 
         if (isForced) {
