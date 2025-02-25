@@ -68,7 +68,6 @@ describe('Testing runtime features', () => {
 
         // eslint-disable-next-line no-new
         tabController = new TabsController(document, false);
-        tabController.clearTabsPreferred();
 
         tabs = document.querySelectorAll(
             `[${GROUP_DATA_KEY}="g0"] > .${TABS_LIST_CLASSNAME} > .${TAB_CLASSNAME}`,
@@ -80,6 +79,10 @@ describe('Testing runtime features', () => {
         if (!tabs.length) {
             throw new Error('No tabs found');
         }
+    });
+
+    afterEach(() => {
+        tabController.clearTabsPreferred();
     });
 
     test.each([0, 1, 2])('click on tab', (tabToSelectIndex) => {
@@ -223,7 +226,7 @@ describe('Testing runtime features', () => {
         tabController.restoreTabsPreferred();
 
         // Проверяем, что состояние сохранено корректно в localStorage
-        const savedState = JSON.parse(localStorage.getItem('tabsHistory'));
+        const savedState = JSON.parse(localStorage.getItem('tabsHistory') as string);
         expect(savedState).toEqual({
             g0: {
                 key: 'tab%20with%20ordered%20list',
@@ -233,22 +236,22 @@ describe('Testing runtime features', () => {
     });
 
     test('should restore the state of grouped tabs from localStorage', () => {
-        // Предполагаем, что состояние вкладок уже сохранено
-        localStorage.setItem(
-            'tabsHistory',
-            JSON.stringify({
-                g0: {
-                    key: 'Tab with ordered list',
-                    variant: 'regular',
-                },
-            }),
-        );
-
         // Сбрасываем актуальное состояние вкладок перед восстановлением
         tabs[2].click();
         expect(tabs[0].classList.contains('active')).not.toBeTruthy();
         expect(tabs[1].classList.contains('active')).not.toBeTruthy();
         expect(tabs[2].classList.contains('active')).toBeTruthy();
+
+        // Предполагаем, что состояние вкладок уже сохранено
+        localStorage.setItem(
+            'tabsHistory',
+            JSON.stringify({
+                g0: {
+                    key: 'tab%20with%20ordered%20list',
+                    variant: 'regular',
+                },
+            }),
+        );
 
         // Восстанавливаем состояние вкладок
         tabController.restoreTabsPreferred();
