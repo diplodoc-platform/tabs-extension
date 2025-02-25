@@ -46,10 +46,12 @@ type TabsHistory = Record<string, {key: string; variant: TabsVariants}>;
 export class TabsController {
     private _document: Document;
     private _onSelectTabHandlers: Set<Handler> = new Set();
+    private _updateQueryState: boolean;
 
     // TODO: remove side effects from constructor
-    constructor(document: Document) {
+    constructor(document: Document, updateQueryState = true) {
         this._document = document;
+        this._updateQueryState = updateQueryState;
 
         this._document.addEventListener('click', (event) => {
             const target = getEventTarget(event) as HTMLElement;
@@ -124,14 +126,6 @@ export class TabsController {
             this.selectTab(tabs[newIndex]);
             nodes[newIndex].focus();
         });
-
-        if (this._document.readyState === 'loading') {
-            this._document.addEventListener('DOMContentLoaded', () => {
-                this.restoreTabsPreferred();
-            });
-        } else {
-            this.restoreTabsPreferred();
-        }
     }
 
     onSelectTab(handler: Handler) {
@@ -164,6 +158,55 @@ export class TabsController {
 
     selectTab(tab: Tab) {
         this._selectTab(tab);
+    }
+
+    restoreTabsPreferred(tabsHistory: TabsHistory | undefined = undefined) {
+        if (!tabsHistory) {
+            tabsHistory = JSON.parse(localStorage.getItem('tabsHistory') || '{}') as TabsHistory;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('tabs')) {
+            const tabsFromQuery = urlParams.get('tabs') || '';
+            const tabConfigs = tabsFromQuery.split(',');
+
+            tabConfigs.forEach((config) => {
+                const [group, key, variant] = config.split('_');
+
+                if (group && key && Object.values(TabsVariants).includes(variant as TabsVariants)) {
+                    const keyWithSpaces = key;
+                    tabsHistory[group] = {key: keyWithSpaces, variant: variant as TabsVariants};
+                }
+            });
+        }
+
+        for (const [group, fields] of Object.entries(tabsHistory)) {
+            if (group) {
+                const tab = {group, ...fields};
+                this.selectTab(tab);
+            }
+        }
+    }
+
+    updateQueryParamWithTabs(tabsHistory: TabsHistory) {
+        if (!this._updateQueryState) {
+            return;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const tabsArray = Object.entries(tabsHistory).map(
+            ([group, {key, variant}]) => `${group}_${key}_${variant}`,
+        );
+        urlParams.set('tabs', tabsArray.join(','));
+
+        // Update the URL without reloading the page
+        const newUrl = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`;
+        window.history.replaceState({}, document.title, newUrl);
+    }
+
+    clearTabsPreferred() {
+        localStorage.removeItem('tabsHistory');
+        this.updateQueryParamWithTabs({});
     }
 
     private _selectTab(tab: Tab, targetTab?: HTMLElement) {
@@ -216,44 +259,6 @@ export class TabsController {
         localStorage.setItem('tabsHistory', JSON.stringify(tabsHistory));
 
         this.updateQueryParamWithTabs(tabsHistory);
-    }
-
-    private updateQueryParamWithTabs(tabsHistory: TabsHistory) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const tabsArray = Object.entries(tabsHistory).map(
-            ([group, {key, variant}]) => `${group}_${key}_${variant}`,
-        );
-        urlParams.set('tabs', tabsArray.join(','));
-
-        // Update the URL without reloading the page
-        const newUrl = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`;
-        window.history.replaceState({}, document.title, newUrl);
-    }
-
-    private restoreTabsPreferred() {
-        const tabsHistory = JSON.parse(localStorage.getItem('tabsHistory') || '{}') as TabsHistory;
-
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('tabs')) {
-            const tabsFromQuery = urlParams.get('tabs') || '';
-            const tabConfigs = tabsFromQuery.split(',');
-
-            tabConfigs.forEach((config) => {
-                const [group, key, variant] = config.split('_');
-
-                if (group && key && Object.values(TabsVariants).includes(variant as TabsVariants)) {
-                    const keyWithSpaces = key;
-                    tabsHistory[group] = {key: keyWithSpaces, variant: variant as TabsVariants};
-                }
-            });
-        }
-
-        for (const [group, fields] of Object.entries(tabsHistory)) {
-            if (group) {
-                const tab = {group, ...fields};
-                this.selectTab(tab);
-            }
-        }
     }
 
     private updateHTMLRadio(tab: Required<Tab>, target: HTMLElement | undefined) {

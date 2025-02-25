@@ -60,13 +60,15 @@ function makeTransform(params?: {transformOptions?: Partial<PluginOptions>; cont
 describe('Testing runtime features', () => {
     let tabs: NodeListOf<HTMLElement>;
     let nestedTabs: NodeListOf<HTMLElement>;
+    let tabController: TabsController;
 
     beforeEach(() => {
         const {tokens, env, md} = makeTransform();
         document.body.innerHTML = md.renderer.render(tokens, {}, env);
 
         // eslint-disable-next-line no-new
-        new TabsController(document);
+        tabController = new TabsController(document, false);
+        tabController.clearTabsPreferred();
 
         tabs = document.querySelectorAll(
             `[${GROUP_DATA_KEY}="g0"] > .${TABS_LIST_CLASSNAME} > .${TAB_CLASSNAME}`,
@@ -209,4 +211,83 @@ describe('Testing runtime features', () => {
             expect(tabs[2].classList.contains('active')).toBeTruthy();
         },
     );
+
+    test('should save the state of grouped tabs by clicking on tab[1]', () => {
+        // Выбираем вторую вкладку
+        tabs[1].click();
+        expect(tabs[0].classList.contains('active')).not.toBeTruthy();
+        expect(tabs[1].classList.contains('active')).toBeTruthy();
+        expect(tabs[2].classList.contains('active')).not.toBeTruthy();
+
+        // Сохраняем состояние вкладок
+        tabController.restoreTabsPreferred();
+
+        // Проверяем, что состояние сохранено корректно в localStorage
+        const savedState = JSON.parse(localStorage.getItem('tabsHistory'));
+        expect(savedState).toEqual({
+            g0: {
+                key: 'tab%20with%20ordered%20list',
+                variant: 'regular',
+            },
+        });
+    });
+
+    test('should restore the state of grouped tabs from localStorage', () => {
+        // Предполагаем, что состояние вкладок уже сохранено
+        localStorage.setItem(
+            'tabsHistory',
+            JSON.stringify({
+                g0: {
+                    key: 'Tab with ordered list',
+                    variant: 'regular',
+                },
+            }),
+        );
+
+        // Сбрасываем актуальное состояние вкладок перед восстановлением
+        tabs[2].click();
+        expect(tabs[0].classList.contains('active')).not.toBeTruthy();
+        expect(tabs[1].classList.contains('active')).not.toBeTruthy();
+        expect(tabs[2].classList.contains('active')).toBeTruthy();
+
+        // Восстанавливаем состояние вкладок
+        tabController.restoreTabsPreferred();
+
+        // Проверяем, что вторая вкладка стала активной после восстановления
+        expect(tabs[0].classList.contains('active')).not.toBeTruthy();
+        expect(tabs[1].classList.contains('active')).toBeTruthy();
+        expect(tabs[2].classList.contains('active')).not.toBeTruthy();
+    });
+
+    test('should handle invalid or missing saved state during restore', () => {
+        // Удаляем сохраненное состояние, чтобы имитировать отсутствие данных
+        localStorage.removeItem('tabsHistory');
+
+        // Восстанавливаем состояние вкладок
+        tabController.restoreTabsPreferred();
+
+        // Проверяем, что первая вкладка активна по умолчанию
+        expect(tabs[0].classList.contains('active')).toBeTruthy();
+        expect(tabs[1].classList.contains('active')).not.toBeTruthy();
+        expect(tabs[2].classList.contains('active')).not.toBeTruthy();
+
+        // Сохраняем неправильное состояние вкладок
+        localStorage.setItem(
+            'tabsHistory',
+            JSON.stringify({
+                g0: {
+                    key: 'Non-existent tab',
+                    variant: 'regular',
+                },
+            }),
+        );
+
+        // Восстанавливаем состояние вкладок
+        tabController.restoreTabsPreferred();
+
+        // Проверяем, что первая вкладка активна, так как ключ не совпадает с существующими вкладками
+        expect(tabs[0].classList.contains('active')).toBeTruthy();
+        expect(tabs[1].classList.contains('active')).not.toBeTruthy();
+        expect(tabs[2].classList.contains('active')).not.toBeTruthy();
+    });
 });
