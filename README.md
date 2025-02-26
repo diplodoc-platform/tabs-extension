@@ -164,7 +164,15 @@ export const App: React.FC = () => {
     );
 
     // Initialize the tabs hook with an optional callback
-    const { selectTab, selectTabById, configure, restoreTabs, getTabsFromLocalStorage, getTabsFromSearchQuery, onPageChanged } = useDiplodocTabs(selectTabHandler);
+    const {
+      selectTab,
+      selectTabById,
+      configure,
+      restoreTabs,
+      getTabsFromLocalStorage,
+      getTabsFromSearchQuery,
+      onPageChanged
+    } = useDiplodocTabs(selectTabHandler);
 
     // useEffect to configure and setup state management
     useEffect(() => {
@@ -193,7 +201,13 @@ export const App: React.FC = () => {
             ...getTabsFromSearchQuery(), // Get tabs from search query
         });
 
-    }, [configure, restoreTabs, getTabsFromLocalStorage, getTabsFromSearchQuery, onPageChanged]);
+    }, [
+      configure,
+      restoreTabs,
+      getTabsFromLocalStorage,
+      getTabsFromSearchQuery,
+      onPageChanged
+    ]);
 
     // useEffect to programmatically select tabs
     useEffect(() => {
