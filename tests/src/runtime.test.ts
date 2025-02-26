@@ -293,4 +293,17 @@ describe('Testing runtime features', () => {
         expect(tabs[1].classList.contains('active')).not.toBeTruthy();
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
     });
+
+    test('returns correct tab groups from the document', () => {
+        const expectedGroups = new Set(['g0', 'g1']);
+        const currentGroups = tabController.getCurrentPageTabGroups();
+
+        expect(new Set(currentGroups)).toEqual(expectedGroups);
+    });
+
+    test('returns empty array if no tabs are present', () => {
+        document.body.innerHTML = ''; // Clear the document body
+
+        expect(tabController.getCurrentPageTabGroups()).toEqual([]);
+    });
 });

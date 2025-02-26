@@ -41,17 +41,29 @@ type Handler = (data: SelectedTabEvent) => void;
 
 type TabSwitchDirection = 'left' | 'right';
 
-type TabsHistory = Record<string, {key: string; variant: TabsVariants}>;
+export type TabsHistory = Record<string, {key: string; variant: TabsVariants}>;
+
+export type TabsControllerOptions = {
+    saveTabsToLocalStorage: boolean;
+    saveTabsToQueryState: boolean;
+};
 
 export class TabsController {
     private _document: Document;
     private _onSelectTabHandlers: Set<Handler> = new Set();
-    private _updateQueryState: boolean;
+    private _options: TabsControllerOptions;
+    private _currentPageTabGroups: string[] = [];
 
     // TODO: remove side effects from constructor
-    constructor(document: Document, updateQueryState = true) {
+    constructor(document: Document, options: Partial<TabsControllerOptions> = {}) {
         this._document = document;
-        this._updateQueryState = updateQueryState;
+        this._options = Object.assign(
+            {
+                saveTabsToLocalStorage: false,
+                saveTabsToQueryState: false,
+            },
+            options,
+        );
 
         this._document.addEventListener('click', (event) => {
             const target = getEventTarget(event) as HTMLElement;
@@ -128,6 +140,10 @@ export class TabsController {
         });
     }
 
+    configure(options: Partial<TabsControllerOptions>) {
+        this._options = Object.assign(this._options, options);
+    }
+
     onSelectTab(handler: Handler) {
         this._onSelectTabHandlers.add(handler);
 
@@ -188,11 +204,15 @@ export class TabsController {
         }
     }
 
-    updateQueryParamWithTabs(tabsHistory: TabsHistory) {
-        if (!this._updateQueryState) {
+    updateLocalStorageWithTabs(tabsHistory: TabsHistory) {
+        if (!this._options.saveTabsToLocalStorage) {
             return;
         }
 
+        localStorage.setItem('tabsHistory', JSON.stringify(tabsHistory));
+    }
+
+    updateQueryParamWithTabs(tabsHistory: TabsHistory) {
         const urlParams = new URLSearchParams(window.location.search);
         const tabsArray = Object.entries(tabsHistory).map(
             ([group, {key, variant}]) => `${group}_${key}_${variant}`,
@@ -202,6 +222,24 @@ export class TabsController {
         // Update the URL without reloading the page
         const newUrl = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`;
         window.history.replaceState({}, document.title, newUrl);
+    }
+
+    onPageChanged() {
+        this._currentPageTabGroups = this.getCurrentPageTabGroups();
+    }
+
+    getCurrentPageTabGroups(): string[] {
+        const tabs = this._document.getElementsByClassName(TABS_CLASSNAME);
+        const groups = new Set<string>();
+
+        Array.from(tabs).forEach((tab) => {
+            const group = tab.getAttribute(GROUP_DATA_KEY);
+            if (group) {
+                groups.add(group);
+            }
+        });
+
+        return Array.from(groups);
     }
 
     clearTabsPreferred() {
@@ -254,11 +292,21 @@ export class TabsController {
     }
 
     private saveTabPreferred(tab: Required<Tab>) {
-        const tabsHistory = JSON.parse(localStorage.getItem('tabsHistory') || '{}');
-        tabsHistory[tab.group] = {key: tab.key, variant: tab.variant};
-        localStorage.setItem('tabsHistory', JSON.stringify(tabsHistory));
+        let tabsHistory = {} as TabsHistory;
 
-        this.updateQueryParamWithTabs(tabsHistory);
+        if (this._options.saveTabsToLocalStorage) {
+            tabsHistory = JSON.parse(localStorage.getItem('tabsHistory') || '{}');
+        }
+
+        tabsHistory[tab.group] = {key: tab.key, variant: tab.variant};
+
+        if (this._options.saveTabsToLocalStorage) {
+            this.updateLocalStorageWithTabs(tabsHistory);
+        }
+
+        if (this._options.saveTabsToQueryState) {
+            this.updateQueryParamWithTabs(tabsHistory);
+        }
     }
 
     private updateHTMLRadio(tab: Required<Tab>, target: HTMLElement | undefined) {
