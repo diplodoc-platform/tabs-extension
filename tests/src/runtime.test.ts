@@ -67,7 +67,11 @@ describe('Testing runtime features', () => {
         document.body.innerHTML = md.renderer.render(tokens, {}, env);
 
         // eslint-disable-next-line no-new
-        tabController = new TabsController(document, false);
+        tabController = new TabsController(document, {
+            saveTabsToLocalStorage: true,
+            saveTabsToQueryStateMode: 'page',
+        });
+        tabController.clearTabsPreferred();
 
         tabs = document.querySelectorAll(
             `[${GROUP_DATA_KEY}="g0"] > .${TABS_LIST_CLASSNAME} > .${TAB_CLASSNAME}`,
@@ -223,7 +227,10 @@ describe('Testing runtime features', () => {
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
 
         // Сохраняем состояние вкладок
-        tabController.restoreTabsPreferred();
+        tabController.restoreTabs({
+            ...tabController.getTabsFromLocalStorage(),
+            ...tabController.getTabsFromSearchQuery(),
+        });
 
         // Проверяем, что состояние сохранено корректно в localStorage
         const savedState = JSON.parse(localStorage.getItem('tabsHistory') as string);
@@ -243,6 +250,7 @@ describe('Testing runtime features', () => {
         expect(tabs[2].classList.contains('active')).toBeTruthy();
 
         // Предполагаем, что состояние вкладок уже сохранено
+
         localStorage.setItem(
             'tabsHistory',
             JSON.stringify({
@@ -252,9 +260,13 @@ describe('Testing runtime features', () => {
                 },
             }),
         );
+        tabController.updateQueryParamWithTabs({});
 
         // Восстанавливаем состояние вкладок
-        tabController.restoreTabsPreferred();
+        tabController.restoreTabs({
+            ...tabController.getTabsFromLocalStorage(),
+            ...tabController.getTabsFromSearchQuery(),
+        });
 
         // Проверяем, что вторая вкладка стала активной после восстановления
         expect(tabs[0].classList.contains('active')).not.toBeTruthy();
@@ -267,7 +279,10 @@ describe('Testing runtime features', () => {
         localStorage.removeItem('tabsHistory');
 
         // Восстанавливаем состояние вкладок
-        tabController.restoreTabsPreferred();
+        tabController.restoreTabs({
+            ...tabController.getTabsFromLocalStorage(),
+            ...tabController.getTabsFromSearchQuery(),
+        });
 
         // Проверяем, что первая вкладка активна по умолчанию
         expect(tabs[0].classList.contains('active')).toBeTruthy();
@@ -286,11 +301,40 @@ describe('Testing runtime features', () => {
         );
 
         // Восстанавливаем состояние вкладок
-        tabController.restoreTabsPreferred();
+        tabController.restoreTabs({
+            ...tabController.getTabsFromLocalStorage(),
+            ...tabController.getTabsFromSearchQuery(),
+        });
 
         // Проверяем, что первая вкладка активна, так как ключ не совпадает с существующими вкладками
         expect(tabs[0].classList.contains('active')).toBeTruthy();
         expect(tabs[1].classList.contains('active')).not.toBeTruthy();
+        expect(tabs[2].classList.contains('active')).not.toBeTruthy();
+    });
+
+    test('should restore the state of grouped tabs from search query', () => {
+        // Сбрасываем актуальное состояние вкладок перед восстановлением
+        tabs[2].click();
+        expect(tabs[0].classList.contains('active')).not.toBeTruthy();
+        expect(tabs[1].classList.contains('active')).not.toBeTruthy();
+        expect(tabs[2].classList.contains('active')).toBeTruthy();
+
+        // Предполагаем, что состояние вкладок уже сохранено в search query
+        const searchParams = new URLSearchParams();
+        searchParams.set('tabs', 'g0_tab%20with%20ordered%20list');
+
+        const newUrl = `${window.location.origin}${window.location.pathname}?${searchParams.toString()}`;
+        window.history.replaceState({}, document.title, newUrl);
+
+        // Восстанавливаем состояние вкладок
+        tabController.restoreTabs({
+            ...tabController.getTabsFromLocalStorage(),
+            ...tabController.getTabsFromSearchQuery(),
+        });
+
+        // Проверяем, что вторая вкладка стала активной после восстановления
+        expect(tabs[0].classList.contains('active')).not.toBeTruthy();
+        expect(tabs[1].classList.contains('active')).toBeTruthy();
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
     });
 

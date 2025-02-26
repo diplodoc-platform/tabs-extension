@@ -30,9 +30,22 @@ export function useDiplodocTabs(callback: UseDiplodocTabsCallback | undefined = 
             (options: Partial<TabsControllerOptions>) => window[GLOBAL_SYMBOL].configure(options),
             [],
         ),
-        restoreTabsPreferred: useCallback(
-            (tabsHistory: TabsHistory | undefined = undefined) =>
-                window[GLOBAL_SYMBOL].restoreTabsPreferred(tabsHistory),
+        restoreTabs: useCallback(
+            (tabsHistory: TabsHistory) => window[GLOBAL_SYMBOL].restoreTabs(tabsHistory),
+            [],
+        ),
+        onPageChanged: useCallback(() => window[GLOBAL_SYMBOL].onPageChanged(), []),
+        getTabsFromLocalStorage: useCallback(
+            () => window[GLOBAL_SYMBOL].getTabsFromLocalStorage(),
+            [],
+        ),
+        getTabsFromSearchQuery: useCallback(
+            () => window[GLOBAL_SYMBOL].getTabsFromSearchQuery(),
+            [],
+        ),
+        getCurrentPageTabHistory: useCallback(
+            (tabsHistory: TabsHistory) =>
+                window[GLOBAL_SYMBOL].getCurrentPageTabHistory(tabsHistory),
             [],
         ),
         updateLocalStorageWithTabs: useCallback(

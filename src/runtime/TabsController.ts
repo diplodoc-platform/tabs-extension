@@ -45,7 +45,7 @@ export type TabsHistory = Record<string, {key: string; variant: TabsVariants}>;
 
 export type TabsControllerOptions = {
     saveTabsToLocalStorage: boolean;
-    saveTabsToQueryState: boolean;
+    saveTabsToQueryStateMode: 'all' | 'page' | 'none';
 };
 
 export class TabsController {
@@ -60,7 +60,7 @@ export class TabsController {
         this._options = Object.assign(
             {
                 saveTabsToLocalStorage: false,
-                saveTabsToQueryState: false,
+                saveTabsToQueryStateMode: 'none',
             },
             options,
         );
@@ -176,32 +176,42 @@ export class TabsController {
         this._selectTab(tab);
     }
 
-    restoreTabsPreferred(tabsHistory: TabsHistory | undefined = undefined) {
-        if (!tabsHistory) {
-            tabsHistory = JSON.parse(localStorage.getItem('tabsHistory') || '{}') as TabsHistory;
-        }
-
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('tabs')) {
-            const tabsFromQuery = urlParams.get('tabs') || '';
-            const tabConfigs = tabsFromQuery.split(',');
-
-            tabConfigs.forEach((config) => {
-                const [group, key, variant] = config.split('_');
-
-                if (group && key && Object.values(TabsVariants).includes(variant as TabsVariants)) {
-                    const keyWithSpaces = key;
-                    tabsHistory[group] = {key: keyWithSpaces, variant: variant as TabsVariants};
-                }
-            });
-        }
-
+    restoreTabs(tabsHistory: TabsHistory) {
         for (const [group, fields] of Object.entries(tabsHistory)) {
             if (group) {
                 const tab = {group, ...fields};
                 this.selectTab(tab);
             }
         }
+    }
+
+    getTabsFromLocalStorage(): TabsHistory {
+        return JSON.parse(localStorage.getItem('tabsHistory') || '{}') as TabsHistory;
+    }
+
+    getTabsFromSearchQuery(): TabsHistory {
+        const tabsHistory = {} as TabsHistory;
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('tabs')) {
+            const tabsFromQuery = urlParams.get('tabs') || '';
+            const tabConfigs = tabsFromQuery.split(',');
+
+            tabConfigs.forEach((config) => {
+                const splitConfig = config.split('_');
+                const [group, key] = splitConfig;
+                let variant = TabsVariants.Regular;
+                if (splitConfig.length === 3) {
+                    variant = splitConfig[2] as TabsVariants;
+                }
+
+                if (group && key && Object.values(TabsVariants).includes(variant)) {
+                    const keyWithSpaces = key;
+                    tabsHistory[group] = {key: keyWithSpaces, variant: variant};
+                }
+            });
+        }
+
+        return tabsHistory;
     }
 
     updateLocalStorageWithTabs(tabsHistory: TabsHistory) {
@@ -214,14 +224,25 @@ export class TabsController {
 
     updateQueryParamWithTabs(tabsHistory: TabsHistory) {
         const urlParams = new URLSearchParams(window.location.search);
-        const tabsArray = Object.entries(tabsHistory).map(
-            ([group, {key, variant}]) => `${group}_${key}_${variant}`,
-        );
+        const tabsArray = Object.entries(tabsHistory).map(([group, {key, variant}]) => {
+            if (variant === TabsVariants.Regular) {
+                return `${group}_${key}`;
+            }
+            return `${group}_${key}_${variant}`;
+        });
         urlParams.set('tabs', tabsArray.join(','));
 
         // Update the URL without reloading the page
         const newUrl = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`;
         window.history.replaceState({}, document.title, newUrl);
+    }
+
+    getCurrentPageTabHistory(tabsHistory: TabsHistory) {
+        return Object.fromEntries(
+            Object.entries(tabsHistory).filter(([group]) =>
+                this._currentPageTabGroups.includes(group),
+            ),
+        );
     }
 
     onPageChanged() {
@@ -304,8 +325,15 @@ export class TabsController {
             this.updateLocalStorageWithTabs(tabsHistory);
         }
 
-        if (this._options.saveTabsToQueryState) {
-            this.updateQueryParamWithTabs(tabsHistory);
+        switch (this._options.saveTabsToQueryStateMode) {
+            case 'all': {
+                this.updateQueryParamWithTabs(tabsHistory);
+                break;
+            }
+            case 'page': {
+                this.updateQueryParamWithTabs(this.getCurrentPageTabHistory(tabsHistory));
+                break;
+            }
         }
     }
 
