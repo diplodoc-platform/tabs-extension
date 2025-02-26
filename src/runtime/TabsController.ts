@@ -345,7 +345,7 @@ export class TabsController {
         const singleTabSelector = isForced ? `.yfm-vertical-tab[${TAB_FORCED_OPEN}="true"]` : '';
 
         const tabs = this._document.querySelectorAll(
-            `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}^="${key}"]${singleTabSelector}`,
+            `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]${singleTabSelector}`,
         );
 
         if (isForced) {
