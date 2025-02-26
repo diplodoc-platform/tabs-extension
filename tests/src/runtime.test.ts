@@ -1,6 +1,6 @@
 import {PluginOptions, transform} from '../../src/plugin/transform';
-import {TabsController} from '../../src/runtime/TabsController';
-import {GROUP_DATA_KEY, TABS_LIST_CLASSNAME, TAB_CLASSNAME} from '../../src/common';
+import {TabsController, TabsHistory} from '../../src/runtime/TabsController';
+import {GROUP_DATA_KEY, TABS_LIST_CLASSNAME, TAB_CLASSNAME, TabsVariants} from '../../src/common';
 
 import {callPlugin, tokenize} from './utils';
 
@@ -349,5 +349,37 @@ describe('Testing runtime features', () => {
         document.body.innerHTML = ''; // Clear the document body
 
         expect(tabController.getCurrentPageTabGroups()).toEqual([]);
+    });
+
+    test('should correctly filter tabs history for current page', () => {
+        const tabsHistory = {
+            g0: {
+                key: 'tab%20with%20ordered%20list',
+                variant: TabsVariants.Regular,
+            },
+            g1: {
+                key: 'Nested%20tab%201',
+                variant: TabsVariants.Regular,
+            },
+            g2: {
+                key: 'Some%20other%20tab',
+                variant: TabsVariants.Regular,
+            },
+        } satisfies TabsHistory;
+
+        (tabController as unknown as Record<string, string[]>)._currentPageTabGroups = ['g0', 'g1'];
+
+        const currentPageTabHistory = tabController.getCurrentPageTabHistory(tabsHistory);
+
+        expect(currentPageTabHistory).toEqual({
+            g0: {
+                key: 'tab%20with%20ordered%20list',
+                variant: 'regular',
+            },
+            g1: {
+                key: 'Nested%20tab%201',
+                variant: 'regular',
+            },
+        });
     });
 });
