@@ -143,8 +143,10 @@ You can set your own keys for tabs with this statement:
 You can use the React hook to handle active tab changing or to select opened tabs programmatically.
 
 ```typeScript
+import type { UseDiplodocTabsCallback, Tab } from '@diplodoc/tabs-extension/react';
+
 import React, { useEffect, useCallback } from 'react';
-import { UseDiplodocTabsCallback, useDiplodocTabs, Tab } from '@diplodoc/tabs-extension/react';
+import { useDiplodocTabs } from '@diplodoc/tabs-extension/react';
 
 export const App: React.FC = () => {
     // Callback function to handle tab selection
