@@ -41,13 +41,29 @@ type Handler = (data: SelectedTabEvent) => void;
 
 type TabSwitchDirection = 'left' | 'right';
 
+export type TabsHistory = Record<string, {key: string; variant: TabsVariants}>;
+
+export type TabsControllerOptions = {
+    saveTabsToLocalStorage: boolean;
+    saveTabsToQueryStateMode: 'all' | 'page' | 'none';
+};
+
 export class TabsController {
     private _document: Document;
     private _onSelectTabHandlers: Set<Handler> = new Set();
+    private _options: TabsControllerOptions;
+    private _currentPageTabGroups: string[] = [];
 
     // TODO: remove side effects from constructor
-    constructor(document: Document) {
+    constructor(document: Document, options: Partial<TabsControllerOptions> = {}) {
         this._document = document;
+        this._options = Object.assign(
+            {
+                saveTabsToLocalStorage: false,
+                saveTabsToQueryStateMode: 'none',
+            },
+            options,
+        );
 
         this._document.addEventListener('click', (event) => {
             const target = getEventTarget(event) as HTMLElement;
@@ -124,6 +140,10 @@ export class TabsController {
         });
     }
 
+    configure(options: Partial<TabsControllerOptions>) {
+        this._options = Object.assign(this._options, options);
+    }
+
     onSelectTab(handler: Handler) {
         this._onSelectTabHandlers.add(handler);
 
@@ -156,12 +176,106 @@ export class TabsController {
         this._selectTab(tab);
     }
 
+    restoreTabs(tabsHistory: TabsHistory) {
+        for (const [group, fields] of Object.entries(tabsHistory)) {
+            if (group) {
+                const tab = {group, ...fields};
+                this.selectTab(tab);
+            }
+        }
+    }
+
+    getTabsFromLocalStorage(): TabsHistory {
+        return JSON.parse(localStorage.getItem('tabsHistory') || '{}') as TabsHistory;
+    }
+
+    getTabsFromSearchQuery(): TabsHistory {
+        const tabsHistory = {} as TabsHistory;
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('tabs')) {
+            const tabsFromQuery = urlParams.get('tabs') || '';
+            const tabConfigs = tabsFromQuery.split(',');
+
+            tabConfigs.forEach((config) => {
+                const splitConfig = config.split('_');
+                const [group, key] = splitConfig;
+                let variant = TabsVariants.Regular;
+                if (splitConfig.length === 3) {
+                    variant = splitConfig[2] as TabsVariants;
+                }
+
+                if (group && key && Object.values(TabsVariants).includes(variant)) {
+                    const keyWithSpaces = key;
+                    tabsHistory[group] = {key: keyWithSpaces, variant: variant};
+                }
+            });
+        }
+
+        return tabsHistory;
+    }
+
+    updateLocalStorageWithTabs(tabsHistory: TabsHistory) {
+        if (!this._options.saveTabsToLocalStorage) {
+            return;
+        }
+
+        localStorage.setItem('tabsHistory', JSON.stringify(tabsHistory));
+    }
+
+    updateQueryParamWithTabs(tabsHistory: TabsHistory) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tabsArray = Object.entries(tabsHistory).map(([group, {key, variant}]) => {
+            if (variant === TabsVariants.Regular) {
+                return `${group}_${key}`;
+            }
+            return `${group}_${key}_${variant}`;
+        });
+        urlParams.set('tabs', tabsArray.join(','));
+
+        // Update the URL without reloading the page
+        const newUrl = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`;
+        window.history.replaceState({}, document.title, newUrl);
+    }
+
+    getCurrentPageTabHistory(tabsHistory: TabsHistory) {
+        return Object.fromEntries(
+            Object.entries(tabsHistory).filter(([group]) =>
+                this._currentPageTabGroups.includes(group),
+            ),
+        );
+    }
+
+    onPageChanged() {
+        this._currentPageTabGroups = this.getCurrentPageTabGroups();
+    }
+
+    getCurrentPageTabGroups(): string[] {
+        const tabs = this._document.getElementsByClassName(TABS_CLASSNAME);
+        const groups = new Set<string>();
+
+        Array.from(tabs).forEach((tab) => {
+            const group = tab.getAttribute(GROUP_DATA_KEY);
+            if (group) {
+                groups.add(group);
+            }
+        });
+
+        return Array.from(groups);
+    }
+
+    clearTabsPreferred() {
+        localStorage.removeItem('tabsHistory');
+        this.updateQueryParamWithTabs({});
+    }
+
     private _selectTab(tab: Tab, targetTab?: HTMLElement) {
         const {group, key, variant} = tab;
 
         if (!group) {
             return;
         }
+
+        this.saveTabPreferred({group, key, variant});
 
         const scrollableParent = targetTab && getClosestScrollableParent(targetTab);
         const previousTargetOffset =
@@ -192,9 +306,35 @@ export class TabsController {
             case TabsVariants.Dropdown: {
                 return this.updateHTMLDropdown(tab);
             }
+            default: {
+                return 0;
+            }
+        }
+    }
+
+    private saveTabPreferred(tab: Required<Tab>) {
+        let tabsHistory = {} as TabsHistory;
+
+        if (this._options.saveTabsToLocalStorage) {
+            tabsHistory = JSON.parse(localStorage.getItem('tabsHistory') || '{}');
         }
 
-        return 0;
+        tabsHistory[tab.group] = {key: tab.key, variant: tab.variant};
+
+        if (this._options.saveTabsToLocalStorage) {
+            this.updateLocalStorageWithTabs(tabsHistory);
+        }
+
+        switch (this._options.saveTabsToQueryStateMode) {
+            case 'all': {
+                this.updateQueryParamWithTabs(tabsHistory);
+                break;
+            }
+            case 'page': {
+                this.updateQueryParamWithTabs(this.getCurrentPageTabHistory(tabsHistory));
+                break;
+            }
+        }
     }
 
     private updateHTMLRadio(tab: Required<Tab>, target: HTMLElement | undefined) {
