@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.6.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.5.1...v3.6.0) (2025-03-04)
+
+
+### Features
+
+* added support for React 19 in peerDependencies ([df44998](https://github.com/diplodoc-platform/tabs-extension/commit/df4499865c852164947672427a5f1eae7ab2d2f7))
+* save and restore grouped tabs selection ([#78](https://github.com/diplodoc-platform/tabs-extension/issues/78)) ([749a20b](https://github.com/diplodoc-platform/tabs-extension/commit/749a20b0daaf145e28e469ccde2228c89d549c19))
+* **tests:** typechecking and tests debugging correct ([317c0da](https://github.com/diplodoc-platform/tabs-extension/commit/317c0dad275bfa1e8a62e4beda672124ce29e454))
+
 ## [3.5.1](https://github.com/diplodoc-platform/tabs-extension/compare/v3.5.0...v3.5.1) (2024-10-22)
 
 
