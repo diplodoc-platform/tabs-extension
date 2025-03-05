@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.1](https://github.com/diplodoc-platform/tabs-extension/compare/v3.6.0...v3.6.1) (2025-03-05)
+
+
+### Bug Fixes
+
+* prune redundant list styles ([83480b7](https://github.com/diplodoc-platform/tabs-extension/commit/83480b75a0baffa5ff5518ce34f90ee8f33d8a74))
+
 ## [3.6.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.5.1...v3.6.0) (2025-03-04)
 
 
