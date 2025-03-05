@@ -1,17 +1,5 @@
 .yfm-tabs {
     margin-bottom: 15px;
-
-    .yfm:not(.yfm_no-list-reset) & ol {
-        counter-reset: tabs-list;
-
-        & > li {
-            counter-increment: tabs-list;
-
-            &::before {
-                content: counters(tabs-list, '.') '. ';
-            }
-        }
-    }
 }
 
 .yfm-tab-list {
