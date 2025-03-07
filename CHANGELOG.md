@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.7.0...v4.0.0) (2025-03-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* window error 500 ([#86](https://github.com/diplodoc-platform/tabs-extension/issues/86))
+
+### fixup
+
+* window error 500 ([#86](https://github.com/diplodoc-platform/tabs-extension/issues/86)) ([c076ef4](https://github.com/diplodoc-platform/tabs-extension/commit/c076ef477865f5cafc767d11616d5ffff4e62afc))
+
 ## [3.7.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.6.1...v3.7.0) (2025-03-07)
 
 
