@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.6.1...v3.7.0) (2025-03-07)
+
+
+### Features
+
+* TabsRuntime ([#84](https://github.com/diplodoc-platform/tabs-extension/issues/84)) ([d5af711](https://github.com/diplodoc-platform/tabs-extension/commit/d5af7115ef5fff1dbb50a2a990209ce797098140))
+
 ## [3.6.1](https://github.com/diplodoc-platform/tabs-extension/compare/v3.6.0...v3.6.1) (2025-03-05)
 
 
