@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.1](https://github.com/diplodoc-platform/tabs-extension/compare/v3.7.0...v3.7.1) (2025-03-10)
+
+
+### Bug Fixes
+
+* window error 500 ([#86](https://github.com/diplodoc-platform/tabs-extension/issues/86)) ([451c116](https://github.com/diplodoc-platform/tabs-extension/commit/451c116849356dace3c649043f1324d2ed8b0409))
+
 ## [3.7.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.6.1...v3.7.0) (2025-03-07)
 
 
