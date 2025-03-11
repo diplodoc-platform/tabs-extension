@@ -4,7 +4,7 @@ import {TabsControllerOptions} from '../runtime/TabsController';
 
 import {useDiplodocTabs} from './useDiplodocTabs';
 
-export function TabsRuntime(props: Partial<TabsControllerOptions> = {}) {
+export function TabsRuntime(props: Partial<TabsControllerOptions> & {router?: object} = {}) {
     if (typeof window === 'undefined') {
         return null;
     }
@@ -21,7 +21,7 @@ export function TabsRuntime(props: Partial<TabsControllerOptions> = {}) {
             ...tabs.getTabsFromLocalStorage(),
             ...tabs.getTabsFromSearchQuery(),
         });
-    }, [tabs]);
+    }, [props.router]);
 
     return null;
 }
