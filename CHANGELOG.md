@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.7.1](https://github.com/diplodoc-platform/tabs-extension/compare/v3.7.0...v3.7.1) (2025-03-11)
+
+
+### chore
+
+* readme ([#89](https://github.com/diplodoc-platform/tabs-extension/issues/89)) ([e4158bb](https://github.com/diplodoc-platform/tabs-extension/commit/e4158bb4f08c87f4a975e3088ce1a106461548bb))
+
+
+### Bug Fixes
+
+* tabs effects ([#88](https://github.com/diplodoc-platform/tabs-extension/issues/88)) ([38ea135](https://github.com/diplodoc-platform/tabs-extension/commit/38ea135f4149df32b1b93abb7de8cbe8d36951b5))
+* window error 500 ([#86](https://github.com/diplodoc-platform/tabs-extension/issues/86)) ([451c116](https://github.com/diplodoc-platform/tabs-extension/commit/451c116849356dace3c649043f1324d2ed8b0409))
+
 ## [3.7.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.6.1...v3.7.0) (2025-03-07)
 
 
