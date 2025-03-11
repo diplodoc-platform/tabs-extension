@@ -138,7 +138,26 @@ You can set your own keys for tabs with this statement:
 {% endlist %}
 ```
 
-## React hook for smart control
+## React component for easy installation
+
+```tsx
+import {TabsRuntime} from '@diplodoc/tabs-extension/react';
+
+// ...
+render() {
+    return (
+        <>
+          <TabsRuntime
+              saveTabsToLocalStorage={true}
+              saveTabsToQueryStateMode='page'
+              router={router} // optional
+          />
+        </>
+    );
+}
+```
+
+## Or you can use React hook for smart control
 
 You can use the React hook to handle active tab changing or to select opened tabs programmatically.
 
@@ -225,3 +244,7 @@ export const App: React.FC = () => {
     );
 }
 ```
+
+## For contributors
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
