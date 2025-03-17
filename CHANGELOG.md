@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.2](https://github.com/diplodoc-platform/tabs-extension/compare/v3.7.1...v3.7.2) (2025-03-17)
+
+
+### Bug Fixes
+
+* unnecessary url update ([#91](https://github.com/diplodoc-platform/tabs-extension/issues/91)) ([b851fcc](https://github.com/diplodoc-platform/tabs-extension/commit/b851fcc2da7faf955fd3268375c8d4e4e916a908))
+
 ## [3.7.1](https://github.com/diplodoc-platform/tabs-extension/compare/v3.7.0...v3.7.1) (2025-03-11)
 
 
