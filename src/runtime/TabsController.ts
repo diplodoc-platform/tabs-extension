@@ -53,6 +53,7 @@ export class TabsController {
     private _onSelectTabHandlers: Set<Handler> = new Set();
     private _options: TabsControllerOptions;
     private _currentPageTabGroups: string[] = [];
+    private _isRestoringTabs = false;
 
     // TODO: remove side effects from constructor
     constructor(document: Document, options: Partial<TabsControllerOptions> = {}) {
@@ -177,11 +178,16 @@ export class TabsController {
     }
 
     restoreTabs(tabsHistory: TabsHistory) {
-        for (const [group, fields] of Object.entries(tabsHistory)) {
-            if (group) {
-                const tab = {group, ...fields};
-                this.selectTab(tab);
+        this._isRestoringTabs = true;
+        try {
+            for (const [group, fields] of Object.entries(tabsHistory)) {
+                if (group) {
+                    const tab = {group, ...fields};
+                    this.selectTab(tab);
+                }
             }
+        } finally {
+            this._isRestoringTabs = false;
         }
     }
 
@@ -219,10 +225,20 @@ export class TabsController {
             return;
         }
 
+        // Don't update localStorage if we're just restoring tabs
+        if (this._isRestoringTabs) {
+            return;
+        }
+
         localStorage.setItem('tabsHistory', JSON.stringify(tabsHistory));
     }
 
     updateQueryParamWithTabs(tabsHistory: TabsHistory) {
+        // Don't update URL if we're just restoring tabs
+        if (this._isRestoringTabs) {
+            return;
+        }
+
         const urlParams = new URLSearchParams(window.location.search);
         const tabsArray = Object.entries(tabsHistory).map(([group, {key, variant}]) => {
             if (variant === TabsVariants.Regular) {
@@ -230,11 +246,22 @@ export class TabsController {
             }
             return `${group}_${key}_${variant}`;
         });
-        urlParams.set('tabs', tabsArray.join(','));
 
-        // Update the URL without reloading the page
-        const newUrl = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`;
-        window.history.replaceState({}, document.title, newUrl);
+        // Clear or set tabs parameter
+        if (tabsArray.length > 0) {
+            urlParams.set('tabs', tabsArray.join(','));
+        } else {
+            urlParams.delete('tabs');
+        }
+
+        // Preserve existing state
+        const currentState = history.state || {};
+
+        // Use URL constructor for proper URL handling
+        const url = new URL(window.location.href);
+        url.search = urlParams.toString();
+
+        window.history.replaceState({...currentState}, document.title, url.href);
     }
 
     getCurrentPageTabHistory(tabsHistory: TabsHistory) {
