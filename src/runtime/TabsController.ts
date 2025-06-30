@@ -7,6 +7,7 @@ import {
     TABS_DROPDOWN_SELECT,
     TABS_LIST_CLASSNAME,
     TABS_RADIO_CLASSNAME,
+    TAB_ACCORDION_CLASSNAME,
     TAB_CLASSNAME,
     TAB_DATA_ID,
     TAB_DATA_KEY,
@@ -28,6 +29,7 @@ import {
 const Selector = {
     TABS: `.${TABS_CLASSNAME}`,
     TAB_LIST: `.${TABS_LIST_CLASSNAME}`,
+    TAB_ACCORDION: `.${TAB_ACCORDION_CLASSNAME}`,
     TAB: `.${TAB_CLASSNAME}`,
     TAB_PANEL: `.${TAB_PANEL_CLASSNAME}`,
     VERTICAL_TABS: `.${TABS_RADIO_CLASSNAME}`,
@@ -518,33 +520,28 @@ export class TabsController {
         const {group, key} = tab;
 
         const tabs = this._document.querySelectorAll(
-            `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
+            `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB_ACCORDION}[${TAB_DATA_KEY}="${key}"]`,
         );
 
         let changed = 0;
 
-        tabs.forEach((tab) => {
-            const accordion = tab.closest(`[${TAB_DATA_VARIANT}=${TabsVariants.Accordion}]`);
+        tabs.forEach((targetTab) => {
+            const accordion = targetTab.closest(`[${TAB_DATA_VARIANT}=${TabsVariants.Accordion}]`);
 
             if (!accordion?.children) {
                 return;
             }
 
-            for (let i = 0; i < accordion.children.length; i += 2) {
-                const title = accordion.children.item(i);
-                const currentTab = accordion.children.item(i + 1);
+            for (let i = 0; i < accordion.children.length; i += 1) {
+                const tab = accordion.children.item(i);
 
                 changed++;
 
-                if (tab === title) {
-                    title?.classList.toggle(ACTIVE_CLASSNAME);
-                    currentTab?.classList.toggle(ACTIVE_CLASSNAME);
-
+                if (targetTab === tab) {
                     continue;
                 }
 
-                title?.classList.remove(ACTIVE_CLASSNAME);
-                currentTab?.classList.remove(ACTIVE_CLASSNAME);
+                tab?.removeAttribute('open');
             }
         });
 
@@ -648,8 +645,16 @@ export class TabsController {
             return key && group ? {group, key, variant: TabsVariants.Radio} : null;
         }
 
-        if (type === TabsVariants.Dropdown || type === TabsVariants.Accordion) {
+        if (type === TabsVariants.Dropdown) {
             const key = target.dataset.diplodocKey;
+            const group = (target.closest(Selector.TABS) as HTMLElement)?.dataset.diplodocGroup;
+            return key && group ? {group, key, variant: type} : null;
+        }
+
+        if (type === TabsVariants.Accordion) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const tab = target.parentElement!;
+            const key = tab.dataset.diplodocKey;
             const group = (target.closest(Selector.TABS) as HTMLElement)?.dataset.diplodocGroup;
             return key && group ? {group, key, variant: type} : null;
         }
