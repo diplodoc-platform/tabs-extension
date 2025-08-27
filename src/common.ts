@@ -22,6 +22,9 @@ export const TABS_DROPDOWN_SELECT = 'yfm-tabs-dropdown-select';
 
 export const TABS_ACCORDION_CLASSNAME = 'yfm-tabs-accordion';
 export const TABS_ACCORDION_CLIENT_HEIGHT = 'data-yfm-tabs-accordion-client-heights';
+export const TAB_ACCORDION_CLASSNAME = 'yfm-tab-accordion';
+export const TAB_ACCORDION_TITLE_CLASSNAME = 'yfm-tab-accordion-title';
+export const TAB_ACCORDION_CONTENT_CLASSNAME = 'yfm-tab-accordion-content';
 
 export const TABS_RADIO_CLASSNAME = 'yfm-tabs-vertical';
 export const VERTICAL_TAB_CLASSNAME = 'yfm-vertical-tab';

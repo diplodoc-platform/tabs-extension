@@ -10,13 +10,12 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.07);
 }
 
-
 .yfm-tab {
     margin-bottom: -1px;
     margin-right: 20px;
     border-bottom: 2px solid transparent;
 
-    padding: 6px 0 7px 0;
+    padding: 6px 0 7px;
     font-weight: 700;
     outline: none;
     cursor: pointer;
@@ -27,7 +26,8 @@
         margin-right: 0;
     }
 
-    &:hover, &:active {
+    &:hover,
+    &:active {
         color: #004080;
     }
 
@@ -51,11 +51,11 @@
     height: 0;
 
     &:first-child {
-        margin-top: 0 !important;
+        margin-top: 0 !important; // stylelint-disable-line declaration-no-important
     }
 
     &:last-child {
-        margin-bottom: 0 !important;
+        margin-bottom: 0 !important; // stylelint-disable-line declaration-no-important
     }
 
     &.active {
@@ -65,15 +65,14 @@
     }
 }
 
-
 .yfm-tabs-dropdown {
     position: relative;
     width: 90%;
     margin-bottom: 0;
 
-    --yfm-tabs-dropdown-color: #F2F2F2;
-    --yfm-tabs-dropdown-text-color: #A8A8A8;
-    --yfm-tabs-dropdown-color-border: #CCC;
+    --yfm-tabs-dropdown-color: #f2f2f2;
+    --yfm-tabs-dropdown-text-color: #a8a8a8;
+    --yfm-tabs-dropdown-color-border: #ccc;
 
     .yfm-tabs-dropdown-select {
         padding: 10px 30px 10px 10px;
@@ -89,11 +88,10 @@
         white-space: nowrap;
         overflow: hidden;
         z-index: 10;
-        
+
         &.filled {
             color: inherit;
         }
-
 
         &::after {
             content: '';
@@ -112,7 +110,7 @@
             & + .yfm-tabs-dropdown-menu {
                 transform: scaleY(1);
             }
-            
+
             &::after {
                 transform: rotate(0deg);
             }
@@ -126,7 +124,6 @@
         overflow-y: scroll;
         padding: 10px 0px;
         position: absolute;
-        z-index: 10;
 
         display: flex;
         flex-direction: column;
@@ -141,7 +138,7 @@
 
         transition: transform 125ms;
         transform-origin: top center;
-        
+
         & > li {
             user-select: none;
             cursor: pointer;
@@ -172,10 +169,10 @@
 
     & > .yfm-tab-panel {
         &.active {
-            border: 1px solid #F2F2F2;
+            border: 1px solid #f2f2f2;
             transform: translateY(-30px);
             border-radius: 12px;
-            padding: 40px 12px 16px 12px;
+            padding: 40px 12px 16px;
         }
     }
 
@@ -187,52 +184,60 @@
 .yfm-tabs-accordion {
     max-width: 80%;
 
-    & > .yfm-tab:first-of-type {
+    > .yfm-tab-accordion:first-of-type {
         border-top-color: transparent;
     }
-    
-    .yfm-tab {
-        padding: 8px 0 12px 6px;;
+
+    .yfm-tab-accordion {
         position: relative;
-
-        border-top: 1px solid #E5E5E5;
-        font-weight: 500;
-
+        border-top: 1px solid #e5e5e5;
         scroll-margin-top: 20px;
 
-        &::after {
-            content: '';
-            position: absolute;
-            display: block;
-            right: 10px;
-            top: 25%;
-            transform: rotate(-180deg);
-            transition: 
-                transform 300ms,
-                background-color 200ms;
-            background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIGQ9Im0zIDYgNSA1IDUtNSIvPjwvc3ZnPg==);
-            width: 20px;
-            height: 20px;
-            border-radius: 6px;
-            padding: 6px;
-        }
+        &-title {
+            position: relative;
+            padding: 8px 0 12px 6px;
+            list-style: none;
+            cursor: pointer;
+            font-weight: 500;
 
-        &.active {
-            border-bottom-color: transparent !important;
-            font-weight: 700;
+            &::-webkit-details-marker {
+                display: none;
+            }
 
             &::after {
-                transform: rotate(0);
+                content: '';
+                position: absolute;
+                top: 25%;
+                right: 10px;
+                width: 20px;
+                height: 20px;
+                padding: 6px;
+                border-radius: 6px;
+                display: block;
+                transform: rotate(-180deg);
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIGQ9Im0zIDYgNSA1IDUtNSIvPjwvc3ZnPg==');
+                transition:
+                    transform 300ms,
+                    background-color 200ms;
+            }
+
+            &:hover {
+                color: #004080;
             }
         }
 
-        &:hover {
-            color: #3F5799;
-        }
-    }
+        &[open] {
+            .yfm-tab-accordion-title {
+                font-weight: 700;
+                border-bottom-color: transparent !important; // stylelint-disable-line declaration-no-important
 
-    .yfm-tab-panel {
-        &.active {
+                &::after {
+                    transform: rotate(0);
+                }
+            }
+        }
+
+        &-content {
             margin: 10px 0 25px 6px;
         }
     }
@@ -254,7 +259,7 @@
         margin-bottom: 5px;
     }
 
-    .yfm-vertical-tab > input[type=radio] {
+    .yfm-vertical-tab > input[type='radio'] {
         visibility: hidden;
         width: 0;
         height: 0;
@@ -271,21 +276,21 @@
     }
 
     .yfm-vertical-tab > label:before {
-        font-family: initial !important;
-        content: "";
+        font-family: initial !important; // stylelint-disable-line declaration-no-important
+        content: '';
         position: absolute;
         left: 0;
         bottom: 1px;
         border-radius: 50%;
         width: 18px;
-        height: 18px; 
+        height: 18px;
         border: #dfdfdf 1px solid;
-        background-color: white;
+        background-color: #fff;
     }
-     
+
     /* Checked */
-    .yfm-vertical-tab input[type=radio]:checked + label:before {
-        content: "•";
+    .yfm-vertical-tab input[type='radio']:checked + label:before {
+        content: '•';
         background-color: rgb(82, 130, 255);
         text-align: center;
         vertical-align: middle;
@@ -294,11 +299,10 @@
         display: inline-flex;
         justify-content: center;
         align-items: center;
-        color: white;
-    }
-     
-    .yfm-vertical-tab {
-        border-bottom: unset !important;
+        color: #fff;
     }
 
+    .yfm-vertical-tab {
+        border-bottom: unset !important; // stylelint-disable-line declaration-no-important
+    }
 }
