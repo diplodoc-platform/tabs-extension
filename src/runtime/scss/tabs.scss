@@ -185,7 +185,6 @@
 }
 
 .yfm-tabs-accordion {
-    max-width: 80%;
 
     & > .yfm-tab:first-of-type {
         border-top-color: transparent;
@@ -194,6 +193,9 @@
     .yfm-tab {
         padding: 8px 0 12px 6px;;
         position: relative;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
 
         border-top: 1px solid #E5E5E5;
         font-weight: 500;
@@ -202,10 +204,7 @@
 
         &::after {
             content: '';
-            position: absolute;
             display: block;
-            right: 10px;
-            top: 25%;
             transform: rotate(-180deg);
             transition: 
                 transform 300ms,
@@ -215,6 +214,7 @@
             height: 20px;
             border-radius: 6px;
             padding: 6px;
+            align-self: center;
         }
 
         &.active {
