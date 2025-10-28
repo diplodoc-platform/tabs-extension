@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.7.3](https://github.com/diplodoc-platform/tabs-extension/compare/v3.7.2...v3.7.3) (2025-10-24)
+
+
+### Bug Fixes
+
+* Fix hidden tabs height ([6d2cee3](https://github.com/diplodoc-platform/tabs-extension/commit/6d2cee38d8e11f7da79f4047a0be572272bb44ab))
+* fix width in accordion ([#96](https://github.com/diplodoc-platform/tabs-extension/issues/96)) ([e95925e](https://github.com/diplodoc-platform/tabs-extension/commit/e95925ec7ec7eb236e7a07fa261653956bb8e0e3))
+* update version actions, node 22 ([cda3722](https://github.com/diplodoc-platform/tabs-extension/commit/cda3722fa2a41cadf7896e017ab49bf66536547d))
+
 ## [3.7.2](https://github.com/diplodoc-platform/tabs-extension/compare/v3.7.1...v3.7.2) (2025-03-17)
 
 
