@@ -186,6 +186,10 @@
 }
 
 .yfm-tabs-accordion {
+    max-width: 80%;
+    @media (max-width: 600px) {
+        max-width: 100%;
+    }
 
     & > .yfm-tab:first-of-type {
         border-top-color: transparent;
