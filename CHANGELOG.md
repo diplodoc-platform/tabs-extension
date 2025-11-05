@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.4](https://github.com/diplodoc-platform/tabs-extension/compare/v3.7.3...v3.7.4) (2025-11-05)
+
+
+### Bug Fixes
+
+* add media for accordion ([501c8f9](https://github.com/diplodoc-platform/tabs-extension/commit/501c8f9e19bcd1b9f2dccef0359d8f202c3ccfc6))
+
 ## [3.7.3](https://github.com/diplodoc-platform/tabs-extension/compare/v3.7.2...v3.7.3) (2025-10-24)
 
 
