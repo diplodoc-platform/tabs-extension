@@ -4,6 +4,10 @@
   "description": "Tabs plugin for Diplodoc transformer and builder",
   "main": "build/plugin/index.js",
   "types": "build/plugin/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:diplodoc-platform/tabs-extension.git"
+  },
   "exports": {
     ".": {
       "types": "./build/plugin/index.d.ts",
