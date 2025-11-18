@@ -1,6 +1,6 @@
 {
   "name": "@diplodoc/tabs-extension",
-  "version": "3.7.4",
+  "version": "3.7.5",
   "description": "Tabs plugin for Diplodoc transformer and builder",
   "main": "build/plugin/index.js",
   "types": "build/plugin/index.d.ts",
