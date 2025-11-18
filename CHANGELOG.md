@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.5](https://github.com/diplodoc-platform/tabs-extension/compare/v3.7.4...v3.7.5) (2025-11-18)
+
+
+### Bug Fixes
+
+* fixed circle position ([#100](https://github.com/diplodoc-platform/tabs-extension/issues/100)) ([0ae3456](https://github.com/diplodoc-platform/tabs-extension/commit/0ae3456ce993817b199e3e5ea27a7ebaa15a7d95))
+
 ## [3.7.4](https://github.com/diplodoc-platform/tabs-extension/compare/v3.7.3...v3.7.4) (2025-11-05)
 
 
