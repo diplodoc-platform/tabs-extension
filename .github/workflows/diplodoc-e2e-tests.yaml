@@ -28,6 +28,7 @@ jobs:
           [ "$(printf '%s\n' "11.5.1" "$(npm -v)" | sort -V | head -n1)" = "11.5.1" ] || npm install -g npm@latest
         shell: bash
       - run: npm ci
+        shell: bash
 
       - name: Get current branch name
         id: branch
