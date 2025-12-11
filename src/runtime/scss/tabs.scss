@@ -195,8 +195,8 @@
         border-top-color: transparent;
     }
     
-    .yfm-tab {
-        padding: 8px 0 12px 6px;;
+    & > .yfm-tab {
+        padding: 8px 0 12px 6px;
         position: relative;
         display: flex;
         justify-content: space-between;
