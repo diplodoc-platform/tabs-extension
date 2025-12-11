@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.6](https://github.com/diplodoc-platform/tabs-extension/compare/v3.7.5...v3.7.6) (2025-12-11)
+
+
+### Bug Fixes
+
+* style for accrodion ([#104](https://github.com/diplodoc-platform/tabs-extension/issues/104)) ([01a359c](https://github.com/diplodoc-platform/tabs-extension/commit/01a359ce3849f076f763b83d15b1f38f84e1d06a))
+
 ## [3.7.5](https://github.com/diplodoc-platform/tabs-extension/compare/v3.7.4...v3.7.5) (2025-11-18)
 
 
