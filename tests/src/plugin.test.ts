@@ -1,6 +1,6 @@
 import type MarkdownIt from 'markdown-it';
 
-import dedent from 'ts-dedent';
+import dd from 'ts-dedent';
 import transform from '@diplodoc/transform';
 
 import * as tabsExtension from '../../src/plugin/transform';
@@ -61,7 +61,7 @@ const convertAttrsToObject = ({attrs}: MarkdownIt.Token) =>
 
 function makeTransform(params?: {
     transformOptions?: Partial<tabsExtension.PluginOptions>;
-    content?: string[];
+    content?: string[] | string;
 }) {
     return callPlugin(
         tabsExtension.transform({
@@ -307,9 +307,192 @@ describe('plugin', () => {
          */
         clearJSON[4].map[1] = 16;
         clearJSON[11].map[1] = 16;
-        clearJSON.splice(49, 2);
 
         expect(clearJSON).toEqual(base);
+    });
+
+    it('should handle tabs inside a list item', () => {
+        const tabsInsideList = dd`
+            - Outer list item
+            
+              {% list tabs %}
+            
+              - Tab 1
+            
+                Content of tab 1
+            
+              - Tab 2
+            
+                Content of tab 2
+            
+              {% endlist %}
+            
+            - Another list item
+            `;
+
+        const {tokens: result} = makeTransform({content: tabsInsideList});
+        const clearJSON = JSON.parse(JSON.stringify(result.map(({attrs: _, ...item}) => item)));
+
+        expect(clearJSON).toMatchSnapshot();
+    });
+
+    it('should handle tabs inside a last list item', () => {
+        const tabsInsideList = dd`
+            - First list item
+
+            - Last list item
+            
+              {% list tabs %}
+            
+              - Tab 1
+            
+                Content of tab 1
+            
+              - Tab 2
+            
+                Content of tab 2
+            
+                {% endlist %}
+            `;
+
+        const {tokens: result} = makeTransform({content: tabsInsideList});
+        const clearJSON = JSON.parse(JSON.stringify(result.map(({attrs: _, ...item}) => item)));
+
+        expect(clearJSON).toMatchSnapshot();
+    });
+
+    it('should handle tabs inside a deep lists depth with indented endlist', () => {
+        const tabsInsideLists = dd`
+            - list one
+
+              - list two
+
+                - list three
+
+                  - list four
+
+                    - list five
+                    
+                      {% list tabs %}
+
+                      - tab 1
+
+                        {% endlist %}
+            `;
+
+        const {tokens: result} = makeTransform({content: tabsInsideLists});
+        const clearJSON = JSON.parse(JSON.stringify(result.map(({attrs: _, ...item}) => item)));
+
+        expect(clearJSON).toMatchSnapshot();
+    });
+
+    it('should handle tabs with list inside and indented endlist', () => {
+        const tabsWithListAndIndent = dd`
+            {% list tabs %}
+            
+            - Tab with nested list
+            
+              - Nested item 1
+              - Nested item 2
+            
+               {% endlist %}
+            `;
+
+        const {tokens: result} = makeTransform({content: tabsWithListAndIndent});
+        const clearJSON = JSON.parse(JSON.stringify(result.map(({attrs: _, ...item}) => item)));
+
+        expect(clearJSON).toMatchSnapshot();
+    });
+
+    it('should not handle tabs with content after indented endlist', () => {
+        const content = dd`
+            {% list tabs %}
+            
+            - Not Tab 1
+            
+              Content before
+            
+               {% endlist %}
+            
+              Content after
+            `;
+
+        const {tokens: result} = makeTransform({content});
+        const clearJSON = JSON.parse(JSON.stringify(result.map(({attrs: _, ...item}) => item)));
+        const hasTabs = result.some((token) => token.type === 'tabs_open');
+
+        expect(hasTabs).toBe(false);
+        expect(clearJSON).toMatchSnapshot();
+    });
+
+    it('should not handle tabs when endlist has negative indent ', () => {
+        const content = dd`
+            - List 1
+
+            - List 2
+
+              {% list tabs %}
+
+              - Tab 1
+
+              Content of tab 1
+
+            - List 3
+
+            {% endlist %}
+            `;
+
+        const {tokens: result} = makeTransform({content});
+        const clearJSON = JSON.parse(JSON.stringify(result.map(({attrs: _, ...item}) => item)));
+        const hasTabs = result.some((token) => token.type === 'tabs_open');
+
+        expect(hasTabs).toBe(false);
+        expect(clearJSON).toMatchSnapshot();
+    });
+
+    it('should handle multiple tabs with indented endlist', () => {
+        const multipleTabs = dd`
+            {% list tabs %}
+            
+            - Tab 1
+            
+              Content 1
+            
+            - Tab 2
+            
+              - List in tab 2
+              - Another item
+            
+            - Tab 3
+            
+              Content 3
+            
+               {% endlist %}
+            `;
+
+        const {tokens: result} = makeTransform({content: multipleTabs});
+        const clearJSON = JSON.parse(JSON.stringify(result.map(({attrs: _, ...item}) => item)));
+
+        expect(clearJSON).toMatchSnapshot();
+    });
+
+    it('should handle tabs inside ordered list with indented endlist', () => {
+        const content = dd`
+            1. First item
+
+               {% list tabs %}
+
+               - Tab 1
+
+                 Content
+
+                 {% endlist %}
+            `;
+
+        const {tokens: result} = makeTransform({content});
+        const clearJSON = JSON.parse(JSON.stringify(result.map(({attrs: _, ...item}) => item)));
+
+        expect(clearJSON).toMatchSnapshot();
     });
 
     describe('options', () => {
@@ -504,7 +687,7 @@ describe('plugin', () => {
         it('should render common tabs', () => {
             expect(
                 html(
-                    dedent`
+                    dd`
                     {% list tabs %}
 
                     - Tab 1
@@ -524,7 +707,7 @@ describe('plugin', () => {
         it('should render radio tabs', () => {
             expect(
                 html(
-                    dedent`
+                    dd`
                     {% list tabs radio %}
 
                     - Radio 1
