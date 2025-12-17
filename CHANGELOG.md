@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.8.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.7.6...v3.8.0) (2025-12-17)
+
+
+### Features
+
+* **plugin:** improve parsing of endlist token ([#107](https://github.com/diplodoc-platform/tabs-extension/issues/107)) ([1af4dd1](https://github.com/diplodoc-platform/tabs-extension/commit/1af4dd121e47199c1709532b4ed0a2fe394fd897))
+
 ## [3.7.6](https://github.com/diplodoc-platform/tabs-extension/compare/v3.7.5...v3.7.6) (2025-12-11)
 
 
