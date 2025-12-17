@@ -78,6 +78,7 @@ type Result =
     | {
           content: string;
           closeTokenIndex: number;
+          extraTokensAfterClose: number;
       };
 
 export function tryToFindTabs(tokens: Token[], index: number): Result {
@@ -101,9 +102,44 @@ export function tryToFindTabs(tokens: Token[], index: number): Result {
         };
     }
 
+    let extraTokensAfterClose = 0;
+    const afterEndlistIdx = closeTokenIndex + 3; // After paragraph_open, inline, paragraph_close
+
+    const openTokenLevel = tokens[index].level;
+    const closeTokenLevel = tokens[closeTokenIndex].level;
+
+    // dont handle tabs if closeToken has "negative" indent, e.g. closeToken.level < openToken.level
+    if (closeTokenLevel < openTokenLevel) {
+        tokens[index].attrSet('YFM005', 'true');
+        return {
+            step: 3,
+        };
+    }
+
+    if (closeTokenLevel > openTokenLevel) {
+        const tokenAfter = tokens[afterEndlistIdx];
+
+        // do not handle tabs unless {% endlist %} is at the end of the tab content
+        if (tokenAfter && tokenAfter.nesting >= 0) {
+            tokens[index].attrSet('YFM005', 'true');
+            return {
+                step: 3,
+            };
+        }
+
+        // remove list close tokens if `{% endlist %}` is inside the content of a tab
+        if (
+            tokenAfter?.type === 'list_item_close' &&
+            tokens[afterEndlistIdx + 1]?.type === 'bullet_list_close'
+        ) {
+            extraTokensAfterClose = 2;
+        }
+    }
+
     return {
         content: openTag,
         closeTokenIndex,
+        extraTokensAfterClose,
     };
 }
 

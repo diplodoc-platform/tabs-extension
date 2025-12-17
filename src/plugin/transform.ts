@@ -57,7 +57,7 @@ export function transform({
                     continue;
                 }
 
-                const {content, closeTokenIndex} = result;
+                const {content, closeTokenIndex, extraTokensAfterClose} = result;
 
                 const parsedProps = props(content);
 
@@ -75,12 +75,17 @@ export function transform({
                         runId,
                     });
 
-                    state.tokens.splice(i, closeTokenIndex - i + 3, ...tabsTokens);
+                    // Remove tokens including any list closing tokens after endlist
+                    state.tokens.splice(
+                        i,
+                        closeTokenIndex - i + 3 + extraTokensAfterClose,
+                        ...tabsTokens,
+                    );
 
                     i++;
                     tabsAreInserted = true;
                 } else {
-                    state.tokens.splice(i, closeTokenIndex - i + 3);
+                    state.tokens.splice(i, closeTokenIndex - i + 3 + extraTokensAfterClose);
                 }
             }
 
