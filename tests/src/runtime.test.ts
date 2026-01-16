@@ -96,13 +96,15 @@ describe('Testing runtime features', () => {
         expect(tabs[1].classList.contains('active')).not.toBeTruthy();
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
 
+        // In jsdom, composedPath() may not work correctly, so we need to ensure
+        // the event target is set correctly. Use click() which should work.
         tabs[tabToSelectIndex].click();
 
         tabs.forEach((tab, index) => {
             if (tabToSelectIndex === index) {
                 expect(tab.classList.contains('active')).toBeTruthy();
             } else {
-                expect(tab.classList.contains('active')).not.toBeTruthy();
+                expect(tab.classList.contains('active')).toBeFalsy();
             }
         });
     });
@@ -113,8 +115,11 @@ describe('Testing runtime features', () => {
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
 
         tabs[0].focus();
-        const keyDownEvent = new window.KeyboardEvent('keydown', {key: 'ArrowRight'});
-        keyDownEvent.initEvent('keydown', true, true);
+        const keyDownEvent = new window.KeyboardEvent('keydown', {
+            key: 'ArrowRight',
+            bubbles: true,
+            cancelable: true,
+        });
         tabs[0].dispatchEvent(keyDownEvent);
 
         expect(tabs[0].classList.contains('active')).not.toBeTruthy();
@@ -143,8 +148,11 @@ describe('Testing runtime features', () => {
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
 
         tabs[0].focus();
-        const keyDownEvent = new window.KeyboardEvent('keydown', {key: 'ArrowLeft'});
-        keyDownEvent.initEvent('keydown', true, true);
+        const keyDownEvent = new window.KeyboardEvent('keydown', {
+            key: 'ArrowLeft',
+            bubbles: true,
+            cancelable: true,
+        });
         tabs[0].dispatchEvent(keyDownEvent);
 
         expect(tabs[0].classList.contains('active')).not.toBeTruthy();
@@ -176,8 +184,11 @@ describe('Testing runtime features', () => {
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
 
         fakeButton.focus();
-        const keyDownEvent = new window.KeyboardEvent('keydown', {key: 'ArrowLeft'});
-        keyDownEvent.initEvent('keydown', true, true);
+        const keyDownEvent = new window.KeyboardEvent('keydown', {
+            key: 'ArrowLeft',
+            bubbles: true,
+            cancelable: true,
+        });
         fakeButton.dispatchEvent(keyDownEvent);
 
         expect(tabs[0].classList.contains('active')).toBeTruthy();
@@ -199,8 +210,11 @@ describe('Testing runtime features', () => {
             expect(tabs[1].classList.contains('active')).not.toBeTruthy();
             expect(tabs[2].classList.contains('active')).toBeTruthy();
 
-            const keyDownEvent = new window.KeyboardEvent('keydown', {key});
-            keyDownEvent.initEvent('keydown', true, true);
+            const keyDownEvent = new window.KeyboardEvent('keydown', {
+                key,
+                bubbles: true,
+                cancelable: true,
+            });
             nestedTabs[0].dispatchEvent(keyDownEvent);
 
             expect(nestedTabs[0].classList.contains('active')).not.toBeTruthy();
@@ -210,7 +224,12 @@ describe('Testing runtime features', () => {
             expect(tabs[1].classList.contains('active')).not.toBeTruthy();
             expect(tabs[2].classList.contains('active')).toBeTruthy();
 
-            nestedTabs[1].dispatchEvent(keyDownEvent);
+            const keyDownEvent2 = new window.KeyboardEvent('keydown', {
+                key,
+                bubbles: true,
+                cancelable: true,
+            });
+            nestedTabs[1].dispatchEvent(keyDownEvent2);
 
             expect(nestedTabs[0].classList.contains('active')).toBeTruthy();
             expect(nestedTabs[1].classList.contains('active')).not.toBeTruthy();
