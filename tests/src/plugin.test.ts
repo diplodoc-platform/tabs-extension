@@ -2,6 +2,7 @@ import type MarkdownIt from 'markdown-it';
 
 import dd from 'ts-dedent';
 import transform from '@diplodoc/transform';
+import {afterAll, beforeAll, describe, expect, it, vi} from 'vitest';
 
 import * as tabsExtension from '../../src/plugin/transform';
 
@@ -677,11 +678,11 @@ describe('plugin', () => {
                 0.123456789, 0.987654321, 0.678912345, 0.214365879, 0.456789123, 0.123789456,
             ];
 
-            jest.spyOn(global.Math, 'random').mockImplementation(() => values[i++ % values.length]);
+            vi.spyOn(global.Math, 'random').mockImplementation(() => values[i++ % values.length]);
         });
 
         afterAll(() => {
-            jest.spyOn(global.Math, 'random').mockRestore();
+            vi.spyOn(global.Math, 'random').mockRestore();
         });
 
         it('should render common tabs', () => {

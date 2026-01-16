@@ -1,16 +1,20 @@
 {
   "name": "@diplodoc/tabs-extension",
   "version": "3.8.0",
-  "description": "Tabs plugin for Diplodoc transformer and builder",
+  "description": "Diplodoc platform extension that provides switchable tabs in documentation",
   "main": "build/plugin/index.js",
   "types": "build/plugin/index.d.ts",
   "engines": {
     "node": ">=22",
     "npm": ">=11.5.1"
   },
+  "homepage": "https://diplodoc.com/",
   "repository": {
     "type": "git",
-    "url": "git@github.com:diplodoc-platform/tabs-extension.git"
+    "url": "git+https://github.com/diplodoc-platform/tabs-extension.git"
+  },
+  "bugs": {
+    "url": "https://github.com/diplodoc-platform/tabs-extension/issues"
   },
   "exports": {
     ".": {
@@ -31,10 +35,11 @@
   },
   "scripts": {
     "build": "run-p build:*",
-    "build:js": "./esbuild/build.mjs",
+    "build:js": "node ./esbuild/build.mjs",
     "build:declarations": "tsc --emitDeclarationOnly --outDir ./build -p tsconfig.publish.json",
+    "test": "cd tests && npm ci && npx vitest run --config ../vitest.config.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "prepublishOnly": "npm run lint && npm run test && npm run build",
-    "test": "cd tests && npm ci && npm test",
     "lint": "lint update && lint",
     "lint:fix": "lint update && lint fix",
     "pre-commit": "lint update && lint-staged",
@@ -54,17 +59,18 @@
     }
   },
   "devDependencies": {
-    "@diplodoc/lint": "^1.2.0",
+    "@diplodoc/lint": "^1.9.2",
     "@diplodoc/tsconfig": "^1.0.2",
     "@types/github-slugger": "^1.3.0",
     "@types/markdown-it": "^13.0.9",
-    "@types/node": "*",
+    "@types/node": "^22.19.7",
     "@types/react": "^18.2.14",
-    "esbuild": "^0.23.1",
+    "esbuild": "^0.27.2",
     "esbuild-sass-plugin": "^3.3.1",
     "github-slugger": "^1.5.0",
     "markdown-it": "^13.0.2",
     "npm-run-all": "^4.1.5",
-    "typescript": "^5.0.2"
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
   }
 }

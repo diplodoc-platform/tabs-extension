@@ -1,17 +1,27 @@
-# Diplodoc tabs extension
-
 [![NPM version](https://img.shields.io/npm/v/@diplodoc/tabs-extension.svg?style=flat)](https://www.npmjs.org/package/@diplodoc/tabs-extension)
 
-This is an extension of the Diplodoc platform, which allows adding switchable tabs in the documentation.
+# @diplodoc/tabs-extension
 
-The extension contains some parts:
+Diplodoc platform extension that provides switchable tabs in documentation. Allows adding interactive tab groups with multiple variants, synchronization, and state persistence.
 
-- [Prepared runtime](#prepared-runtime)
-- [MarkdownIt transform plugin](#markdownit-transform-plugin)
-- [Tabs API](#api)
-- [React hook for smart control](#react-hook-for-smart-control)
+## Features
 
-## Quickstart
+- **MarkdownIt transform plugin** — Process tab directives in YFM
+- **Browser runtime component** — Interactive tab behavior and synchronization
+- **React integration** — Component and hooks for React applications
+- **Multiple variants** — Regular, radio, dropdown, and accordion tabs
+- **State persistence** — localStorage and URL query parameter support
+- **Tab synchronization** — Synchronize active tabs across groups
+
+## Installation
+
+```bash
+npm install @diplodoc/tabs-extension
+```
+
+## Usage
+
+### Quickstart
 
 Attach the plugin to the transformer:
 

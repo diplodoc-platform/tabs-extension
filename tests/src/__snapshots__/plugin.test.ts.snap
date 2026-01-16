@@ -1,122 +1,40 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`plugin html snapshots should render common tabs 1`] = `
-<div class="yfm-tabs"
-     data-diplodoc-group="defaultTabsGroup-4fzzzxjy"
-     data-diplodoc-variant="regular"
->
-  <div class="yfm-tab-list"
-       role="tablist"
-  >
-    <div data-diplodoc-id="tab-1"
-         data-diplodoc-key="tab%201"
-         class="yfm-tab yfm-tab-group active"
-         role="tab"
-         aria-controls="zk00000y"
-         aria-selected="true"
-         tabindex="0"
-         data-diplodoc-is-active="true"
-    >
-      Tab 1
-    </div>
-    <div data-diplodoc-id="tab-2"
-         data-diplodoc-key="tab%202"
-         class="yfm-tab yfm-tab-group"
-         role="tab"
-         aria-controls="ofvc1cad"
-         aria-selected="false"
-         tabindex="-1"
-         data-diplodoc-is-active="false"
-    >
-      Tab 2
-    </div>
-  </div>
-  <div id="zk00000y"
-       class="yfm-tab-panel active"
-       role="tabpanel"
-       aria-labelledby="tab-1"
-       data-title="Tab 1"
-  >
-    <p>
-      Content of tab 1
-    </p>
-  </div>
-  <div id="ofvc1cad"
-       class="yfm-tab-panel"
-       role="tabpanel"
-       aria-labelledby="tab-2"
-       data-title="Tab 2"
-  >
-    <p>
-      Content of tab 2
-    </p>
-  </div>
+exports[`plugin > html snapshots > should render common tabs 1`] = `
+"<div class=\\"yfm-tabs\\" data-diplodoc-group=\\"defaultTabsGroup-4fzzzxjy\\" data-diplodoc-variant=\\"regular\\">
+<div class=\\"yfm-tab-list\\" role=\\"tablist\\">
+<div data-diplodoc-id=\\"tab-1\\" data-diplodoc-key=\\"tab%201\\" class=\\"yfm-tab yfm-tab-group active\\" role=\\"tab\\" aria-controls=\\"zk00000y\\" aria-selected=\\"true\\" tabindex=\\"0\\" data-diplodoc-is-active=\\"true\\">Tab 1</div>
+<div data-diplodoc-id=\\"tab-2\\" data-diplodoc-key=\\"tab%202\\" class=\\"yfm-tab yfm-tab-group\\" role=\\"tab\\" aria-controls=\\"ofvc1cad\\" aria-selected=\\"false\\" tabindex=\\"-1\\" data-diplodoc-is-active=\\"false\\">Tab 2</div>
 </div>
+<div id=\\"zk00000y\\" class=\\"yfm-tab-panel active\\" role=\\"tabpanel\\" aria-labelledby=\\"tab-1\\" data-title=\\"Tab 1\\">
+<p>Content of tab 1</p>
+</div>
+<div id=\\"ofvc1cad\\" class=\\"yfm-tab-panel\\" role=\\"tabpanel\\" aria-labelledby=\\"tab-2\\" data-title=\\"Tab 2\\">
+<p>Content of tab 2</p>
+</div>
+</div>
+"
 `;
 
-exports[`plugin html snapshots should render radio tabs 1`] = `
-<div class="yfm-tabs yfm-tabs-vertical"
-     data-diplodoc-group="defaultTabsGroup-7ptgcyuj"
-     data-diplodoc-variant="radio"
->
-  <div data-diplodoc-id="radio-1"
-       data-diplodoc-key="radio%201"
-       class="yfm-tab yfm-tab-group yfm-vertical-tab"
-       role="tab"
-       aria-controls="gfzybi81"
-       aria-selected="false"
-       tabindex="0"
-       data-diplodoc-is-active="false"
-       data-diplodoc-vertical-tab="true"
-  >
-    <input class="radio"
-           type="radio"
-    >
-    <label>
-      Radio 1
-    </label>
-  </div>
-  <div id="gfzybi81"
-       class="yfm-tab-panel"
-       role="tabpanel"
-       aria-labelledby="radio-1"
-       data-title="Radio 1"
-  >
-    <p>
-      Content of radio 1
-    </p>
-  </div>
-  <div data-diplodoc-id="radio-2"
-       data-diplodoc-key="radio%202"
-       class="yfm-tab yfm-tab-group yfm-vertical-tab"
-       role="tab"
-       aria-controls="4gfir17c"
-       aria-selected="false"
-       tabindex="-1"
-       data-diplodoc-is-active="false"
-       data-diplodoc-vertical-tab="true"
-  >
-    <input class="radio"
-           type="radio"
-    >
-    <label>
-      Radio 2
-    </label>
-  </div>
-  <div id="4gfir17c"
-       class="yfm-tab-panel"
-       role="tabpanel"
-       aria-labelledby="radio-2"
-       data-title="Radio 2"
-  >
-    <p>
-      Content of radio 2
-    </p>
-  </div>
+exports[`plugin > html snapshots > should render radio tabs 1`] = `
+"<div class=\\"yfm-tabs yfm-tabs-vertical\\" data-diplodoc-group=\\"defaultTabsGroup-7ptgcyuj\\" data-diplodoc-variant=\\"radio\\">
+<div data-diplodoc-id=\\"radio-1\\" data-diplodoc-key=\\"radio%201\\" class=\\"yfm-tab yfm-tab-group yfm-vertical-tab\\" role=\\"tab\\" aria-controls=\\"gfzybi81\\" aria-selected=\\"false\\" tabindex=\\"0\\" data-diplodoc-is-active=\\"false\\" data-diplodoc-vertical-tab=\\"true\\">
+<input class=\\"radio\\" type=\\"radio\\">
+<label>Radio 1</label></div>
+<div id=\\"gfzybi81\\" class=\\"yfm-tab-panel\\" role=\\"tabpanel\\" aria-labelledby=\\"radio-1\\" data-title=\\"Radio 1\\">
+<p>Content of radio 1</p>
 </div>
+<div data-diplodoc-id=\\"radio-2\\" data-diplodoc-key=\\"radio%202\\" class=\\"yfm-tab yfm-tab-group yfm-vertical-tab\\" role=\\"tab\\" aria-controls=\\"4gfir17c\\" aria-selected=\\"false\\" tabindex=\\"-1\\" data-diplodoc-is-active=\\"false\\" data-diplodoc-vertical-tab=\\"true\\">
+<input class=\\"radio\\" type=\\"radio\\">
+<label>Radio 2</label></div>
+<div id=\\"4gfir17c\\" class=\\"yfm-tab-panel\\" role=\\"tabpanel\\" aria-labelledby=\\"radio-2\\" data-title=\\"Radio 2\\">
+<p>Content of radio 2</p>
+</div>
+</div>
+"
 `;
 
-exports[`plugin should handle multiple tabs with indented endlist 1`] = `
+exports[`plugin > should handle multiple tabs with indented endlist 1`] = `
 [
   {
     "block": true,
@@ -796,7 +714,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
 ]
 `;
 
-exports[`plugin should handle tabs inside a deep lists depth with indented endlist 1`] = `
+exports[`plugin > should handle tabs inside a deep lists depth with indented endlist 1`] = `
 [
   {
     "block": true,
@@ -1579,7 +1497,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
 ]
 `;
 
-exports[`plugin should handle tabs inside a last list item 1`] = `
+exports[`plugin > should handle tabs inside a last list item 1`] = `
 [
   {
     "block": true,
@@ -2170,7 +2088,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
 ]
 `;
 
-exports[`plugin should handle tabs inside a list item 1`] = `
+exports[`plugin > should handle tabs inside a list item 1`] = `
 [
   {
     "block": true,
@@ -2761,7 +2679,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
 ]
 `;
 
-exports[`plugin should handle tabs inside ordered list with indented endlist 1`] = `
+exports[`plugin > should handle tabs inside ordered list with indented endlist 1`] = `
 [
   {
     "block": true,
@@ -3104,7 +3022,7 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
 ]
 `;
 
-exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
+exports[`plugin > should handle tabs with list inside and indented endlist 1`] = `
 [
   {
     "block": true,
@@ -3478,7 +3396,7 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
 ]
 `;
 
-exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
+exports[`plugin > should not handle tabs when endlist has negative indent  1`] = `
 [
   {
     "block": true,
@@ -4117,7 +4035,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
 ]
 `;
 
-exports[`plugin should not handle tabs with content after indented endlist 1`] = `
+exports[`plugin > should not handle tabs with content after indented endlist 1`] = `
 [
   {
     "block": true,
