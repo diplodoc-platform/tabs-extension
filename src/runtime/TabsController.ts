@@ -1,8 +1,10 @@
+import type {SelectedTabEvent, Tab} from '../common';
+import type {ElementOffset} from './utils';
+
 import {
     ACTIVE_CLASSNAME,
     DEFAULT_TABS_GROUP_PREFIX,
     GROUP_DATA_KEY,
-    SelectedTabEvent,
     TABS_CLASSNAME,
     TABS_DROPDOWN_SELECT,
     TABS_LIST_CLASSNAME,
@@ -13,12 +15,10 @@ import {
     TAB_DATA_VARIANT,
     TAB_FORCED_OPEN,
     TAB_PANEL_CLASSNAME,
-    Tab,
     TabsVariants,
 } from '../common';
 
 import {
-    ElementOffset,
     getClosestScrollableParent,
     getEventTarget,
     getOffsetByScrollableParent,
@@ -426,8 +426,19 @@ export class TabsController {
     private updateHTMLRegular(tab: Required<Tab>) {
         const {group, key} = tab;
 
-        const tabs = this._document.querySelectorAll(
-            `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
+        // Find all tabs in the group, then filter by key
+        // This avoids issues with CSS selector escaping of URL-encoded values
+        const tabsContainer = this._document.querySelector(
+            `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"]`,
+        );
+
+        if (!tabsContainer) {
+            return 0;
+        }
+
+        const allTabsInGroup = tabsContainer.querySelectorAll<HTMLElement>(Selector.TAB);
+        const tabs = Array.from(allTabsInGroup).filter(
+            (tabElement) => tabElement.getAttribute(TAB_DATA_KEY) === key,
         );
 
         let updated = 0;
@@ -639,22 +650,29 @@ export class TabsController {
     private getTabDataFromHTMLElement(target: HTMLElement): Tab | null {
         const type = this.getTabsType(target);
 
+        // Use getAttribute instead of dataset to get the original encoded value
+        // dataset automatically decodes URL-encoded values, but we need the encoded version
+        // for CSS selectors to match the attribute value in DOM
+        const getKey = (element: HTMLElement) => {
+            return element.getAttribute(TAB_DATA_KEY) || element.dataset.diplodocKey;
+        };
+
         if (type === TabsVariants.Radio) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const tab = target.dataset.diplodocVerticalTab ? target : target.parentElement!;
 
-            const key = tab.dataset.diplodocKey;
+            const key = getKey(tab);
             const group = (tab.closest(Selector.TABS) as HTMLElement)?.dataset.diplodocGroup;
             return key && group ? {group, key, variant: TabsVariants.Radio} : null;
         }
 
         if (type === TabsVariants.Dropdown || type === TabsVariants.Accordion) {
-            const key = target.dataset.diplodocKey;
+            const key = getKey(target);
             const group = (target.closest(Selector.TABS) as HTMLElement)?.dataset.diplodocGroup;
             return key && group ? {group, key, variant: type} : null;
         }
 
-        const key = target.dataset.diplodocKey;
+        const key = getKey(target);
         const group = (target.closest(Selector.TABS) as HTMLElement)?.dataset.diplodocGroup;
         return key && group ? {group, key, variant: TabsVariants.Regular} : null;
     }
