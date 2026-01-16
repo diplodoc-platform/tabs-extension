@@ -10,7 +10,7 @@ export function addHiddenProperty<
         });
     }
 
-    return box as B & {[P in F]: V};
+    return box as B & Record<F, V>;
 }
 
 export * from './strings';

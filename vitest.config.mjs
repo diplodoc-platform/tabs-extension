@@ -9,6 +9,10 @@ export default defineConfig({
         exclude: ['node_modules', 'build'],
         environment: 'jsdom',
         globals: true,
+        // Use a custom snapshot serializer for HTML to match Jest formatting
+        // Tests are executed from the `tests/` directory with `--config ../vitest.config.mjs`,
+        // so this path is resolved relative to this config file.
+        setupFiles: ['./tests/setup/snapshot-serializer.ts'],
         snapshotFormat: {
             escapeString: true,
             printBasicPrototype: false,

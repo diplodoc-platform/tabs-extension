@@ -1,7 +1,10 @@
+import type {PluginOptions} from '../../src/plugin/transform';
+import type {TabsHistory} from '../../src/runtime/TabsController';
+
 import {afterEach, beforeEach, describe, expect, test} from 'vitest';
 
-import {PluginOptions, transform} from '../../src/plugin/transform';
-import {TabsController, TabsHistory} from '../../src/runtime/TabsController';
+import {transform} from '../../src/plugin/transform';
+import {TabsController} from '../../src/runtime/TabsController';
 import {GROUP_DATA_KEY, TABS_LIST_CLASSNAME, TAB_CLASSNAME, TabsVariants} from '../../src/common';
 
 import {callPlugin, tokenize} from './utils';

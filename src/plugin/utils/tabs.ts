@@ -1,7 +1,8 @@
+import type {RuntimeTab} from '../types';
+
 import GithubSlugger from 'github-slugger';
 
 import {ACTIVE_TAB_TEXT} from '../../common';
-import {RuntimeTab} from '../types';
 
 const CUSTOM_ID_REGEXP = /\[?{ ?#(\S+) ?}]?/;
 

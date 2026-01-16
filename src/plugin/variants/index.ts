@@ -1,8 +1,8 @@
-import {TabsVariants} from '../../common';
+import type {TabsVariants} from '../../common';
+import type {TabsTokensGenerator} from './types';
 
 import {regular} from './regular';
 import {radio} from './radio';
-import {TabsTokensGenerator} from './types';
 import {dropdown} from './dropdown';
 import {accordion} from './accordion';
 
