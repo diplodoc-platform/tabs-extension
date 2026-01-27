@@ -15,7 +15,7 @@ import {
     TAB_PANEL_CLASSNAME,
     TabsVariants,
 } from '../../common';
-import {generateID, getName, getTabId, getTabKey, isTabSelected} from '../utils';
+import {generateID, getContentMap, getName, getTabId, getTabKey, isTabSelected} from '../utils';
 import {type RuntimeTab} from '../types';
 
 import {type TabsTokensGenerator} from './types';
@@ -83,6 +83,7 @@ export const accordion: TabsTokensGenerator = (
 
         tabOpen.map = tabs[i].listItem.map;
         tabOpen.markup = tabs[i].listItem.markup;
+        tabPanelOpen.map = getContentMap(tabs[i].tokens);
         tabText.content = tabs[i].name;
         tabInline.children = [tabText];
         tabOpen.block = true;

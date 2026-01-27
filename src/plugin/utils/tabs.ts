@@ -1,3 +1,5 @@
+import type Token from 'markdown-it/lib/token';
+
 import GithubSlugger from 'github-slugger';
 
 import {ACTIVE_TAB_TEXT} from '../../common';
@@ -58,4 +60,18 @@ function getRawId(tab: RuntimeTab): string {
     const {customAnchor, name} = parseName(tab.name);
 
     return customAnchor || name;
+}
+
+export function getContentMap(tokens: Token[]): [number, number] | null {
+    let firstMap: [number, number] | null = null;
+    let lastMap: [number, number] | null = null;
+
+    tokens.forEach(({map}) => {
+        if (map) {
+            firstMap = firstMap ?? map;
+            lastMap = map;
+        }
+    });
+
+    return firstMap && lastMap ? [firstMap[0], lastMap[1]] : null;
 }

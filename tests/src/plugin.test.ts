@@ -156,6 +156,84 @@ describe('plugin', () => {
         });
     });
 
+    test('TabPanel structure for regular tabs', () => {
+        // ACT
+        const {tokens} = makeTransform();
+
+        // ASSERT
+        const tabPanels = tokens.filter(({type}) => type === 'tab-panel_open');
+        const panelsWithoutAttrs = tabPanels.map(({attrs: _, meta: __, ...rest}) => rest);
+        expect(panelsWithoutAttrs).toMatchSnapshot();
+    });
+
+    test('TabPanel structure for radio tabs', () => {
+        // ACT
+        const {tokens} = makeTransform({content: defaultVerticalContent});
+
+        // ASSERT
+        const tabPanels = tokens.filter(({type}) => type === 'tab-panel_open');
+        const panelsWithoutAttrs = tabPanels.map(({attrs: _, meta: __, ...rest}) => rest);
+        expect(panelsWithoutAttrs).toMatchSnapshot();
+    });
+
+    test('TabPanel structure for accordion tabs', () => {
+        // ACT
+        const content = [
+            '{% list tabs accordion %}',
+            '',
+            '- Tab 1',
+            '',
+            '  Content 1',
+            '',
+            '- Tab 2',
+            '',
+            '  Content 2',
+            '',
+            '{% endlist %}',
+        ];
+
+        const {tokens} = makeTransform({
+            content,
+            transformOptions: {
+                features: {enabledVariants: {accordion: true}},
+            },
+        });
+
+        // ASSERT
+        const tabPanels = tokens.filter(({type}) => type === 'tab-panel_open');
+        const panelsWithoutAttrs = tabPanels.map(({attrs: _, meta: __, ...rest}) => rest);
+        expect(panelsWithoutAttrs).toMatchSnapshot();
+    });
+
+    test('TabPanel structure for dropdown tabs', () => {
+        // ACT
+        const content = [
+            '{% list tabs dropdown %}',
+            '',
+            '- Tab 1',
+            '',
+            '  Content 1',
+            '',
+            '- Tab 2',
+            '',
+            '  Content 2',
+            '',
+            '{% endlist %}',
+        ];
+
+        const {tokens} = makeTransform({
+            content,
+            transformOptions: {
+                features: {enabledVariants: {dropdown: true}},
+            },
+        });
+
+        // ASSERT
+        const tabPanels = tokens.filter(({type}) => type === 'tab-panel_open');
+        const panelsWithoutAttrs = tabPanels.map(({attrs: _, meta: __, ...rest}) => rest);
+        expect(panelsWithoutAttrs).toMatchSnapshot();
+    });
+
     test('Tab syntax is escaped', () => {
         // ACT
         const {tokens: result} = makeTransform({
