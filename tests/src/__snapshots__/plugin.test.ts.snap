@@ -1,5 +1,185 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`plugin TabPanel structure for accordion tabs 1`] = `
+[
+  {
+    "block": true,
+    "children": null,
+    "content": "",
+    "hidden": false,
+    "info": "",
+    "level": 0,
+    "map": [
+      4,
+      5,
+    ],
+    "markup": "",
+    "nesting": 1,
+    "tag": "div",
+    "type": "tab-panel_open",
+  },
+  {
+    "block": true,
+    "children": null,
+    "content": "",
+    "hidden": false,
+    "info": "",
+    "level": 0,
+    "map": [
+      8,
+      9,
+    ],
+    "markup": "",
+    "nesting": 1,
+    "tag": "div",
+    "type": "tab-panel_open",
+  },
+]
+`;
+
+exports[`plugin TabPanel structure for dropdown tabs 1`] = `
+[
+  {
+    "block": true,
+    "children": null,
+    "content": "",
+    "hidden": false,
+    "info": "",
+    "level": 0,
+    "map": [
+      4,
+      5,
+    ],
+    "markup": "",
+    "nesting": 1,
+    "tag": "div",
+    "type": "tab-panel_open",
+  },
+  {
+    "block": true,
+    "children": null,
+    "content": "",
+    "hidden": false,
+    "info": "",
+    "level": 0,
+    "map": [
+      8,
+      9,
+    ],
+    "markup": "",
+    "nesting": 1,
+    "tag": "div",
+    "type": "tab-panel_open",
+  },
+]
+`;
+
+exports[`plugin TabPanel structure for radio tabs 1`] = `
+[
+  {
+    "block": true,
+    "children": null,
+    "content": "",
+    "hidden": false,
+    "info": "",
+    "level": 0,
+    "map": [
+      6,
+      7,
+    ],
+    "markup": "",
+    "nesting": 1,
+    "tag": "div",
+    "type": "tab-panel_open",
+  },
+  {
+    "block": true,
+    "children": null,
+    "content": "",
+    "hidden": false,
+    "info": "",
+    "level": 0,
+    "map": [
+      9,
+      11,
+    ],
+    "markup": "",
+    "nesting": 1,
+    "tag": "div",
+    "type": "tab-panel_open",
+  },
+  {
+    "block": true,
+    "children": null,
+    "content": "",
+    "hidden": false,
+    "info": "",
+    "level": 0,
+    "map": [
+      13,
+      15,
+    ],
+    "markup": "",
+    "nesting": 1,
+    "tag": "div",
+    "type": "tab-panel_open",
+  },
+]
+`;
+
+exports[`plugin TabPanel structure for regular tabs 1`] = `
+[
+  {
+    "block": true,
+    "children": null,
+    "content": "",
+    "hidden": false,
+    "info": "",
+    "level": 0,
+    "map": [
+      6,
+      7,
+    ],
+    "markup": "",
+    "nesting": 1,
+    "tag": "div",
+    "type": "tab-panel_open",
+  },
+  {
+    "block": true,
+    "children": null,
+    "content": "",
+    "hidden": false,
+    "info": "",
+    "level": 0,
+    "map": [
+      9,
+      11,
+    ],
+    "markup": "",
+    "nesting": 1,
+    "tag": "div",
+    "type": "tab-panel_open",
+  },
+  {
+    "block": true,
+    "children": null,
+    "content": "",
+    "hidden": false,
+    "info": "",
+    "level": 0,
+    "map": [
+      13,
+      15,
+    ],
+    "markup": "",
+    "nesting": 1,
+    "tag": "div",
+    "type": "tab-panel_open",
+  },
+]
+`;
+
 exports[`plugin html snapshots should render common tabs 1`] = `
 <div class="yfm-tabs"
      data-diplodoc-group="defaultTabsGroup-4fzzzxjy"
@@ -353,7 +533,10 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": null,
+    "map": [
+      4,
+      5,
+    ],
     "markup": "",
     "meta": null,
     "nesting": 1,
@@ -445,7 +628,10 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": null,
+    "map": [
+      8,
+      10,
+    ],
     "markup": "",
     "meta": null,
     "nesting": 1,
@@ -694,7 +880,10 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": null,
+    "map": [
+      13,
+      14,
+    ],
     "markup": "",
     "meta": null,
     "nesting": 1,
@@ -1948,7 +2137,10 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": null,
+    "map": [
+      8,
+      9,
+    ],
     "markup": "",
     "meta": null,
     "nesting": 1,
@@ -2040,7 +2232,10 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": null,
+    "map": [
+      12,
+      13,
+    ],
     "markup": "",
     "meta": null,
     "nesting": 1,
@@ -2444,7 +2639,10 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": null,
+    "map": [
+      6,
+      7,
+    ],
     "markup": "",
     "meta": null,
     "nesting": 1,
@@ -2536,7 +2734,10 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": null,
+    "map": [
+      10,
+      11,
+    ],
     "markup": "",
     "meta": null,
     "nesting": 1,
@@ -2974,7 +3175,10 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": null,
+    "map": [
+      6,
+      7,
+    ],
     "markup": "",
     "meta": null,
     "nesting": 1,
@@ -3219,7 +3423,10 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": null,
+    "map": [
+      4,
+      6,
+    ],
     "markup": "",
     "meta": null,
     "nesting": 1,

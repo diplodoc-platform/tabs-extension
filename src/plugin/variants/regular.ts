@@ -13,7 +13,7 @@ import {
     TAB_PANEL_CLASSNAME,
     VERTICAL_TAB_CLASSNAME,
 } from '../../common';
-import {generateID, getName, getTabId, getTabKey, isTabSelected} from '../utils';
+import {generateID, getContentMap, getName, getTabId, getTabKey, isTabSelected} from '../utils';
 
 import {TabsTokensGenerator} from './types';
 
@@ -103,6 +103,7 @@ export const regular: TabsTokensGenerator = (
 
         tabOpen.map = tabs[i].listItem.map;
         tabOpen.markup = tabs[i].listItem.markup;
+        tabPanelOpen.map = getContentMap(tabs[i].tokens);
         tabText.content = tabs[i].name;
         tabInline.children = [tabText];
         tabOpen.block = true;

@@ -13,7 +13,7 @@ import {
     TAB_DATA_VARIANT,
     TAB_PANEL_CLASSNAME,
 } from '../../common';
-import {generateID, getName, getTabId, getTabKey, isTabSelected} from '../utils';
+import {generateID, getContentMap, getName, getTabId, getTabKey, isTabSelected} from '../utils';
 import {type RuntimeTab} from '../types';
 
 import {type TabsTokensGenerator} from './types';
@@ -124,6 +124,7 @@ export const dropdown: TabsTokensGenerator = (
 
         const tabPanelId = generateID();
 
+        tabPanelOpen.map = getContentMap(tabs[i].tokens);
         tabPanelOpen.block = true;
         tabPanelClose.block = true;
         tabPanelOpen.attrSet('id', tabPanelId);

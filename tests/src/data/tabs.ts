@@ -537,7 +537,7 @@ export const base = [
     {
         type: 'tab-panel_open',
         tag: 'div',
-        map: null,
+        map: [6, 7],
         nesting: 1,
         level: 0,
         children: null,
@@ -623,7 +623,7 @@ export const base = [
     {
         type: 'tab-panel_open',
         tag: 'div',
-        map: null,
+        map: [9, 11],
         nesting: 1,
         level: 0,
         children: null,
@@ -851,7 +851,7 @@ export const base = [
     {
         type: 'tab-panel_open',
         tag: 'div',
-        map: null,
+        map: [13, 15],
         nesting: 1,
         level: 0,
         children: null,
@@ -1326,7 +1326,7 @@ export const vertical = [
     {
         type: 'tab-panel_open',
         tag: 'div',
-        map: null,
+        map: [6, 7],
         nesting: 1,
         level: 0,
         children: null,
@@ -1512,7 +1512,7 @@ export const vertical = [
     {
         type: 'tab-panel_open',
         tag: 'div',
-        map: null,
+        map: [9, 11],
         nesting: 1,
         level: 0,
         children: null,
@@ -1840,7 +1840,7 @@ export const vertical = [
     {
         type: 'tab-panel_open',
         tag: 'div',
-        map: null,
+        map: [13, 15],
         nesting: 1,
         level: 0,
         children: null,
