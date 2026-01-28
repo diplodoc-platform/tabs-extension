@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`plugin html snapshots should render common tabs 1`] = `
+exports[`plugin > html snapshots > should render common tabs 1`] = `
 <div class="yfm-tabs"
      data-diplodoc-group="defaultTabsGroup-4fzzzxjy"
      data-diplodoc-variant="regular"
@@ -54,7 +54,7 @@ exports[`plugin html snapshots should render common tabs 1`] = `
 </div>
 `;
 
-exports[`plugin html snapshots should render radio tabs 1`] = `
+exports[`plugin > html snapshots > should render radio tabs 1`] = `
 <div class="yfm-tabs yfm-tabs-vertical"
      data-diplodoc-group="defaultTabsGroup-7ptgcyuj"
      data-diplodoc-variant="radio"
@@ -116,7 +116,7 @@ exports[`plugin html snapshots should render radio tabs 1`] = `
 </div>
 `;
 
-exports[`plugin should handle multiple tabs with indented endlist 1`] = `
+exports[`plugin > should handle multiple tabs with indented endlist 1`] = `
 [
   {
     "block": true,
@@ -796,7 +796,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
 ]
 `;
 
-exports[`plugin should handle tabs inside a deep lists depth with indented endlist 1`] = `
+exports[`plugin > should handle tabs inside a deep lists depth with indented endlist 1`] = `
 [
   {
     "block": true,
@@ -1579,7 +1579,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
 ]
 `;
 
-exports[`plugin should handle tabs inside a last list item 1`] = `
+exports[`plugin > should handle tabs inside a last list item 1`] = `
 [
   {
     "block": true,
@@ -2170,7 +2170,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
 ]
 `;
 
-exports[`plugin should handle tabs inside a list item 1`] = `
+exports[`plugin > should handle tabs inside a list item 1`] = `
 [
   {
     "block": true,
@@ -2761,7 +2761,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
 ]
 `;
 
-exports[`plugin should handle tabs inside ordered list with indented endlist 1`] = `
+exports[`plugin > should handle tabs inside ordered list with indented endlist 1`] = `
 [
   {
     "block": true,
@@ -3104,7 +3104,7 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
 ]
 `;
 
-exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
+exports[`plugin > should handle tabs with list inside and indented endlist 1`] = `
 [
   {
     "block": true,
@@ -3478,7 +3478,7 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
 ]
 `;
 
-exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
+exports[`plugin > should not handle tabs when endlist has negative indent  1`] = `
 [
   {
     "block": true,
@@ -4117,7 +4117,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
 ]
 `;
 
-exports[`plugin should not handle tabs with content after indented endlist 1`] = `
+exports[`plugin > should not handle tabs with content after indented endlist 1`] = `
 [
   {
     "block": true,

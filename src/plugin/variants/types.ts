@@ -1,8 +1,7 @@
 import type Token from 'markdown-it/lib/token';
 import type StateCore from 'markdown-it/lib/rules_core/state_core';
 import type {RuntimeTab} from '../types';
-
-import {TabsVariants} from '../../common';
+import type {TabsVariants} from '../../common';
 
 export type TokensRange = {
     start: number;

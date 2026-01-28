@@ -1,7 +1,13 @@
+import type {SelectedTabEvent, Tab} from '../common';
+import type {
+    ISelectTabByIdOptions,
+    TabsControllerOptions,
+    TabsHistory,
+} from '../runtime/TabsController';
+
 import {useCallback, useEffect} from 'react';
 
-import {GLOBAL_SYMBOL, SelectedTabEvent, Tab} from '../common';
-import {ISelectTabByIdOptions, TabsControllerOptions, TabsHistory} from '../runtime/TabsController';
+import {GLOBAL_SYMBOL} from '../common';
 
 export type {Tab};
 

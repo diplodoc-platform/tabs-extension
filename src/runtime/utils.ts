@@ -1,6 +1,13 @@
 export const getEventTarget = (event: Event) => {
-    const path = event.composedPath();
-    return Array.isArray(path) && path.length > 0 ? path[0] : event.target;
+    // In jsdom, composedPath() may return an empty array or not work correctly
+    // Fallback to event.target if composedPath is not available or empty
+    if (event.composedPath && typeof event.composedPath === 'function') {
+        const path = event.composedPath();
+        if (Array.isArray(path) && path.length > 0) {
+            return path[0];
+        }
+    }
+    return event.target;
 };
 
 export const isCustom = (event: Event) => {

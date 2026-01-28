@@ -1,8 +1,8 @@
 import type StateCore from 'markdown-it/lib/rules_core/state_core';
+import type {RuntimeTab} from './types';
+import type {TabsGenerationProps} from './variants/types';
 
-import {RuntimeTab} from './types';
 import {generateTokensByType} from './variants';
-import {TabsGenerationProps} from './variants/types';
 
 export function generateTabsTokens(
     tabs: RuntimeTab[],

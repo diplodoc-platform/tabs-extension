@@ -1,7 +1,8 @@
 /* eslint-disable no-implicit-globals */
-import Token from 'markdown-it/lib/token';
+import type StateCore from 'markdown-it/lib/rules_core/state_core';
+
 import MarkdownIt from 'markdown-it';
-import StateCore from 'markdown-it/lib/rules_core/state_core';
+import Token from 'markdown-it/lib/token';
 
 const md = new MarkdownIt();
 
