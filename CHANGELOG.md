@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.9.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.8.0...v3.9.0) (2026-01-28)
+
+
+### Features
+
+* add map attribute to tab-panel tokens ([f2c2464](https://github.com/diplodoc-platform/tabs-extension/commit/f2c2464ec2c4bdbbe2a41e8d67aa4fc555315f4e))
+
 ## [3.8.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.7.6...v3.8.0) (2025-12-17)
 
 
