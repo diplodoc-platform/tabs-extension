@@ -1,15 +1,15 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`plugin TabPanel structure for accordion tabs 1`] = `
-[
-  {
+exports[`plugin > TabPanel structure for accordion tabs 1`] = `
+Array [
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       4,
       5,
     ],
@@ -18,14 +18,14 @@ exports[`plugin TabPanel structure for accordion tabs 1`] = `
     "tag": "div",
     "type": "tab-panel_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       8,
       9,
     ],
@@ -37,16 +37,16 @@ exports[`plugin TabPanel structure for accordion tabs 1`] = `
 ]
 `;
 
-exports[`plugin TabPanel structure for dropdown tabs 1`] = `
-[
-  {
+exports[`plugin > TabPanel structure for dropdown tabs 1`] = `
+Array [
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       4,
       5,
     ],
@@ -55,14 +55,14 @@ exports[`plugin TabPanel structure for dropdown tabs 1`] = `
     "tag": "div",
     "type": "tab-panel_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       8,
       9,
     ],
@@ -74,16 +74,16 @@ exports[`plugin TabPanel structure for dropdown tabs 1`] = `
 ]
 `;
 
-exports[`plugin TabPanel structure for radio tabs 1`] = `
-[
-  {
+exports[`plugin > TabPanel structure for radio tabs 1`] = `
+Array [
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       6,
       7,
     ],
@@ -92,14 +92,14 @@ exports[`plugin TabPanel structure for radio tabs 1`] = `
     "tag": "div",
     "type": "tab-panel_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       9,
       11,
     ],
@@ -108,14 +108,14 @@ exports[`plugin TabPanel structure for radio tabs 1`] = `
     "tag": "div",
     "type": "tab-panel_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       13,
       15,
     ],
@@ -127,16 +127,16 @@ exports[`plugin TabPanel structure for radio tabs 1`] = `
 ]
 `;
 
-exports[`plugin TabPanel structure for regular tabs 1`] = `
-[
-  {
+exports[`plugin > TabPanel structure for regular tabs 1`] = `
+Array [
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       6,
       7,
     ],
@@ -145,14 +145,14 @@ exports[`plugin TabPanel structure for regular tabs 1`] = `
     "tag": "div",
     "type": "tab-panel_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       9,
       11,
     ],
@@ -161,14 +161,14 @@ exports[`plugin TabPanel structure for regular tabs 1`] = `
     "tag": "div",
     "type": "tab-panel_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       13,
       15,
     ],
@@ -180,125 +180,43 @@ exports[`plugin TabPanel structure for regular tabs 1`] = `
 ]
 `;
 
-exports[`plugin html snapshots should render common tabs 1`] = `
-<div class="yfm-tabs"
-     data-diplodoc-group="defaultTabsGroup-4fzzzxjy"
-     data-diplodoc-variant="regular"
->
-  <div class="yfm-tab-list"
-       role="tablist"
-  >
-    <div data-diplodoc-id="tab-1"
-         data-diplodoc-key="tab%201"
-         class="yfm-tab yfm-tab-group active"
-         role="tab"
-         aria-controls="zk00000y"
-         aria-selected="true"
-         tabindex="0"
-         data-diplodoc-is-active="true"
-    >
-      Tab 1
-    </div>
-    <div data-diplodoc-id="tab-2"
-         data-diplodoc-key="tab%202"
-         class="yfm-tab yfm-tab-group"
-         role="tab"
-         aria-controls="ofvc1cad"
-         aria-selected="false"
-         tabindex="-1"
-         data-diplodoc-is-active="false"
-    >
-      Tab 2
-    </div>
-  </div>
-  <div id="zk00000y"
-       class="yfm-tab-panel active"
-       role="tabpanel"
-       aria-labelledby="tab-1"
-       data-title="Tab 1"
-  >
-    <p>
-      Content of tab 1
-    </p>
-  </div>
-  <div id="ofvc1cad"
-       class="yfm-tab-panel"
-       role="tabpanel"
-       aria-labelledby="tab-2"
-       data-title="Tab 2"
-  >
-    <p>
-      Content of tab 2
-    </p>
-  </div>
+exports[`plugin > html snapshots > should render common tabs 1`] = `
+"<div class=\\"yfm-tabs\\" data-diplodoc-group=\\"defaultTabsGroup-4fzzzxjy\\" data-diplodoc-variant=\\"regular\\">
+<div class=\\"yfm-tab-list\\" role=\\"tablist\\">
+<div data-diplodoc-id=\\"tab-1\\" data-diplodoc-key=\\"tab%201\\" class=\\"yfm-tab yfm-tab-group active\\" role=\\"tab\\" aria-controls=\\"zk00000y\\" aria-selected=\\"true\\" tabindex=\\"0\\" data-diplodoc-is-active=\\"true\\">Tab 1</div>
+<div data-diplodoc-id=\\"tab-2\\" data-diplodoc-key=\\"tab%202\\" class=\\"yfm-tab yfm-tab-group\\" role=\\"tab\\" aria-controls=\\"ofvc1cad\\" aria-selected=\\"false\\" tabindex=\\"-1\\" data-diplodoc-is-active=\\"false\\">Tab 2</div>
 </div>
+<div id=\\"zk00000y\\" class=\\"yfm-tab-panel active\\" role=\\"tabpanel\\" aria-labelledby=\\"tab-1\\" data-title=\\"Tab 1\\">
+<p>Content of tab 1</p>
+</div>
+<div id=\\"ofvc1cad\\" class=\\"yfm-tab-panel\\" role=\\"tabpanel\\" aria-labelledby=\\"tab-2\\" data-title=\\"Tab 2\\">
+<p>Content of tab 2</p>
+</div>
+</div>
+"
 `;
 
-exports[`plugin html snapshots should render radio tabs 1`] = `
-<div class="yfm-tabs yfm-tabs-vertical"
-     data-diplodoc-group="defaultTabsGroup-7ptgcyuj"
-     data-diplodoc-variant="radio"
->
-  <div data-diplodoc-id="radio-1"
-       data-diplodoc-key="radio%201"
-       class="yfm-tab yfm-tab-group yfm-vertical-tab"
-       role="tab"
-       aria-controls="gfzybi81"
-       aria-selected="false"
-       tabindex="0"
-       data-diplodoc-is-active="false"
-       data-diplodoc-vertical-tab="true"
-  >
-    <input class="radio"
-           type="radio"
-    >
-    <label>
-      Radio 1
-    </label>
-  </div>
-  <div id="gfzybi81"
-       class="yfm-tab-panel"
-       role="tabpanel"
-       aria-labelledby="radio-1"
-       data-title="Radio 1"
-  >
-    <p>
-      Content of radio 1
-    </p>
-  </div>
-  <div data-diplodoc-id="radio-2"
-       data-diplodoc-key="radio%202"
-       class="yfm-tab yfm-tab-group yfm-vertical-tab"
-       role="tab"
-       aria-controls="4gfir17c"
-       aria-selected="false"
-       tabindex="-1"
-       data-diplodoc-is-active="false"
-       data-diplodoc-vertical-tab="true"
-  >
-    <input class="radio"
-           type="radio"
-    >
-    <label>
-      Radio 2
-    </label>
-  </div>
-  <div id="4gfir17c"
-       class="yfm-tab-panel"
-       role="tabpanel"
-       aria-labelledby="radio-2"
-       data-title="Radio 2"
-  >
-    <p>
-      Content of radio 2
-    </p>
-  </div>
+exports[`plugin > html snapshots > should render radio tabs 1`] = `
+"<div class=\\"yfm-tabs yfm-tabs-vertical\\" data-diplodoc-group=\\"defaultTabsGroup-7ptgcyuj\\" data-diplodoc-variant=\\"radio\\">
+<div data-diplodoc-id=\\"radio-1\\" data-diplodoc-key=\\"radio%201\\" class=\\"yfm-tab yfm-tab-group yfm-vertical-tab\\" role=\\"tab\\" aria-controls=\\"gfzybi81\\" aria-selected=\\"false\\" tabindex=\\"0\\" data-diplodoc-is-active=\\"false\\" data-diplodoc-vertical-tab=\\"true\\">
+<input class=\\"radio\\" type=\\"radio\\">
+<label>Radio 1</label></div>
+<div id=\\"gfzybi81\\" class=\\"yfm-tab-panel\\" role=\\"tabpanel\\" aria-labelledby=\\"radio-1\\" data-title=\\"Radio 1\\">
+<p>Content of radio 1</p>
 </div>
+<div data-diplodoc-id=\\"radio-2\\" data-diplodoc-key=\\"radio%202\\" class=\\"yfm-tab yfm-tab-group yfm-vertical-tab\\" role=\\"tab\\" aria-controls=\\"4gfir17c\\" aria-selected=\\"false\\" tabindex=\\"-1\\" data-diplodoc-is-active=\\"false\\" data-diplodoc-vertical-tab=\\"true\\">
+<input class=\\"radio\\" type=\\"radio\\">
+<label>Radio 2</label></div>
+<div id=\\"4gfir17c\\" class=\\"yfm-tab-panel\\" role=\\"tabpanel\\" aria-labelledby=\\"radio-2\\" data-title=\\"Radio 2\\">
+<p>Content of radio 2</p>
+</div>
+</div>
+"
 `;
 
-exports[`plugin should handle multiple tabs with indented endlist 1`] = `
-[
-  {
+exports[`plugin > should handle multiple tabs with indented endlist 1`] = `
+Array [
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -312,14 +230,14 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "div",
     "type": "tabs_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       2,
       16,
     ],
@@ -329,14 +247,14 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "div",
     "type": "tab-list_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       2,
       6,
     ],
@@ -346,10 +264,10 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "div",
     "type": "tab_open",
   },
-  {
+  Object {
     "block": false,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -376,7 +294,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -390,14 +308,14 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "div",
     "type": "tab_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       6,
       11,
     ],
@@ -407,10 +325,10 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "div",
     "type": "tab_open",
   },
-  {
+  Object {
     "block": false,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -437,7 +355,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -451,14 +369,14 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "div",
     "type": "tab_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       11,
       16,
     ],
@@ -468,10 +386,10 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "div",
     "type": "tab_open",
   },
-  {
+  Object {
     "block": false,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -498,7 +416,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -512,7 +430,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "div",
     "type": "tab_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -526,14 +444,14 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "div",
     "type": "tab-list_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       4,
       5,
     ],
@@ -543,14 +461,14 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "div",
     "type": "tab-panel_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       4,
       5,
     ],
@@ -560,10 +478,10 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -583,7 +501,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       4,
       5,
     ],
@@ -593,7 +511,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -607,7 +525,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -621,14 +539,14 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "div",
     "type": "tab-panel_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       8,
       10,
     ],
@@ -638,14 +556,14 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "div",
     "type": "tab-panel_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       8,
       11,
     ],
@@ -655,14 +573,14 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "ul",
     "type": "bullet_list_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       8,
       9,
     ],
@@ -672,14 +590,14 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "li",
     "type": "list_item_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": true,
     "info": "",
     "level": 4,
-    "map": [
+    "map": Array [
       8,
       9,
     ],
@@ -689,10 +607,10 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -712,7 +630,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "hidden": false,
     "info": "",
     "level": 5,
-    "map": [
+    "map": Array [
       8,
       9,
     ],
@@ -722,7 +640,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -736,7 +654,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -750,14 +668,14 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "li",
     "type": "list_item_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       9,
       11,
     ],
@@ -767,14 +685,14 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "li",
     "type": "list_item_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": true,
     "info": "",
     "level": 4,
-    "map": [
+    "map": Array [
       9,
       10,
     ],
@@ -784,10 +702,10 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -807,7 +725,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "hidden": false,
     "info": "",
     "level": 5,
-    "map": [
+    "map": Array [
       9,
       10,
     ],
@@ -817,7 +735,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -831,7 +749,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -845,7 +763,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "li",
     "type": "list_item_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -859,7 +777,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "ul",
     "type": "bullet_list_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -873,14 +791,14 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "div",
     "type": "tab-panel_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       13,
       14,
     ],
@@ -890,14 +808,14 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "div",
     "type": "tab-panel_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       13,
       14,
     ],
@@ -907,10 +825,10 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -930,7 +848,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       13,
       14,
     ],
@@ -940,7 +858,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -954,7 +872,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -968,7 +886,7 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
     "tag": "div",
     "type": "tab-panel_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -985,16 +903,16 @@ exports[`plugin should handle multiple tabs with indented endlist 1`] = `
 ]
 `;
 
-exports[`plugin should handle tabs inside a deep lists depth with indented endlist 1`] = `
-[
-  {
+exports[`plugin > should handle tabs inside a deep lists depth with indented endlist 1`] = `
+Array [
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       0,
       15,
     ],
@@ -1004,14 +922,14 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "ul",
     "type": "bullet_list_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 1,
-    "map": [
+    "map": Array [
       0,
       15,
     ],
@@ -1021,14 +939,14 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "li",
     "type": "list_item_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       0,
       1,
     ],
@@ -1038,10 +956,10 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -1061,7 +979,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       0,
       1,
     ],
@@ -1071,7 +989,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1085,14 +1003,14 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       2,
       15,
     ],
@@ -1102,14 +1020,14 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "ul",
     "type": "bullet_list_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       2,
       15,
     ],
@@ -1119,14 +1037,14 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "li",
     "type": "list_item_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 4,
-    "map": [
+    "map": Array [
       2,
       3,
     ],
@@ -1136,10 +1054,10 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -1159,7 +1077,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "hidden": false,
     "info": "",
     "level": 5,
-    "map": [
+    "map": Array [
       2,
       3,
     ],
@@ -1169,7 +1087,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1183,14 +1101,14 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 4,
-    "map": [
+    "map": Array [
       4,
       15,
     ],
@@ -1200,14 +1118,14 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "ul",
     "type": "bullet_list_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 5,
-    "map": [
+    "map": Array [
       4,
       15,
     ],
@@ -1217,14 +1135,14 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "li",
     "type": "list_item_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 6,
-    "map": [
+    "map": Array [
       4,
       5,
     ],
@@ -1234,10 +1152,10 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -1257,7 +1175,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "hidden": false,
     "info": "",
     "level": 7,
-    "map": [
+    "map": Array [
       4,
       5,
     ],
@@ -1267,7 +1185,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1281,14 +1199,14 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 6,
-    "map": [
+    "map": Array [
       6,
       15,
     ],
@@ -1298,14 +1216,14 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "ul",
     "type": "bullet_list_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 7,
-    "map": [
+    "map": Array [
       6,
       15,
     ],
@@ -1315,14 +1233,14 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "li",
     "type": "list_item_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 8,
-    "map": [
+    "map": Array [
       6,
       7,
     ],
@@ -1332,10 +1250,10 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -1355,7 +1273,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "hidden": false,
     "info": "",
     "level": 9,
-    "map": [
+    "map": Array [
       6,
       7,
     ],
@@ -1365,7 +1283,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1379,14 +1297,14 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 8,
-    "map": [
+    "map": Array [
       8,
       15,
     ],
@@ -1396,14 +1314,14 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "ul",
     "type": "bullet_list_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 9,
-    "map": [
+    "map": Array [
       8,
       15,
     ],
@@ -1413,14 +1331,14 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "li",
     "type": "list_item_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 10,
-    "map": [
+    "map": Array [
       8,
       9,
     ],
@@ -1430,10 +1348,10 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -1453,7 +1371,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "hidden": false,
     "info": "",
     "level": 11,
-    "map": [
+    "map": Array [
       8,
       9,
     ],
@@ -1463,7 +1381,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1477,7 +1395,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1491,14 +1409,14 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "div",
     "type": "tabs_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       12,
       15,
     ],
@@ -1508,14 +1426,14 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "div",
     "type": "tab-list_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       12,
       15,
     ],
@@ -1525,10 +1443,10 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "div",
     "type": "tab_open",
   },
-  {
+  Object {
     "block": false,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -1555,7 +1473,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1569,7 +1487,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "div",
     "type": "tab_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1583,7 +1501,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "div",
     "type": "tab-list_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1597,7 +1515,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "div",
     "type": "tab-panel_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1611,7 +1529,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "div",
     "type": "tab-panel_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1625,7 +1543,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "div",
     "type": "tabs_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1639,7 +1557,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "li",
     "type": "list_item_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1653,7 +1571,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "ul",
     "type": "bullet_list_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1667,7 +1585,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "li",
     "type": "list_item_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1681,7 +1599,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "ul",
     "type": "bullet_list_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1695,7 +1613,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "li",
     "type": "list_item_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1709,7 +1627,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "ul",
     "type": "bullet_list_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1723,7 +1641,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "li",
     "type": "list_item_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1737,7 +1655,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "ul",
     "type": "bullet_list_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1751,7 +1669,7 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
     "tag": "li",
     "type": "list_item_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1768,16 +1686,16 @@ exports[`plugin should handle tabs inside a deep lists depth with indented endli
 ]
 `;
 
-exports[`plugin should handle tabs inside a last list item 1`] = `
-[
-  {
+exports[`plugin > should handle tabs inside a last list item 1`] = `
+Array [
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       0,
       15,
     ],
@@ -1787,14 +1705,14 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "ul",
     "type": "bullet_list_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 1,
-    "map": [
+    "map": Array [
       0,
       2,
     ],
@@ -1804,14 +1722,14 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "li",
     "type": "list_item_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       0,
       1,
     ],
@@ -1821,10 +1739,10 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -1844,7 +1762,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       0,
       1,
     ],
@@ -1854,7 +1772,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1868,7 +1786,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1882,14 +1800,14 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "li",
     "type": "list_item_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 1,
-    "map": [
+    "map": Array [
       2,
       15,
     ],
@@ -1899,14 +1817,14 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "li",
     "type": "list_item_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       2,
       3,
     ],
@@ -1916,10 +1834,10 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -1939,7 +1857,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       2,
       3,
     ],
@@ -1949,7 +1867,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1963,7 +1881,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -1977,14 +1895,14 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "div",
     "type": "tabs_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       6,
       15,
     ],
@@ -1994,14 +1912,14 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "div",
     "type": "tab-list_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       6,
       10,
     ],
@@ -2011,10 +1929,10 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "div",
     "type": "tab_open",
   },
-  {
+  Object {
     "block": false,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -2041,7 +1959,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2055,14 +1973,14 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "div",
     "type": "tab_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       10,
       15,
     ],
@@ -2072,10 +1990,10 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "div",
     "type": "tab_open",
   },
-  {
+  Object {
     "block": false,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -2102,7 +2020,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2116,7 +2034,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "div",
     "type": "tab_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2130,14 +2048,14 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "div",
     "type": "tab-list_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       8,
       9,
     ],
@@ -2147,14 +2065,14 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "div",
     "type": "tab-panel_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 4,
-    "map": [
+    "map": Array [
       8,
       9,
     ],
@@ -2164,10 +2082,10 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -2187,7 +2105,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "hidden": false,
     "info": "",
     "level": 5,
-    "map": [
+    "map": Array [
       8,
       9,
     ],
@@ -2197,7 +2115,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2211,7 +2129,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2225,14 +2143,14 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "div",
     "type": "tab-panel_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       12,
       13,
     ],
@@ -2242,14 +2160,14 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "div",
     "type": "tab-panel_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 4,
-    "map": [
+    "map": Array [
       12,
       13,
     ],
@@ -2259,10 +2177,10 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -2282,7 +2200,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "hidden": false,
     "info": "",
     "level": 5,
-    "map": [
+    "map": Array [
       12,
       13,
     ],
@@ -2292,7 +2210,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2306,7 +2224,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2320,7 +2238,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "div",
     "type": "tab-panel_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2334,7 +2252,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "div",
     "type": "tabs_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2348,7 +2266,7 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
     "tag": "li",
     "type": "list_item_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2365,16 +2283,16 @@ exports[`plugin should handle tabs inside a last list item 1`] = `
 ]
 `;
 
-exports[`plugin should handle tabs inside a list item 1`] = `
-[
-  {
+exports[`plugin > should handle tabs inside a list item 1`] = `
+Array [
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       0,
       15,
     ],
@@ -2384,14 +2302,14 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "ul",
     "type": "bullet_list_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 1,
-    "map": [
+    "map": Array [
       0,
       14,
     ],
@@ -2401,14 +2319,14 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "li",
     "type": "list_item_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       0,
       1,
     ],
@@ -2418,10 +2336,10 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -2441,7 +2359,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       0,
       1,
     ],
@@ -2451,7 +2369,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2465,7 +2383,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2479,14 +2397,14 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "div",
     "type": "tabs_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       4,
       12,
     ],
@@ -2496,14 +2414,14 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "div",
     "type": "tab-list_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       4,
       8,
     ],
@@ -2513,10 +2431,10 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "div",
     "type": "tab_open",
   },
-  {
+  Object {
     "block": false,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -2543,7 +2461,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2557,14 +2475,14 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "div",
     "type": "tab_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       8,
       12,
     ],
@@ -2574,10 +2492,10 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "div",
     "type": "tab_open",
   },
-  {
+  Object {
     "block": false,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -2604,7 +2522,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2618,7 +2536,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "div",
     "type": "tab_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2632,14 +2550,14 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "div",
     "type": "tab-list_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       6,
       7,
     ],
@@ -2649,14 +2567,14 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "div",
     "type": "tab-panel_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 4,
-    "map": [
+    "map": Array [
       6,
       7,
     ],
@@ -2666,10 +2584,10 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -2689,7 +2607,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "hidden": false,
     "info": "",
     "level": 5,
-    "map": [
+    "map": Array [
       6,
       7,
     ],
@@ -2699,7 +2617,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2713,7 +2631,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2727,14 +2645,14 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "div",
     "type": "tab-panel_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       10,
       11,
     ],
@@ -2744,14 +2662,14 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "div",
     "type": "tab-panel_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 4,
-    "map": [
+    "map": Array [
       10,
       11,
     ],
@@ -2761,10 +2679,10 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -2784,7 +2702,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "hidden": false,
     "info": "",
     "level": 5,
-    "map": [
+    "map": Array [
       10,
       11,
     ],
@@ -2794,7 +2712,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2808,7 +2726,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2822,7 +2740,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "div",
     "type": "tab-panel_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2836,7 +2754,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "div",
     "type": "tabs_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2850,14 +2768,14 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "li",
     "type": "list_item_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 1,
-    "map": [
+    "map": Array [
       14,
       15,
     ],
@@ -2867,14 +2785,14 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "li",
     "type": "list_item_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       14,
       15,
     ],
@@ -2884,10 +2802,10 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -2907,7 +2825,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       14,
       15,
     ],
@@ -2917,7 +2835,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2931,7 +2849,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2945,7 +2863,7 @@ exports[`plugin should handle tabs inside a list item 1`] = `
     "tag": "li",
     "type": "list_item_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -2962,16 +2880,16 @@ exports[`plugin should handle tabs inside a list item 1`] = `
 ]
 `;
 
-exports[`plugin should handle tabs inside ordered list with indented endlist 1`] = `
-[
-  {
+exports[`plugin > should handle tabs inside ordered list with indented endlist 1`] = `
+Array [
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       0,
       9,
     ],
@@ -2981,14 +2899,14 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "tag": "ol",
     "type": "ordered_list_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "1",
     "level": 1,
-    "map": [
+    "map": Array [
       0,
       9,
     ],
@@ -2998,14 +2916,14 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "tag": "li",
     "type": "list_item_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       0,
       1,
     ],
@@ -3015,10 +2933,10 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -3038,7 +2956,7 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       0,
       1,
     ],
@@ -3048,7 +2966,7 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3062,7 +2980,7 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3076,14 +2994,14 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "tag": "div",
     "type": "tabs_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       4,
       9,
     ],
@@ -3093,14 +3011,14 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "tag": "div",
     "type": "tab-list_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       4,
       9,
     ],
@@ -3110,10 +3028,10 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "tag": "div",
     "type": "tab_open",
   },
-  {
+  Object {
     "block": false,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -3140,7 +3058,7 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3154,7 +3072,7 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "tag": "div",
     "type": "tab_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3168,14 +3086,14 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "tag": "div",
     "type": "tab-list_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       6,
       7,
     ],
@@ -3185,14 +3103,14 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "tag": "div",
     "type": "tab-panel_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 4,
-    "map": [
+    "map": Array [
       6,
       7,
     ],
@@ -3202,10 +3120,10 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -3225,7 +3143,7 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "hidden": false,
     "info": "",
     "level": 5,
-    "map": [
+    "map": Array [
       6,
       7,
     ],
@@ -3235,7 +3153,7 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3249,7 +3167,7 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3263,7 +3181,7 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "tag": "div",
     "type": "tab-panel_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3277,7 +3195,7 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "tag": "div",
     "type": "tabs_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3291,7 +3209,7 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
     "tag": "li",
     "type": "list_item_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3308,9 +3226,9 @@ exports[`plugin should handle tabs inside ordered list with indented endlist 1`]
 ]
 `;
 
-exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
-[
-  {
+exports[`plugin > should handle tabs with list inside and indented endlist 1`] = `
+Array [
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3324,14 +3242,14 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "div",
     "type": "tabs_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       2,
       8,
     ],
@@ -3341,14 +3259,14 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "div",
     "type": "tab-list_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       2,
       8,
     ],
@@ -3358,10 +3276,10 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "div",
     "type": "tab_open",
   },
-  {
+  Object {
     "block": false,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -3388,7 +3306,7 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3402,7 +3320,7 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "div",
     "type": "tab_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3416,14 +3334,14 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "div",
     "type": "tab-list_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       4,
       6,
     ],
@@ -3433,14 +3351,14 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "div",
     "type": "tab-panel_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       4,
       7,
     ],
@@ -3450,14 +3368,14 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "ul",
     "type": "bullet_list_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       4,
       5,
     ],
@@ -3467,14 +3385,14 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "li",
     "type": "list_item_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": true,
     "info": "",
     "level": 4,
-    "map": [
+    "map": Array [
       4,
       5,
     ],
@@ -3484,10 +3402,10 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -3507,7 +3425,7 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "hidden": false,
     "info": "",
     "level": 5,
-    "map": [
+    "map": Array [
       4,
       5,
     ],
@@ -3517,7 +3435,7 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3531,7 +3449,7 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3545,14 +3463,14 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "li",
     "type": "list_item_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       5,
       7,
     ],
@@ -3562,14 +3480,14 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "li",
     "type": "list_item_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": true,
     "info": "",
     "level": 4,
-    "map": [
+    "map": Array [
       5,
       6,
     ],
@@ -3579,10 +3497,10 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -3602,7 +3520,7 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "hidden": false,
     "info": "",
     "level": 5,
-    "map": [
+    "map": Array [
       5,
       6,
     ],
@@ -3612,7 +3530,7 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3626,7 +3544,7 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3640,7 +3558,7 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "li",
     "type": "list_item_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3654,7 +3572,7 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "ul",
     "type": "bullet_list_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3668,7 +3586,7 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
     "tag": "div",
     "type": "tab-panel_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3685,16 +3603,16 @@ exports[`plugin should handle tabs with list inside and indented endlist 1`] = `
 ]
 `;
 
-exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
-[
-  {
+exports[`plugin > should not handle tabs when endlist has negative indent  1`] = `
+Array [
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       0,
       12,
     ],
@@ -3704,14 +3622,14 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "ul",
     "type": "bullet_list_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 1,
-    "map": [
+    "map": Array [
       0,
       2,
     ],
@@ -3721,14 +3639,14 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "li",
     "type": "list_item_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       0,
       1,
     ],
@@ -3738,10 +3656,10 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -3761,7 +3679,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       0,
       1,
     ],
@@ -3771,7 +3689,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3785,7 +3703,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3799,14 +3717,14 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "li",
     "type": "list_item_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 1,
-    "map": [
+    "map": Array [
       2,
       10,
     ],
@@ -3816,14 +3734,14 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "li",
     "type": "list_item_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       2,
       3,
     ],
@@ -3833,10 +3751,10 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -3856,7 +3774,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       2,
       3,
     ],
@@ -3866,7 +3784,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3880,14 +3798,14 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       4,
       5,
     ],
@@ -3897,10 +3815,10 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -3920,7 +3838,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       4,
       5,
     ],
@@ -3930,7 +3848,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -3944,14 +3862,14 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       6,
       8,
     ],
@@ -3961,14 +3879,14 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "ul",
     "type": "bullet_list_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       6,
       8,
     ],
@@ -3978,14 +3896,14 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "li",
     "type": "list_item_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": true,
     "info": "",
     "level": 4,
-    "map": [
+    "map": Array [
       6,
       7,
     ],
@@ -3995,10 +3913,10 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -4018,7 +3936,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "hidden": false,
     "info": "",
     "level": 5,
-    "map": [
+    "map": Array [
       6,
       7,
     ],
@@ -4028,7 +3946,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -4042,7 +3960,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -4056,7 +3974,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "li",
     "type": "list_item_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -4070,14 +3988,14 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "ul",
     "type": "bullet_list_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       8,
       9,
     ],
@@ -4087,10 +4005,10 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -4110,7 +4028,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       8,
       9,
     ],
@@ -4120,7 +4038,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -4134,7 +4052,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -4148,14 +4066,14 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "li",
     "type": "list_item_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 1,
-    "map": [
+    "map": Array [
       10,
       12,
     ],
@@ -4165,14 +4083,14 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "li",
     "type": "list_item_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       10,
       11,
     ],
@@ -4182,10 +4100,10 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -4205,7 +4123,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       10,
       11,
     ],
@@ -4215,7 +4133,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -4229,7 +4147,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -4243,7 +4161,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "li",
     "type": "list_item_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -4257,14 +4175,14 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "ul",
     "type": "bullet_list_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       12,
       13,
     ],
@@ -4274,10 +4192,10 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -4297,7 +4215,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "hidden": false,
     "info": "",
     "level": 1,
-    "map": [
+    "map": Array [
       12,
       13,
     ],
@@ -4307,7 +4225,7 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -4324,16 +4242,16 @@ exports[`plugin should not handle tabs when endlist has negative indent  1`] = `
 ]
 `;
 
-exports[`plugin should not handle tabs with content after indented endlist 1`] = `
-[
-  {
+exports[`plugin > should not handle tabs with content after indented endlist 1`] = `
+Array [
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       0,
       1,
     ],
@@ -4343,10 +4261,10 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -4366,7 +4284,7 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "hidden": false,
     "info": "",
     "level": 1,
-    "map": [
+    "map": Array [
       0,
       1,
     ],
@@ -4376,7 +4294,7 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -4390,14 +4308,14 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 0,
-    "map": [
+    "map": Array [
       2,
       9,
     ],
@@ -4407,14 +4325,14 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "tag": "ul",
     "type": "bullet_list_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 1,
-    "map": [
+    "map": Array [
       2,
       9,
     ],
@@ -4424,14 +4342,14 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "tag": "li",
     "type": "list_item_open",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       2,
       3,
     ],
@@ -4441,10 +4359,10 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -4464,7 +4382,7 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       2,
       3,
     ],
@@ -4474,7 +4392,7 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -4488,14 +4406,14 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       4,
       5,
     ],
@@ -4505,10 +4423,10 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -4528,7 +4446,7 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       4,
       5,
     ],
@@ -4538,7 +4456,7 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -4552,14 +4470,14 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       6,
       7,
     ],
@@ -4569,10 +4487,10 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -4592,7 +4510,7 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       6,
       7,
     ],
@@ -4602,7 +4520,7 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -4616,14 +4534,14 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
     "hidden": false,
     "info": "",
     "level": 2,
-    "map": [
+    "map": Array [
       8,
       9,
     ],
@@ -4633,10 +4551,10 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "tag": "p",
     "type": "paragraph_open",
   },
-  {
+  Object {
     "block": true,
-    "children": [
-      {
+    "children": Array [
+      Object {
         "attrs": null,
         "block": false,
         "children": null,
@@ -4656,7 +4574,7 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "hidden": false,
     "info": "",
     "level": 3,
-    "map": [
+    "map": Array [
       8,
       9,
     ],
@@ -4666,7 +4584,7 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "tag": "",
     "type": "inline",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -4680,7 +4598,7 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "tag": "p",
     "type": "paragraph_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
@@ -4694,7 +4612,7 @@ exports[`plugin should not handle tabs with content after indented endlist 1`] =
     "tag": "li",
     "type": "list_item_close",
   },
-  {
+  Object {
     "block": true,
     "children": null,
     "content": "",
