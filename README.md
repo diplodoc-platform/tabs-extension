@@ -1,6 +1,11 @@
 # Diplodoc tabs extension
 
 [![NPM version](https://img.shields.io/npm/v/@diplodoc/tabs-extension.svg?style=flat)](https://www.npmjs.org/package/@diplodoc/tabs-extension)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=diplodoc-platform_tabs-extension&metric=alert_status)](https://sonarcloud.io/summary/overall?id=diplodoc-platform_tabs-extension)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=diplodoc-platform_tabs-extension&metric=coverage)](https://sonarcloud.io/summary/overall?id=diplodoc-platform_tabs-extension)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=diplodoc-platform_tabs-extension&metric=sqale_rating)](https://sonarcloud.io/summary/overall?id=diplodoc-platform_tabs-extension)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=diplodoc-platform_tabs-extension&metric=reliability_rating)](https://sonarcloud.io/summary/overall?id=diplodoc-platform_tabs-extension)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=diplodoc-platform_tabs-extension&metric=security_rating)](https://sonarcloud.io/summary/overall?id=diplodoc-platform_tabs-extension)
 
 This is an extension of the Diplodoc platform, which allows adding switchable tabs in the documentation.
 
