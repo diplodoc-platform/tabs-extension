@@ -1,11 +1,11 @@
 import type MarkdownIt from 'markdown-it';
 
 import dd from 'ts-dedent';
-import transform from '@diplodoc/transform';
+import {afterAll, beforeAll, describe, expect, it, vi} from 'vitest';
 
-import * as tabsExtension from '../../src/plugin/transform';
+import * as tabsExtension from '../src/plugin/transform';
 
-import {callPlugin, tokenize} from './utils';
+import {callPlugin, renderWithTabsPlugin, tokenize} from './utils';
 import {base, escaped, nestedTokenTypes, simpleTab, vertical} from './data/tabs';
 
 const defaultContent = [
@@ -74,22 +74,15 @@ function makeTransform(params?: {
 }
 
 function html(text: string, opts?: tabsExtension.PluginOptions) {
-    const {result} = transform(text, {
-        needToSanitizeHtml: false,
-        plugins: [
-            tabsExtension.transform({
-                bundle: false,
-                features: {enabledVariants: {radio: true, regular: true}},
-                ...opts,
-            }),
-        ],
+    return renderWithTabsPlugin(text, {
+        bundle: false,
+        features: {enabledVariants: {radio: true, regular: true}},
+        ...opts,
     });
-
-    return result.html;
 }
 
 describe('plugin', () => {
-    test('should convert vertical tabs to correct new token array', () => {
+    it('should convert vertical tabs to correct new token array', () => {
         // ACT
         const {tokens: result} = makeTransform({content: defaultVerticalContent});
 
@@ -98,7 +91,7 @@ describe('plugin', () => {
         expect(clearJSON).toEqual(vertical);
     });
 
-    test('Should convert to correct new token array', () => {
+    it('Should convert to correct new token array', () => {
         // ACT
         const {tokens: result} = makeTransform();
 
@@ -107,7 +100,7 @@ describe('plugin', () => {
         expect(clearJSON).toEqual(base);
     });
 
-    test('Should use correct attrs', () => {
+    it('Should use correct attrs', () => {
         // ARRANGE
         const attrs = [
             'data-diplodoc-id',
@@ -137,7 +130,7 @@ describe('plugin', () => {
         });
     });
 
-    test('Tab should fit tabPanel', () => {
+    it('Tab should fit tabPanel', () => {
         // ACT
         const {tokens: result} = makeTransform();
 
@@ -156,7 +149,7 @@ describe('plugin', () => {
         });
     });
 
-    test('TabPanel structure for regular tabs', () => {
+    it('TabPanel structure for regular tabs', () => {
         // ACT
         const {tokens} = makeTransform();
 
@@ -166,7 +159,7 @@ describe('plugin', () => {
         expect(panelsWithoutAttrs).toMatchSnapshot();
     });
 
-    test('TabPanel structure for radio tabs', () => {
+    it('TabPanel structure for radio tabs', () => {
         // ACT
         const {tokens} = makeTransform({content: defaultVerticalContent});
 
@@ -176,7 +169,7 @@ describe('plugin', () => {
         expect(panelsWithoutAttrs).toMatchSnapshot();
     });
 
-    test('TabPanel structure for accordion tabs', () => {
+    it('TabPanel structure for accordion tabs', () => {
         // ACT
         const content = [
             '{% list tabs accordion %}',
@@ -205,7 +198,7 @@ describe('plugin', () => {
         expect(panelsWithoutAttrs).toMatchSnapshot();
     });
 
-    test('TabPanel structure for dropdown tabs', () => {
+    it('TabPanel structure for dropdown tabs', () => {
         // ACT
         const content = [
             '{% list tabs dropdown %}',
@@ -234,7 +227,7 @@ describe('plugin', () => {
         expect(panelsWithoutAttrs).toMatchSnapshot();
     });
 
-    test('Tab syntax is escaped', () => {
+    it('Tab syntax is escaped', () => {
         // ACT
         const {tokens: result} = makeTransform({
             content: ['`{% list tabs %}`'],
@@ -244,7 +237,7 @@ describe('plugin', () => {
         expect(result).toEqual(escaped);
     });
 
-    test('Should parse nested tabs', () => {
+    it('Should parse nested tabs', () => {
         // ACT
         const {tokens} = makeTransform({
             content: [
@@ -574,7 +567,7 @@ describe('plugin', () => {
     });
 
     describe('options', () => {
-        test('should add an extra className to container node', () => {
+        it('should add an extra className to container node', () => {
             // ACT
             const {tokens: result} = makeTransform({
                 transformOptions: {
@@ -588,7 +581,7 @@ describe('plugin', () => {
             expect(attrsObject['class']).toEqual('yfm-tabs test_1 test_2');
         });
 
-        test('should return the default className for container node', () => {
+        it('should return the default className for container node', () => {
             // ACT
             const {tokens: result} = makeTransform();
 
@@ -598,7 +591,7 @@ describe('plugin', () => {
             expect(attrsObject['class']).toEqual('yfm-tabs');
         });
 
-        test('should return custom runtimeJsPath and runtimeCssPath meta data', () => {
+        it('should return custom runtimeJsPath and runtimeCssPath meta data', () => {
             // ACT
             const result = makeTransform({
                 transformOptions: {
@@ -616,7 +609,7 @@ describe('plugin', () => {
             });
         });
 
-        test('should return default runtimeJsPath and runtimeCssPath meta data', () => {
+        it('should return default runtimeJsPath and runtimeCssPath meta data', () => {
             // ACT
             const result = makeTransform();
 
@@ -631,7 +624,7 @@ describe('plugin', () => {
     });
 
     describe('tabs groups', () => {
-        test('should set a random group name for the tabs container', () => {
+        it('should set a random group name for the tabs container', () => {
             // ACT
             const {tokens: result} = makeTransform();
 
@@ -641,7 +634,7 @@ describe('plugin', () => {
             expect(attrsObject['data-diplodoc-group']).toMatch(/^defaultTabsGroup-[a-z0-9]{8}$/);
         });
 
-        test('should set a specific group name for the tabs container', () => {
+        it('should set a specific group name for the tabs container', () => {
             // ACT
             const {tokens: result} = makeTransform({
                 content: [
@@ -661,7 +654,7 @@ describe('plugin', () => {
     });
 
     describe('tabs anchors', () => {
-        test('should set default anchors for tabs', () => {
+        it('should set default anchors for tabs', () => {
             // ACT
             const {tokens: result} = makeTransform();
 
@@ -689,7 +682,7 @@ describe('plugin', () => {
             expect(attrsObject2['data-diplodoc-is-active']).toEqual('false');
         });
 
-        test('should set custom anchors for tabs', () => {
+        it('should set custom anchors for tabs', () => {
             // ACT
             const {tokens: result} = makeTransform({
                 content: [
@@ -717,7 +710,7 @@ describe('plugin', () => {
             expect(attrsObject1['data-diplodoc-key']).toEqual('my-tab');
         });
 
-        test('should process tabs with special letters', () => {
+        it('should process tabs with special letters', () => {
             // ACT
             const {tokens: result} = makeTransform({
                 content: [
@@ -755,11 +748,11 @@ describe('plugin', () => {
                 0.123456789, 0.987654321, 0.678912345, 0.214365879, 0.456789123, 0.123789456,
             ];
 
-            jest.spyOn(global.Math, 'random').mockImplementation(() => values[i++ % values.length]);
+            vi.spyOn(global.Math, 'random').mockImplementation(() => values[i++ % values.length]);
         });
 
         afterAll(() => {
-            jest.spyOn(global.Math, 'random').mockRestore();
+            vi.spyOn(global.Math, 'random').mockRestore();
         });
 
         it('should render common tabs', () => {

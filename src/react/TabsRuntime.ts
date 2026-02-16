@@ -1,6 +1,6 @@
-import {useEffect} from 'react';
+import type {TabsControllerOptions} from '../runtime/TabsController';
 
-import {TabsControllerOptions} from '../runtime/TabsController';
+import {useEffect} from 'react';
 
 import {useDiplodocTabs} from './useDiplodocTabs';
 

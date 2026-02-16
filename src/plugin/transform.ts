@@ -1,7 +1,8 @@
 import type StateCore from 'markdown-it/lib/rules_core/state_core';
 import type MarkdownIt from 'markdown-it';
+import type {EnabledVariants} from '../common';
 
-import {EnabledVariants, TabsVariants} from '../common';
+import {TabsVariants} from '../common';
 
 import {addHiddenProperty, copyRuntimeFiles} from './utils';
 import {generateTabsTokens} from './generate';
@@ -104,7 +105,7 @@ export function transform({
 
         try {
             md.core.ruler.before('curly_attributes', 'tabs', plugin);
-        } catch (e) {
+        } catch {
             md.core.ruler.push('tabs', plugin);
         }
     };

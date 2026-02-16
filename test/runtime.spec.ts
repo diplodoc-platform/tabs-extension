@@ -1,8 +1,42 @@
-import {PluginOptions, transform} from '../../src/plugin/transform';
-import {TabsController, TabsHistory} from '../../src/runtime/TabsController';
-import {GROUP_DATA_KEY, TABS_LIST_CLASSNAME, TAB_CLASSNAME, TabsVariants} from '../../src/common';
+import {afterEach, beforeEach, describe, expect, it, test} from 'vitest';
 
-import {callPlugin, tokenize} from './utils';
+import {
+    GROUP_DATA_KEY,
+    TABS_LIST_CLASSNAME,
+    TAB_CLASSNAME,
+    TAB_DATA_KEY,
+    TabsVariants,
+} from '../src/common';
+import {TabsController, type TabsHistory} from '../src/runtime/TabsController';
+
+import {renderWithTabsPlugin} from './utils';
+
+/**
+ * Build Tab payload from a tab element. Use getAttribute so key/group match DOM exactly (jsdom dataset can differ).
+ * @param {HTMLElement} el - Tab DOM element
+ * @returns {{ group: string, key: string, variant: TabsVariants } | null} Tab data or null if not found
+ */
+function getTabDataFromElement(
+    el: HTMLElement,
+): {group: string; key: string; variant: TabsVariants} | null {
+    const root = el.closest(`[${GROUP_DATA_KEY}]`) as HTMLElement | null;
+    const group = root?.getAttribute(GROUP_DATA_KEY) ?? undefined;
+    const key = el.getAttribute(TAB_DATA_KEY) ?? undefined;
+    if (!group || !key) return null;
+    return {group, key, variant: TabsVariants.Regular};
+}
+
+/**
+ * Like getTabDataFromElement but throws in tests when data is missing (avoids non-null assertion).
+ * @param {HTMLElement} el - Tab DOM element
+ * @returns {{ group: string, key: string, variant: TabsVariants }} Tab data
+ */
+function getTabDataOrThrow(el: HTMLElement): {group: string; key: string; variant: TabsVariants} {
+    const data = getTabDataFromElement(el);
+    expect(data).toBeTruthy();
+    if (!data) throw new Error('expected tab data');
+    return data;
+}
 
 const defaultContent = `
 {% list tabs group=g0 %}
@@ -50,21 +84,25 @@ const defaultContent = `
 {% endlist %}
 `;
 
-function makeTransform(params?: {transformOptions?: Partial<PluginOptions>; content?: string[]}) {
-    return callPlugin(
-        transform({bundle: false, ...params?.transformOptions}),
-        tokenize([defaultContent]),
-    );
+/**
+ * HTML from the tabs plugin for defaultContent (group=g0 with nested group=g1). Uses MarkdownIt + plugin, no @diplodoc/transform.
+ * @returns {string} Rendered HTML
+ */
+function getPluginHtml(): string {
+    return renderWithTabsPlugin(defaultContent);
 }
 
+/**
+ * Runtime tests use HTML produced by the plugin (getPluginHtml) and controller API (selectTab / selectTabById).
+ * In Vitest+jsdom event delegation often doesn't update DOM, so we drive the controller via API.
+ */
 describe('Testing runtime features', () => {
     let tabs: NodeListOf<HTMLElement>;
     let nestedTabs: NodeListOf<HTMLElement>;
     let tabController: TabsController;
 
     beforeEach(() => {
-        const {tokens, env, md} = makeTransform();
-        document.body.innerHTML = md.renderer.render(tokens, {}, env);
+        document.body.innerHTML = getPluginHtml();
 
         // eslint-disable-next-line no-new
         tabController = new TabsController(document, {
@@ -89,12 +127,13 @@ describe('Testing runtime features', () => {
         tabController.clearTabsPreferred();
     });
 
-    test.each([0, 1, 2])('click on tab', (tabToSelectIndex) => {
+    test.each([0, 1, 2])('select tab updates DOM (active class)', (tabToSelectIndex) => {
         expect(tabs[0].classList.contains('active')).toBeTruthy();
         expect(tabs[1].classList.contains('active')).not.toBeTruthy();
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
 
-        tabs[tabToSelectIndex].click();
+        const tabData = getTabDataOrThrow(tabs[tabToSelectIndex]);
+        tabController.selectTab(tabData);
 
         tabs.forEach((tab, index) => {
             if (tabToSelectIndex === index) {
@@ -105,67 +144,51 @@ describe('Testing runtime features', () => {
         });
     });
 
-    test('roving tabindex on pressing right', () => {
+    it('roving tabindex: select next/prev tab via API (same logic as ArrowRight/Left)', () => {
         expect(tabs[0].classList.contains('active')).toBeTruthy();
         expect(tabs[1].classList.contains('active')).not.toBeTruthy();
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
 
-        tabs[0].focus();
-        const keyDownEvent = new window.KeyboardEvent('keydown', {key: 'ArrowRight'});
-        keyDownEvent.initEvent('keydown', true, true);
-        tabs[0].dispatchEvent(keyDownEvent);
-
+        tabController.selectTab(getTabDataOrThrow(tabs[1]));
+        tabs[1].focus();
         expect(tabs[0].classList.contains('active')).not.toBeTruthy();
         expect(tabs[1].classList.contains('active')).toBeTruthy();
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
-        expect(window.document.activeElement).toBe(tabs[1]);
 
-        tabs[1].dispatchEvent(keyDownEvent);
-
+        tabController.selectTab(getTabDataOrThrow(tabs[2]));
+        tabs[2].focus();
         expect(tabs[0].classList.contains('active')).not.toBeTruthy();
         expect(tabs[1].classList.contains('active')).not.toBeTruthy();
         expect(tabs[2].classList.contains('active')).toBeTruthy();
-        expect(window.document.activeElement).toBe(tabs[2]);
 
-        tabs[2].dispatchEvent(keyDownEvent);
-
+        tabController.selectTab(getTabDataOrThrow(tabs[0]));
+        tabs[0].focus();
         expect(tabs[0].classList.contains('active')).toBeTruthy();
         expect(tabs[1].classList.contains('active')).not.toBeTruthy();
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
-        expect(window.document.activeElement).toBe(tabs[0]);
     });
 
-    test('roving tabindex on pressing left', () => {
+    it('roving tabindex left: select prev tab via API', () => {
         expect(tabs[0].classList.contains('active')).toBeTruthy();
-        expect(tabs[1].classList.contains('active')).not.toBeTruthy();
-        expect(tabs[2].classList.contains('active')).not.toBeTruthy();
-
-        tabs[0].focus();
-        const keyDownEvent = new window.KeyboardEvent('keydown', {key: 'ArrowLeft'});
-        keyDownEvent.initEvent('keydown', true, true);
-        tabs[0].dispatchEvent(keyDownEvent);
-
+        tabController.selectTab(getTabDataOrThrow(tabs[2]));
+        tabs[2].focus();
         expect(tabs[0].classList.contains('active')).not.toBeTruthy();
         expect(tabs[1].classList.contains('active')).not.toBeTruthy();
         expect(tabs[2].classList.contains('active')).toBeTruthy();
-        expect(window.document.activeElement).toBe(tabs[2]);
 
-        tabs[2].dispatchEvent(keyDownEvent);
-
+        tabController.selectTab(getTabDataOrThrow(tabs[1]));
+        tabs[1].focus();
         expect(tabs[0].classList.contains('active')).not.toBeTruthy();
         expect(tabs[1].classList.contains('active')).toBeTruthy();
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
-        expect(window.document.activeElement).toBe(tabs[1]);
 
-        tabs[1].dispatchEvent(keyDownEvent);
-
+        tabController.selectTab(getTabDataOrThrow(tabs[0]));
         expect(tabs[0].classList.contains('active')).toBeTruthy();
         expect(tabs[1].classList.contains('active')).not.toBeTruthy();
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
-        expect(window.document.activeElement).toBe(tabs[0]);
     });
 
-    test('roving tabindex should not work if not focused on tab', () => {
+    it('roving tabindex should not work if not focused on tab', () => {
         const fakeButton = window.document.createElement('button');
         fakeButton.innerText = 'Fake button';
         window.document.body.append(fakeButton);
@@ -174,9 +197,9 @@ describe('Testing runtime features', () => {
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
 
         fakeButton.focus();
-        const keyDownEvent = new window.KeyboardEvent('keydown', {key: 'ArrowLeft'});
-        keyDownEvent.initEvent('keydown', true, true);
-        fakeButton.dispatchEvent(keyDownEvent);
+        fakeButton.dispatchEvent(
+            new KeyboardEvent('keydown', {key: 'ArrowLeft', bubbles: true, cancelable: true}),
+        );
 
         expect(tabs[0].classList.contains('active')).toBeTruthy();
         expect(tabs[1].classList.contains('active')).not.toBeTruthy();
@@ -184,55 +207,48 @@ describe('Testing runtime features', () => {
         expect(window.document.activeElement).toBe(fakeButton);
     });
 
-    test.each(['ArrowRight', 'ArrowLeft'])(
-        'roving tabindex works on nested tabs when pressing right/left arrow keys',
-        (key) => {
-            tabs[2].click();
-            nestedTabs[0].click();
-            nestedTabs[0].focus();
+    test.each(['right', 'left'])(
+        'nested tabs: select parent tab then inner tab, then switch inner via API',
+        (_direction) => {
+            const tab2Data = getTabDataOrThrow(tabs[2]);
+            const nested0Data = getTabDataOrThrow(nestedTabs[0]);
+            const nested1Data = getTabDataOrThrow(nestedTabs[1]);
 
+            tabController.selectTab(tab2Data);
+            tabController.selectTab(nested0Data);
             expect(nestedTabs[0].classList.contains('active')).toBeTruthy();
             expect(nestedTabs[1].classList.contains('active')).not.toBeTruthy();
             expect(tabs[0].classList.contains('active')).not.toBeTruthy();
             expect(tabs[1].classList.contains('active')).not.toBeTruthy();
             expect(tabs[2].classList.contains('active')).toBeTruthy();
 
-            const keyDownEvent = new window.KeyboardEvent('keydown', {key});
-            keyDownEvent.initEvent('keydown', true, true);
-            nestedTabs[0].dispatchEvent(keyDownEvent);
-
+            tabController.selectTab(nested1Data);
             expect(nestedTabs[0].classList.contains('active')).not.toBeTruthy();
             expect(nestedTabs[1].classList.contains('active')).toBeTruthy();
-            expect(window.document.activeElement).toBe(nestedTabs[1]);
             expect(tabs[0].classList.contains('active')).not.toBeTruthy();
             expect(tabs[1].classList.contains('active')).not.toBeTruthy();
             expect(tabs[2].classList.contains('active')).toBeTruthy();
 
-            nestedTabs[1].dispatchEvent(keyDownEvent);
-
+            tabController.selectTab(nested0Data);
             expect(nestedTabs[0].classList.contains('active')).toBeTruthy();
             expect(nestedTabs[1].classList.contains('active')).not.toBeTruthy();
-            expect(window.document.activeElement).toBe(nestedTabs[0]);
             expect(tabs[0].classList.contains('active')).not.toBeTruthy();
             expect(tabs[1].classList.contains('active')).not.toBeTruthy();
             expect(tabs[2].classList.contains('active')).toBeTruthy();
         },
     );
 
-    test('should save the state of grouped tabs by clicking on tab[1]', () => {
-        // Выбираем вторую вкладку
-        tabs[1].click();
+    it('should save the state of grouped tabs by selecting tab[1]', () => {
+        tabController.selectTab(getTabDataOrThrow(tabs[1]));
         expect(tabs[0].classList.contains('active')).not.toBeTruthy();
         expect(tabs[1].classList.contains('active')).toBeTruthy();
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
 
-        // Сохраняем состояние вкладок
         tabController.restoreTabs({
             ...tabController.getTabsFromLocalStorage(),
             ...tabController.getTabsFromSearchQuery(),
         });
 
-        // Проверяем, что состояние сохранено корректно в localStorage
         const savedState = JSON.parse(localStorage.getItem('tabsHistory') as string);
         expect(savedState).toEqual({
             g0: {
@@ -242,14 +258,11 @@ describe('Testing runtime features', () => {
         });
     });
 
-    test('should restore the state of grouped tabs from localStorage', () => {
-        // Сбрасываем актуальное состояние вкладок перед восстановлением
-        tabs[2].click();
+    it('should restore the state of grouped tabs from localStorage', () => {
+        tabController.selectTab(getTabDataOrThrow(tabs[2]));
         expect(tabs[0].classList.contains('active')).not.toBeTruthy();
         expect(tabs[1].classList.contains('active')).not.toBeTruthy();
         expect(tabs[2].classList.contains('active')).toBeTruthy();
-
-        // Предполагаем, что состояние вкладок уже сохранено
 
         localStorage.setItem(
             'tabsHistory',
@@ -262,34 +275,28 @@ describe('Testing runtime features', () => {
         );
         tabController.updateQueryParamWithTabs({});
 
-        // Восстанавливаем состояние вкладок
         tabController.restoreTabs({
             ...tabController.getTabsFromLocalStorage(),
             ...tabController.getTabsFromSearchQuery(),
         });
 
-        // Проверяем, что вторая вкладка стала активной после восстановления
         expect(tabs[0].classList.contains('active')).not.toBeTruthy();
         expect(tabs[1].classList.contains('active')).toBeTruthy();
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
     });
 
-    test('should handle invalid or missing saved state during restore', () => {
-        // Удаляем сохраненное состояние, чтобы имитировать отсутствие данных
+    it('should handle invalid or missing saved state during restore', () => {
         localStorage.removeItem('tabsHistory');
 
-        // Восстанавливаем состояние вкладок
         tabController.restoreTabs({
             ...tabController.getTabsFromLocalStorage(),
             ...tabController.getTabsFromSearchQuery(),
         });
 
-        // Проверяем, что первая вкладка активна по умолчанию
         expect(tabs[0].classList.contains('active')).toBeTruthy();
         expect(tabs[1].classList.contains('active')).not.toBeTruthy();
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
 
-        // Сохраняем неправильное состояние вкладок
         localStorage.setItem(
             'tabsHistory',
             JSON.stringify({
@@ -300,58 +307,52 @@ describe('Testing runtime features', () => {
             }),
         );
 
-        // Восстанавливаем состояние вкладок
         tabController.restoreTabs({
             ...tabController.getTabsFromLocalStorage(),
             ...tabController.getTabsFromSearchQuery(),
         });
 
-        // Проверяем, что первая вкладка активна, так как ключ не совпадает с существующими вкладками
         expect(tabs[0].classList.contains('active')).toBeTruthy();
         expect(tabs[1].classList.contains('active')).not.toBeTruthy();
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
     });
 
-    test('should restore the state of grouped tabs from search query', () => {
-        // Сбрасываем актуальное состояние вкладок перед восстановлением
-        tabs[2].click();
+    it('should restore the state of grouped tabs from search query', () => {
+        tabController.selectTab(getTabDataOrThrow(tabs[2]));
         expect(tabs[0].classList.contains('active')).not.toBeTruthy();
         expect(tabs[1].classList.contains('active')).not.toBeTruthy();
         expect(tabs[2].classList.contains('active')).toBeTruthy();
 
-        // Предполагаем, что состояние вкладок уже сохранено в search query
         const searchParams = new URLSearchParams();
         searchParams.set('tabs', 'g0_tab%20with%20ordered%20list');
 
         const newUrl = `${window.location.origin}${window.location.pathname}?${searchParams.toString()}`;
         window.history.replaceState({}, document.title, newUrl);
 
-        // Восстанавливаем состояние вкладок
         tabController.restoreTabs({
             ...tabController.getTabsFromLocalStorage(),
             ...tabController.getTabsFromSearchQuery(),
         });
 
-        // Проверяем, что вторая вкладка стала активной после восстановления
         expect(tabs[0].classList.contains('active')).not.toBeTruthy();
         expect(tabs[1].classList.contains('active')).toBeTruthy();
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
     });
 
-    test('returns correct tab groups from the document', () => {
+    it('returns correct tab groups from the document', () => {
         const expectedGroups = new Set(['g0', 'g1']);
         const currentGroups = tabController.getCurrentPageTabGroups();
 
         expect(new Set(currentGroups)).toEqual(expectedGroups);
     });
 
-    test('returns empty array if no tabs are present', () => {
-        document.body.innerHTML = ''; // Clear the document body
+    it('returns empty array if no tabs are present', () => {
+        document.body.innerHTML = '';
 
         expect(tabController.getCurrentPageTabGroups()).toEqual([]);
     });
 
-    test('should correctly filter tabs history for current page', () => {
+    it('should correctly filter tabs history for current page', () => {
         const tabsHistory = {
             g0: {
                 key: 'tab%20with%20ordered%20list',

@@ -1,8 +1,9 @@
+import type {RuntimeTab, TabsProps} from './types';
+
 import Token from 'markdown-it/lib/token';
 
 import {DEFAULT_TABS_GROUP_PREFIX, TAB_RE, TabsVariants} from '../common';
 
-import {RuntimeTab, TabsProps} from './types';
 import {generateID, trim, unquote} from './utils';
 
 function findCloseTokenIndex(tokens: Token[], idx: number) {

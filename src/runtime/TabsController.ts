@@ -1,8 +1,10 @@
+import type {SelectedTabEvent, Tab} from '../common';
+import type {ElementOffset} from './utils';
+
 import {
     ACTIVE_CLASSNAME,
     DEFAULT_TABS_GROUP_PREFIX,
     GROUP_DATA_KEY,
-    SelectedTabEvent,
     TABS_CLASSNAME,
     TABS_DROPDOWN_SELECT,
     TABS_LIST_CLASSNAME,
@@ -13,12 +15,10 @@ import {
     TAB_DATA_VARIANT,
     TAB_FORCED_OPEN,
     TAB_PANEL_CLASSNAME,
-    Tab,
     TabsVariants,
 } from '../common';
 
 import {
-    ElementOffset,
     getClosestScrollableParent,
     getEventTarget,
     getOffsetByScrollableParent,
@@ -32,6 +32,37 @@ const Selector = {
     TAB_PANEL: `.${TAB_PANEL_CLASSNAME}`,
     VERTICAL_TABS: `.${TABS_RADIO_CLASSNAME}`,
 };
+
+/**
+ * Escape value for use in a CSS attribute selector (e.g. group id).
+ * @param value - Raw attribute value.
+ * @returns Escaped string safe for use inside [attr="..."].
+ */
+function escapeCssAttrValue(value: string): string {
+    return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+/**
+ * Find tab elements by group and key without putting key in a selector (keys may contain %, spaces, etc.).
+ * @param doc - Document to query.
+ * @param group - Group id.
+ * @param key - Tab key (data-tabs-key value).
+ * @returns Matching tab elements.
+ */
+function findTabsByGroupAndKey(doc: Document, group: string, key: string): Element[] {
+    const containers = doc.querySelectorAll(
+        `${Selector.TABS}[${GROUP_DATA_KEY}="${escapeCssAttrValue(group)}"]`,
+    );
+    const result: Element[] = [];
+    containers.forEach((container) => {
+        container.querySelectorAll(Selector.TAB).forEach((tab) => {
+            if (tab.getAttribute(TAB_DATA_KEY) === key) {
+                result.push(tab);
+            }
+        });
+    });
+    return result;
+}
 
 export interface ISelectTabByIdOptions {
     scrollToElement: boolean;
@@ -369,11 +400,12 @@ export class TabsController {
 
         const {isForced, root} = this.didTabOpenForce(target);
 
-        const singleTabSelector = isForced ? `.yfm-vertical-tab[${TAB_FORCED_OPEN}="true"]` : '';
-
-        const tabs = this._document.querySelectorAll(
-            `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]${singleTabSelector}`,
-        );
+        let tabs = findTabsByGroupAndKey(this._document, group, key);
+        if (isForced) {
+            tabs = tabs.filter(
+                (el) => (el as HTMLElement).getAttribute(TAB_FORCED_OPEN) === 'true',
+            );
+        }
 
         if (isForced) {
             root?.removeAttribute(TAB_FORCED_OPEN);
@@ -426,9 +458,7 @@ export class TabsController {
     private updateHTMLRegular(tab: Required<Tab>) {
         const {group, key} = tab;
 
-        const tabs = this._document.querySelectorAll(
-            `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
-        );
+        const tabs = findTabsByGroupAndKey(this._document, group, key);
 
         let updated = 0;
 
@@ -469,9 +499,7 @@ export class TabsController {
     private updateHTMLDropdown(tab: Required<Tab>) {
         const {group, key} = tab;
 
-        const tabs = this._document.querySelectorAll(
-            `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
-        );
+        const tabs = findTabsByGroupAndKey(this._document, group, key);
 
         let changed = 0;
 
@@ -517,9 +545,7 @@ export class TabsController {
     private updateHTMLAccordion(tab: Required<Tab>, target: HTMLElement | undefined) {
         const {group, key} = tab;
 
-        const tabs = this._document.querySelectorAll(
-            `${Selector.TABS}[${GROUP_DATA_KEY}="${group}"] ${Selector.TAB}[${TAB_DATA_KEY}="${key}"]`,
-        );
+        const tabs = findTabsByGroupAndKey(this._document, group, key);
 
         let changed = 0;
 

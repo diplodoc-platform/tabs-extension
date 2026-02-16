@@ -1,3 +1,5 @@
+import type {TabsTokensGenerator} from './types';
+
 import {
     ACTIVE_CLASSNAME,
     GROUP_DATA_KEY,
@@ -14,8 +16,6 @@ import {
     VERTICAL_TAB_CLASSNAME,
 } from '../../common';
 import {generateID, getContentMap, getName, getTabId, getTabKey, isTabSelected} from '../utils';
-
-import {TabsTokensGenerator} from './types';
 
 export const regular: TabsTokensGenerator = (
     tabs,
