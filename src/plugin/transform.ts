@@ -1,3 +1,7 @@
+/**
+ * MarkdownIt plugin: finds `{% list tabs %}` blocks, parses tab items, and replaces them
+ * with HTML tokens for the chosen variant. Registers runtime script/style in env.meta.
+ */
 import type StateCore from 'markdown-it/lib/rules_core/state_core';
 import type MarkdownIt from 'markdown-it';
 import type {EnabledVariants} from '../common';
@@ -8,6 +12,7 @@ import {addHiddenProperty, copyRuntimeFiles} from './utils';
 import {generateTabsTokens} from './generate';
 import {findTabs, props, tryToFindTabs} from './find';
 
+/** Options for the tabs plugin (paths, container classes, enabled variants). */
 export type PluginOptions = {
     runtimeJsPath: string;
     runtimeCssPath: string;
@@ -31,6 +36,11 @@ type TransformOptions = {
     output?: string;
 };
 
+/**
+ * Returns a MarkdownIt plugin that transforms `{% list tabs %}` blocks into tab markup.
+ * @param options - Paths for runtime JS/CSS, container classes, and enabled variants
+ * @returns Plugin function that receives (md, options) and registers the core ruler
+ */
 export function transform({
     runtimeJsPath = '_assets/tabs-extension.js',
     runtimeCssPath = '_assets/tabs-extension.css',

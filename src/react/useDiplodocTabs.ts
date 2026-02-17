@@ -1,3 +1,7 @@
+/**
+ * React hook to access the global TabsController (window[GLOBAL_SYMBOL]).
+ * Optionally subscribe to tab switch events via callback. Returns controller methods in stable refs.
+ */
 import type {SelectedTabEvent, Tab} from '../common';
 import type {
     ISelectTabByIdOptions,
@@ -11,8 +15,14 @@ import {GLOBAL_SYMBOL} from '../common';
 
 export type {Tab};
 
+/** Called when user (or code) switches to another tab; receives tab descriptor and optional element id. */
 export type UseDiplodocTabsCallback = (tab: Tab, currentTabId?: string) => void;
 
+/**
+ * Access tabs API and optionally listen to tab switch events.
+ * @param callback - If provided, called on each tab switch (tab, currentTabId).
+ * @returns Object with selectTabById, selectTab, configure, restoreTabs, onPageChanged, and persistence helpers.
+ */
 export function useDiplodocTabs(callback: UseDiplodocTabsCallback | undefined = undefined) {
     if (callback !== undefined) {
         const selectTabHandle = useCallback(
