@@ -1,4 +1,4 @@
-name: Diplodoc E2E Tests
+name: Integration
 
 on:
   pull_request:
