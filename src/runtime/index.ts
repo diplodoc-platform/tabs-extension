@@ -1,3 +1,7 @@
+/**
+ * Tabs runtime entry: creates a single TabsController for the document and attaches it to window
+ * under GLOBAL_SYMBOL so that React and other consumers can access it. Imports SCSS for tab styles.
+ */
 import {GLOBAL_SYMBOL} from '../common';
 
 import {TabsController} from './TabsController';

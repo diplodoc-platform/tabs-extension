@@ -78,7 +78,7 @@ Options:
   (Default: `_assets/tabs-extension.css`)<br>
 
 - `bundle` - boolean flag to enable/disable copying of bundled runtime to target directory.<br>
-  Where target directore is `<transformer output option>/<plugin runtime option>`<br>
+  Where target directory is `<transformer output option>/<plugin runtime option>`<br>
   Default: `true`<br>
 
 - `containerClasses` - additional classes which will be added to tab's container node. It allows to customize the tabs view.<br>
@@ -111,10 +111,10 @@ Example:
 {% endlist %}
 ```
 
-Additionally, you can use different render mosed using a contruction
+Additionally, you can use different render modes with:
 
 ```
-{% list tabs <regular | radio | dropdown> %}
+{% list tabs <regular | radio | dropdown | accordion> %}
 
   - Tab 1
 
@@ -249,6 +249,10 @@ export const App: React.FC = () => {
     );
 }
 ```
+
+## Documentation
+
+- **For AI agents** — see [AGENTS.md](AGENTS.md) and the guides in [docs/AGENTS/](docs/AGENTS/) (core concepts, dev infrastructure).
 
 ## For contributors
 

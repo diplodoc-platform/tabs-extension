@@ -64,6 +64,7 @@ function findTabsByGroupAndKey(doc: Document, group: string, key: string): Eleme
     return result;
 }
 
+/** Options for selectTabById (e.g. scroll the selected tab into view). */
 export interface ISelectTabByIdOptions {
     scrollToElement: boolean;
 }
@@ -72,13 +73,19 @@ type Handler = (data: SelectedTabEvent) => void;
 
 type TabSwitchDirection = 'left' | 'right';
 
+/** Persisted tab state: group id -> { key, variant }. Used for localStorage and URL. */
 export type TabsHistory = Record<string, {key: string; variant: TabsVariants}>;
 
+/** Controller options: whether to persist selection to localStorage and/or URL query. */
 export type TabsControllerOptions = {
     saveTabsToLocalStorage: boolean;
     saveTabsToQueryStateMode: 'all' | 'page' | 'none';
 };
 
+/**
+ * DOM controller for tab blocks: click/keyboard handling, active state, persistence (localStorage
+ * and URL), and events. One instance per document; registered on window[GLOBAL_SYMBOL].
+ */
 export class TabsController {
     private _document: Document;
     private _onSelectTabHandlers: Set<Handler> = new Set();
@@ -172,10 +179,20 @@ export class TabsController {
         });
     }
 
+    /**
+     * Update controller options (e.g. enable persistence after init).
+     * @param options - Partial options to merge
+     * @returns void
+     */
     configure(options: Partial<TabsControllerOptions>) {
         this._options = Object.assign(this._options, options);
     }
 
+    /**
+     * Subscribe to tab switch events.
+     * @param handler - Callback on tab switch
+     * @returns Unsubscribe function
+     */
     onSelectTab(handler: Handler) {
         this._onSelectTabHandlers.add(handler);
 
@@ -184,6 +201,12 @@ export class TabsController {
         };
     }
 
+    /**
+     * Select tab by data-diplodoc-id and optionally scroll it into view.
+     * @param id - data-diplodoc-id value
+     * @param options - e.g. scrollToElement
+     * @returns void
+     */
     selectTabById(id: string, options?: ISelectTabByIdOptions) {
         const target = this._document.querySelector(
             `${Selector.TAB}[${TAB_DATA_ID}="${id}"]`,
@@ -204,10 +227,20 @@ export class TabsController {
         }
     }
 
+    /**
+     * Programmatically select a tab by { group, key, variant }.
+     * @param tab - Tab descriptor
+     * @returns void
+     */
     selectTab(tab: Tab) {
         this._selectTab(tab);
     }
 
+    /**
+     * Apply saved state: select each tab in tabsHistory (e.g. after navigation).
+     * @param tabsHistory - Group -> { key, variant } map
+     * @returns void
+     */
     restoreTabs(tabsHistory: TabsHistory) {
         this._isRestoringTabs = true;
         try {
@@ -222,10 +255,18 @@ export class TabsController {
         }
     }
 
+    /**
+     * Read persisted tab state from localStorage (key: tabsHistory).
+     * @returns Parsed TabsHistory
+     */
     getTabsFromLocalStorage(): TabsHistory {
         return JSON.parse(localStorage.getItem('tabsHistory') || '{}') as TabsHistory;
     }
 
+    /**
+     * Parse tab state from URL search params (tabs=group_key or group_key_variant).
+     * @returns Parsed TabsHistory
+     */
     getTabsFromSearchQuery(): TabsHistory {
         const tabsHistory = {} as TabsHistory;
         const urlParams = new URLSearchParams(window.location.search);
@@ -295,7 +336,12 @@ export class TabsController {
         window.history.replaceState({...currentState}, document.title, url.href);
     }
 
-    getCurrentPageTabHistory(tabsHistory: TabsHistory) {
+    /**
+     * Filter tabsHistory to only groups present on the current page.
+     * @param tabsHistory - Full history
+     * @returns Filtered TabsHistory
+     */
+    getCurrentPageTabHistory(tabsHistory: TabsHistory): TabsHistory {
         return Object.fromEntries(
             Object.entries(tabsHistory).filter(([group]) =>
                 this._currentPageTabGroups.includes(group),
@@ -303,10 +349,18 @@ export class TabsController {
         );
     }
 
-    onPageChanged() {
+    /**
+     * Call after route/page change so persistence uses only groups on the current page.
+     * @returns void
+     */
+    onPageChanged(): void {
         this._currentPageTabGroups = this.getCurrentPageTabGroups();
     }
 
+    /**
+     * List of tab group ids found in the document.
+     * @returns Array of group ids
+     */
     getCurrentPageTabGroups(): string[] {
         const tabs = this._document.getElementsByClassName(TABS_CLASSNAME);
         const groups = new Set<string>();
@@ -321,7 +375,11 @@ export class TabsController {
         return Array.from(groups);
     }
 
-    clearTabsPreferred() {
+    /**
+     * Clear saved tab state from localStorage and URL.
+     * @returns void
+     */
+    clearTabsPreferred(): void {
         localStorage.removeItem('tabsHistory');
         this.updateQueryParamWithTabs({});
     }

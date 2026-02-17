@@ -1,3 +1,6 @@
+/**
+ * Variant registry: maps TabsVariants to the function that generates HTML tokens for that variant.
+ */
 import type {TabsVariants} from '../../common';
 import type {TabsTokensGenerator} from './types';
 
@@ -13,6 +16,11 @@ const generateByType: Record<TabsVariants, TabsTokensGenerator> = {
     accordion,
 };
 
-export const generateTokensByType = (type: TabsVariants) => {
+/**
+ * Returns the token generator for the given variant.
+ * @param type - Variant name
+ * @returns Generator function for that variant
+ */
+export const generateTokensByType = (type: TabsVariants): TabsTokensGenerator => {
     return generateByType[type];
 };

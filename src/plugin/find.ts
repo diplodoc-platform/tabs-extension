@@ -1,3 +1,7 @@
+/**
+ * Parsing of `{% list tabs %}` blocks: locate open/close tags, parse props, and extract tab items
+ * from the list tokens between them.
+ */
 import type {RuntimeTab, TabsProps} from './types';
 
 import Token from 'markdown-it/lib/token';
@@ -6,7 +10,13 @@ import {DEFAULT_TABS_GROUP_PREFIX, TAB_RE, TabsVariants} from '../common';
 
 import {generateID, trim, unquote} from './utils';
 
-function findCloseTokenIndex(tokens: Token[], idx: number) {
+/**
+ * Find the token index of the matching `{% endlist %}` for a list starting at idx.
+ * @param tokens - Full token list
+ * @param idx - Start index
+ * @returns Index of close token or null
+ */
+function findCloseTokenIndex(tokens: Token[], idx: number): number | null {
     let level = 0;
     let i = idx;
     while (i < tokens.length) {
@@ -25,7 +35,7 @@ function findCloseTokenIndex(tokens: Token[], idx: number) {
     return null;
 }
 
-function matchCloseToken(tokens: Token[], i: number) {
+function matchCloseToken(tokens: Token[], i: number): boolean {
     return (
         tokens[i].type === 'paragraph_open' &&
         tokens[i + 1].type === 'inline' &&
@@ -33,14 +43,18 @@ function matchCloseToken(tokens: Token[], i: number) {
     );
 }
 
-function matchOpenToken(tokens: Token[], i: number) {
-    return (
-        tokens[i].type === 'paragraph_open' &&
-        tokens[i + 1].type === 'inline' &&
-        tokens[i + 1].content.match(TAB_RE)
-    );
+function matchOpenToken(tokens: Token[], i: number): RegExpMatchArray | null {
+    if (tokens[i].type !== 'paragraph_open' || tokens[i + 1].type !== 'inline') {
+        return null;
+    }
+    return tokens[i + 1].content.match(TAB_RE);
 }
 
+/**
+ * Parse `{% list tabs group=... %}` content into variant and group id.
+ * @param content - Raw tag content after "list tabs"
+ * @returns Parsed props (variant, group)
+ */
 export function props(content: string): TabsProps {
     const clean = trim(content.replace('list tabs', ''));
 
@@ -73,15 +87,19 @@ export function props(content: string): TabsProps {
 }
 
 type Result =
-    | {
-          step: number;
-      }
+    | {step: number}
     | {
           content: string;
           closeTokenIndex: number;
           extraTokensAfterClose: number;
       };
 
+/**
+ * Check if tokens at index start a valid `{% list tabs %}` block.
+ * @param tokens - Full token list
+ * @param index - Start index
+ * @returns Either a step to advance, or the block content and close index for replacement
+ */
 export function tryToFindTabs(tokens: Token[], index: number): Result {
     const match = matchOpenToken(tokens, index);
     const openTag = match && match[0];
@@ -144,8 +162,15 @@ export function tryToFindTabs(tokens: Token[], index: number): Result {
     };
 }
 
-export function findTabs(tokens: Token[], idx: number, closeTokenIdx: number) {
-    const tabs = [];
+/**
+ * Extract tab items (name + tokens) from list tokens between list open and close/endlist.
+ * @param tokens - Full token list
+ * @param idx - Index after list open
+ * @param closeTokenIdx - Index of {% endlist %} paragraph
+ * @returns Array of RuntimeTab
+ */
+export function findTabs(tokens: Token[], idx: number, closeTokenIdx: number): RuntimeTab[] {
+    const tabs: RuntimeTab[] = [];
     let i = idx;
     let nestedLevel = -1;
     let pending: RuntimeTab = {
