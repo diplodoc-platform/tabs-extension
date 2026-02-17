@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.9.1](https://github.com/diplodoc-platform/tabs-extension/compare/v3.9.0...v3.9.1) (2026-02-17)
+
+
+### Bug Fixes
+
+* Update infra to 1.14.1 ([5353b1f](https://github.com/diplodoc-platform/tabs-extension/commit/5353b1f023831480c3126cf12b866a359a23ecb6))
+
 ## [3.9.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.8.0...v3.9.0) (2026-01-28)
 
 
