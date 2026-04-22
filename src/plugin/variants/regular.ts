@@ -15,12 +15,12 @@ import {
     TAB_PANEL_CLASSNAME,
     VERTICAL_TAB_CLASSNAME,
 } from '../../common';
-import {generateID, getContentMap, getName, getTabId, getTabKey, isTabSelected} from '../utils';
+import {getContentMap, getName, getTabId, getTabKey, isTabSelected} from '../utils';
 
 export const regular: TabsTokensGenerator = (
     tabs,
     state,
-    {containerClasses, tabsGroup, runId, variant: orientation},
+    {containerClasses, tabsGroup, runId, variant: orientation, generateID},
 ) => {
     const tabsTokens = [];
     const tabListTokens = [];
@@ -94,7 +94,7 @@ export const regular: TabsTokensGenerator = (
 
         tab.name = getName(tab);
 
-        const tabPanelId = generateID();
+        const tabPanelId = generateID('regular');
 
         verticalTabInput.block = true;
 

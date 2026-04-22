@@ -13,7 +13,7 @@ import {
     TAB_DATA_VARIANT,
     TAB_PANEL_CLASSNAME,
 } from '../../common';
-import {generateID, getContentMap, getName, getTabId, getTabKey, isTabSelected} from '../utils';
+import {getContentMap, getName, getTabId, getTabKey, isTabSelected} from '../utils';
 import {type RuntimeTab} from '../types';
 
 import {type TabsTokensGenerator} from './types';
@@ -21,7 +21,7 @@ import {type TabsTokensGenerator} from './types';
 export const dropdown: TabsTokensGenerator = (
     tabs: RuntimeTab[],
     state: StateCore,
-    {containerClasses, tabsGroup, runId},
+    {containerClasses, tabsGroup, runId, generateID},
 ) => {
     const dropdownTokens = [];
     const dropdownOpen = new state.Token('dropdown_open', 'div', 1);
@@ -122,7 +122,7 @@ export const dropdown: TabsTokensGenerator = (
 
         tab.name = getName(tab);
 
-        const tabPanelId = generateID();
+        const tabPanelId = generateID('dropdown');
 
         tabPanelOpen.map = getContentMap(tabs[i].tokens);
         tabPanelOpen.block = true;
