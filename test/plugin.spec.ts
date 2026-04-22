@@ -624,14 +624,14 @@ describe('plugin', () => {
     });
 
     describe('tabs groups', () => {
-        it('should set a random group name for the tabs container', () => {
+        it('should set a random default group name for the tabs container', () => {
             // ACT
             const {tokens: result} = makeTransform();
 
             // ASSERT
             const tabs = result.filter(({type}) => type === 'tabs_open');
             const attrsObject = convertAttrsToObject(tabs[0]);
-            expect(attrsObject['data-diplodoc-group']).toMatch(/^defaultTabsGroup-[a-z0-9]{8}$/);
+            expect(attrsObject['data-diplodoc-group']).toMatch(/^defaultTabsGroup-[a-z0-9]+$/);
         });
 
         it('should set a specific group name for the tabs container', () => {

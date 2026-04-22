@@ -3,12 +3,13 @@
  * from the list tokens between them.
  */
 import type {RuntimeTab, TabsProps} from './types';
+import type {IDGenerator} from '@diplodoc/utils';
 
 import Token from 'markdown-it/lib/token';
 
 import {DEFAULT_TABS_GROUP_PREFIX, TAB_RE, TabsVariants} from '../common';
 
-import {generateID, trim, unquote} from './utils';
+import {trim, unquote} from './utils';
 
 /**
  * Find the token index of the matching `{% endlist %}` for a list starting at idx.
@@ -53,16 +54,20 @@ function matchOpenToken(tokens: Token[], i: number): RegExpMatchArray | null {
 /**
  * Parse `{% list tabs group=... %}` content into variant and group id.
  * @param content - Raw tag content after "list tabs"
+ * @param generateID - per-file isolated ID generator used for default group id
  * @returns Parsed props (variant, group)
  */
-export function props(content: string): TabsProps {
+export function props(content: string, generateID: IDGenerator): TabsProps {
     const clean = trim(content.replace('list tabs', ''));
 
     const props = clean.split(' ');
     const result: TabsProps = {
         content: clean,
         variant: TabsVariants.Regular,
-        group: `${DEFAULT_TABS_GROUP_PREFIX}${generateID()}`,
+        // DEFAULT_TABS_GROUP_PREFIX ends with '-', so strip it before passing to generateID
+        // which appends '-N' itself. Result: 'defaultTabsGroup-1', 'defaultTabsGroup-2', …
+        // TabsController checks group.startsWith(DEFAULT_TABS_GROUP_PREFIX) which still matches.
+        group: generateID(DEFAULT_TABS_GROUP_PREFIX.replace(/-$/, '')),
     };
 
     for (const prop of props) {

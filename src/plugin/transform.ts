@@ -4,7 +4,10 @@
  */
 import type StateCore from 'markdown-it/lib/rules_core/state_core';
 import type MarkdownIt from 'markdown-it';
+import type {IDGenerator} from '@diplodoc/utils';
 import type {EnabledVariants} from '../common';
+
+import {createIDGeneratorByStrategy} from '@diplodoc/utils';
 
 import {TabsVariants} from '../common';
 
@@ -34,6 +37,8 @@ let runsCounter = 0;
 
 type TransformOptions = {
     output?: string;
+    /** Optional external ID generator provided by the host (e.g. via MarkdownItPluginOpts). */
+    generateID?: IDGenerator;
 };
 
 /**
@@ -49,7 +54,15 @@ export function transform({
     features = defaultFeatures,
 }: Partial<PluginOptions> = {}) {
     return function tabs(md: MarkdownIt, options?: TransformOptions) {
-        const {output = '.'} = options || {};
+        const {output = '.', generateID: externalGenerateID} = options || {};
+
+        // Use the external ID generator if provided (e.g. from MarkdownItPluginOpts.generateID),
+        // otherwise create a random fallback for standalone usage.
+        // The fallback is created once per md.use() call, so it's shared across all parse() calls
+        // on the same md instance (including recursive calls from includes plugins).
+        const generateID: IDGenerator =
+            externalGenerateID ?? (createIDGeneratorByStrategy('random') as IDGenerator);
+
         const plugin = (state: StateCore) => {
             const {env, tokens} = state;
             const runId = String(++runsCounter);
@@ -70,7 +83,7 @@ export function transform({
 
                 const {content, closeTokenIndex, extraTokensAfterClose} = result;
 
-                const parsedProps = props(content);
+                const parsedProps = props(content, generateID);
 
                 if (!features.enabledVariants[parsedProps.variant]) {
                     parsedProps.variant = TabsVariants.Regular;
@@ -84,6 +97,7 @@ export function transform({
                         tabsGroup: parsedProps.group,
                         variant: parsedProps.variant,
                         runId,
+                        generateID,
                     });
 
                     // Remove tokens including any list closing tokens after endlist

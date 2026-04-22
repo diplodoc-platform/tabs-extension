@@ -15,7 +15,7 @@ import {
     TAB_PANEL_CLASSNAME,
     TabsVariants,
 } from '../../common';
-import {generateID, getContentMap, getName, getTabId, getTabKey, isTabSelected} from '../utils';
+import {getContentMap, getName, getTabId, getTabKey, isTabSelected} from '../utils';
 import {type RuntimeTab} from '../types';
 
 import {type TabsTokensGenerator} from './types';
@@ -23,7 +23,7 @@ import {type TabsTokensGenerator} from './types';
 export const accordion: TabsTokensGenerator = (
     tabs: RuntimeTab[],
     state: StateCore,
-    {containerClasses, tabsGroup, runId},
+    {containerClasses, tabsGroup, runId, generateID},
 ) => {
     const tabsTokens = [];
     const tabsOpen = new state.Token('tabs_open', 'div', 1);
@@ -79,7 +79,7 @@ export const accordion: TabsTokensGenerator = (
 
         tab.name = getName(tab);
 
-        const tabPanelId = generateID();
+        const tabPanelId = generateID('accordion');
 
         tabOpen.map = tabs[i].listItem.map;
         tabOpen.markup = tabs[i].listItem.markup;
