@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.10.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.9.0...v3.10.0) (2026-04-24)
+
+
+### Features
+
+* use generateID from utils DOCSTOOLS-5561 ([f5c3a25](https://github.com/diplodoc-platform/tabs-extension/commit/f5c3a25a298962e9bf670d4bb2a6a397bd5cbdfc))
+
+
+### Bug Fixes
+
+* Update infra to 1.14.1 ([5353b1f](https://github.com/diplodoc-platform/tabs-extension/commit/5353b1f023831480c3126cf12b866a359a23ecb6))
+
 ## [3.9.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.8.0...v3.9.0) (2026-01-28)
 
 
