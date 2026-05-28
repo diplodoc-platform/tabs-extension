@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.10.1](https://github.com/diplodoc-platform/tabs-extension/compare/v3.10.0...v3.10.1) (2026-05-28)
+
+
+### Bug Fixes
+
+* **deps:** updated node to 24 ([#127](https://github.com/diplodoc-platform/tabs-extension/issues/127)) ([43a26e8](https://github.com/diplodoc-platform/tabs-extension/commit/43a26e839ac64d8016665280838d413dd003c44e))
+
 ## [3.10.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.9.0...v3.10.0) (2026-04-24)
 
 
