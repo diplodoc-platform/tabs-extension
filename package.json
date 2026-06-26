@@ -71,6 +71,6 @@
     "ts-dedent": "^2.2.0",
     "typescript": "^5.0.2",
     "vitest": "^3.2.4",
-    "@diplodoc/infra": "2.0.5"
+    "@diplodoc/infra": "2.0.6"
   }
 }
