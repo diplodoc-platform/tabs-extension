@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.10.2](https://github.com/diplodoc-platform/tabs-extension/compare/v3.10.1...v3.10.2) (2026-07-06)
+
+
+### Bug Fixes
+
+* fixed dropdown id ([9a5fe70](https://github.com/diplodoc-platform/tabs-extension/commit/9a5fe70bb866ca5cc7ebc4ecec65d7e7549408af))
+
 ## [3.10.1](https://github.com/diplodoc-platform/tabs-extension/compare/v3.10.0...v3.10.1) (2026-05-28)
 
 
