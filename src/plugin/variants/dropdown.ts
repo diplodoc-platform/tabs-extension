@@ -86,13 +86,15 @@ export const dropdown: TabsTokensGenerator = (
 
     dropdownMenuOpen.attrSet('class', TABS_DROPDOWN_MENU_CLASSNAME);
 
-    const menuTokens = tabs.flatMap((tab) => {
+    const tabIds = tabs.map((tab) => getTabId(tab, {runId}));
+
+    const menuTokens = tabs.flatMap((tab, i) => {
         const menuListItemOpen = new state.Token('dropdown-menu-item_open', 'li', 1);
         const menuListItemClose = new state.Token('dropdown-menu-item_close', 'li', -1);
         const menuListItemText = new state.Token('text', '', 0);
         const menuListItemInline = new state.Token('inline', '', 0);
 
-        const tabId = getTabId(tab, {runId});
+        const tabId = tabIds[i];
         const tabKey = getTabKey(tab);
         const isActive = tab === activeTab;
 
@@ -117,7 +119,7 @@ export const dropdown: TabsTokensGenerator = (
         const tabPanelClose = new state.Token('tab-panel_close', 'div', -1);
 
         const tab = tabs[i];
-        const tabId = getTabId(tab, {runId});
+        const tabId = tabIds[i];
         const didTabHasActiveAttr = isTabSelected(tab);
 
         tab.name = getName(tab);
