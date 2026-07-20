@@ -271,6 +271,46 @@ describe('plugin', () => {
         expect(tokens.map((token) => token.type)).toEqual(nestedTokenTypes);
     });
 
+    it('should keep all tabs and content when a dedented block interrupts the tab list', () => {
+        // ACT
+        const {tokens} = makeTransform({
+            content: [
+                '{% list tabs %}',
+                '',
+                '- Tab 1',
+                '',
+                '# Heading',
+                '',
+                '  Tab 1 content',
+                '',
+                '- Tab 2',
+                '',
+                '  Tab 2 content',
+                '',
+                '{% endlist %}',
+            ],
+        });
+
+        // ASSERT
+        const types = tokens.map((token) => token.type);
+        expect(types.filter((type) => type === 'tab_open')).toHaveLength(2);
+
+        const firstPanel = types.slice(
+            types.indexOf('tab-panel_open'),
+            types.indexOf('tab-panel_close'),
+        );
+        expect(firstPanel).toContain('heading_open');
+
+        expect(types.filter((type) => type === 'tab-panel_open')).toHaveLength(2);
+
+        const contents = tokens
+            .filter((token) => token.type === 'inline')
+            .map((token) => token.content);
+        expect(contents).toEqual(
+            expect.arrayContaining(['Heading', 'Tab 1 content', 'Tab 2 content']),
+        );
+    });
+
     it('should return valid token stream if content without indentation', () => {
         // ACT
         const {tokens} = makeTransform({
@@ -286,6 +326,11 @@ describe('plugin', () => {
             'tab_close',
             'tab-list_close',
             'tab-panel_open',
+            'blockquote_open',
+            'paragraph_open',
+            'inline',
+            'paragraph_close',
+            'blockquote_close',
             'tab-panel_close',
             'tabs_close',
         ]);

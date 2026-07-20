@@ -215,13 +215,14 @@ export function findTabs(tokens: Token[], idx: number, closeTokenIdx: number): R
                 break;
             case 'ordered_list_close':
             case 'bullet_list_close':
-                if (!nestedLevel) {
-                    return tabs;
+                // The tab list may be interrupted by a dedented block (e.g. a heading)
+                // and continue as a new list before {% endlist %}. Keep collecting until
+                // {% endlist %}, otherwise transform() would drop everything in between.
+                if (nestedLevel) {
+                    pending.tokens.push(token);
                 }
 
                 nestedLevel--;
-
-                pending.tokens.push(token);
 
                 break;
             case 'paragraph_open':
