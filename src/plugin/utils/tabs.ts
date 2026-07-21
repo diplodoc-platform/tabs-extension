@@ -14,6 +14,7 @@ const sluggersStorage = new Map<string, GithubSlugger>();
 
 function parseName(name: string): {name: string; customAnchor: string | null} {
     const parts = name.match(CUSTOM_ID_REGEXP);
+
     let customAnchor: string | null = null;
     let pure = name;
 
