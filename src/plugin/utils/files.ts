@@ -17,7 +17,7 @@ export function copyRuntimeFiles(
         const file = join(PATH_TO_RUNTIME, originFile);
         if (!cache.has(file)) {
             cache.add(file);
-            copyFile(resolve(__dirname, file), join(output, outputFile));
+            copyFile(resolve(eval('__dirname'), file), join(output, outputFile));
         }
     }
 }
