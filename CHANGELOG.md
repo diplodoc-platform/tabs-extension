@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.10.3](https://github.com/diplodoc-platform/tabs-extension/compare/v3.10.2...v3.10.3) (2026-07-22)
+
+
+### Bug Fixes
+
+* **deps:** Update dev:@diplodoc/utils@2.3.5 ([#145](https://github.com/diplodoc-platform/tabs-extension/issues/145)) ([d977c15](https://github.com/diplodoc-platform/tabs-extension/commit/d977c15972acee8542b7a324d71c412b9a312604))
+* update react ([#139](https://github.com/diplodoc-platform/tabs-extension/issues/139)) ([a38d62a](https://github.com/diplodoc-platform/tabs-extension/commit/a38d62ae84fbd590645e3c7e0cf9983b1fe7566b))
+
 ## [3.10.2](https://github.com/diplodoc-platform/tabs-extension/compare/v3.10.1...v3.10.2) (2026-07-06)
 
 
