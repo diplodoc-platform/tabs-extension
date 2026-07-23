@@ -11,7 +11,7 @@ import {createIDGeneratorByStrategy} from '@diplodoc/utils';
 
 import {TabsVariants} from '../common';
 
-import {addHiddenProperty, copyRuntimeFiles} from './utils';
+import {addHiddenProperty} from './utils';
 import {generateTabsTokens} from './generate';
 import {findTabs, props, tryToFindTabs} from './find';
 
@@ -24,6 +24,11 @@ export type PluginOptions = {
     features: {
         enabledVariants: EnabledVariants;
     };
+    /** @internal */
+    onBundle?: (
+        args: {runtimeJsPath: string; runtimeCssPath: string; output: string},
+        cache: Set<string>,
+    ) => void;
 };
 
 const defaultFeatures = {
@@ -52,6 +57,7 @@ export function transform({
     containerClasses = '',
     bundle = true,
     features = defaultFeatures,
+    onBundle,
 }: Partial<PluginOptions> = {}) {
     return function tabs(md: MarkdownIt, options?: TransformOptions) {
         const {output = '.', generateID: externalGenerateID} = options || {};
@@ -121,8 +127,8 @@ export function transform({
                 env.meta.script.push(runtimeJsPath);
                 env.meta.style.push(runtimeCssPath);
 
-                if (bundle) {
-                    copyRuntimeFiles({runtimeJsPath, runtimeCssPath, output}, env.bundled);
+                if (bundle && onBundle) {
+                    onBundle({runtimeJsPath, runtimeCssPath, output}, env.bundled);
                 }
             }
         };

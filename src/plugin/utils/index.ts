@@ -22,4 +22,3 @@ export function addHiddenProperty<
 
 export * from './strings';
 export * from './tabs';
-export * from './files';

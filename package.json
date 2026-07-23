@@ -15,6 +15,7 @@
   "exports": {
     ".": {
       "types": "./build/plugin/index.d.ts",
+      "node": "./build/plugin/index-node.js",
       "default": "./build/plugin/index.js"
     },
     "./runtime": {

@@ -48,6 +48,19 @@ const plugin = {
     },
 };
 
+/** @type {import('esbuild').BuildOptions}*/
+const pluginNode = {
+    ...common,
+    entryPoints: ['src/plugin/index-node.ts'],
+    outfile: outDir + '/plugin/index-node.js',
+    platform: 'node',
+    external: ['markdown-it', 'node:*'],
+    define: {
+        PACKAGE: JSON.stringify(packageJson.name),
+    },
+};
+
 build(plugin);
+build(pluginNode);
 build(runtime);
 build(react);
