@@ -795,4 +795,29 @@ describe('plugin', () => {
             ).toMatchSnapshot();
         });
     });
+
+    describe('bundle / onBundle', () => {
+        it('calls onBundle with runtime paths when bundle is enabled', () => {
+            const onBundle = vi.fn();
+
+            renderWithTabsPlugin(defaultContent, {bundle: true, onBundle});
+
+            expect(onBundle).toHaveBeenCalledWith(
+                {
+                    runtimeJsPath: '_assets/tabs-extension.js',
+                    runtimeCssPath: '_assets/tabs-extension.css',
+                    output: '.',
+                },
+                expect.any(Set),
+            );
+        });
+
+        it('does not call onBundle when bundle is disabled', () => {
+            const onBundle = vi.fn();
+
+            renderWithTabsPlugin(defaultContent, {bundle: false, onBundle});
+
+            expect(onBundle).not.toHaveBeenCalled();
+        });
+    });
 });

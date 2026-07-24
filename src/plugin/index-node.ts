@@ -1,6 +1,18 @@
+import {type PluginOptions, transform as baseTransform} from './transform';
+
+export * from './index';
+
+const onBundle: NonNullable<PluginOptions['onBundle']> = (args, cache) => {
+    copyRuntimeFiles(args, cache);
+};
+
+export function transform(options: Partial<PluginOptions> = {}) {
+    return baseTransform({onBundle, ...options});
+}
+
 const PATH_TO_RUNTIME = '../runtime';
 
-export function copyRuntimeFiles(
+function copyRuntimeFiles(
     {
         runtimeJsPath,
         runtimeCssPath,
@@ -8,7 +20,7 @@ export function copyRuntimeFiles(
     }: {runtimeJsPath: string; runtimeCssPath: string; output: string},
     cache: Set<string>,
 ) {
-    const {join, resolve} = dynrequire('node:path');
+    const {join, resolve} = require('node:path');
     const runtimeFiles = {
         'index.js': runtimeJsPath,
         'index.css': runtimeCssPath,
@@ -23,17 +35,8 @@ export function copyRuntimeFiles(
 }
 
 function copyFile(from: string, to: string) {
-    const {mkdirSync, copyFileSync} = dynrequire('node:fs');
-    const {dirname} = dynrequire('node:path');
+    const {mkdirSync, copyFileSync} = require('node:fs');
+    const {dirname} = require('node:path');
     mkdirSync(dirname(to), {recursive: true});
     copyFileSync(from, to);
-}
-
-/*
- * Runtime require hidden for builders.
- * Used for nodejs api
- */
-function dynrequire(module: string) {
-    // eslint-disable-next-line no-eval
-    return eval(`require('${module}')`);
 }
