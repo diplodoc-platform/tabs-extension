@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.10.4](https://github.com/diplodoc-platform/tabs-extension/compare/v3.10.3...v3.10.4) (2026-07-24)
+
+
+### Bug Fixes
+
+* skip warn ([#142](https://github.com/diplodoc-platform/tabs-extension/issues/142)) ([857465e](https://github.com/diplodoc-platform/tabs-extension/commit/857465e876561e0395df4e883b8044a06dd942a2))
+
 ## [3.10.3](https://github.com/diplodoc-platform/tabs-extension/compare/v3.10.2...v3.10.3) (2026-07-22)
 
 
