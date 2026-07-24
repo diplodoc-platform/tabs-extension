@@ -12,7 +12,6 @@ export function transform(options: Partial<PluginOptions> = {}) {
 
 const PATH_TO_RUNTIME = '../runtime';
 
-declare const __dirname: string;
 function copyRuntimeFiles(
     {
         runtimeJsPath,
