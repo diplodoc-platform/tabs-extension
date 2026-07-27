@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.10.5](https://github.com/diplodoc-platform/tabs-extension/compare/v3.10.4...v3.10.5) (2026-07-27)
+
+
+### Bug Fixes
+
+* keep tab content when tab list is interrupted by a dedented block ([305776c](https://github.com/diplodoc-platform/tabs-extension/commit/305776c66c028b4cc6fd048c2424c23a02c2cbf8))
+
 ## [3.10.4](https://github.com/diplodoc-platform/tabs-extension/compare/v3.10.3...v3.10.4) (2026-07-24)
 
 
