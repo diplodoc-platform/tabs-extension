@@ -17,6 +17,7 @@ import {
     TAB_PANEL_CLASSNAME,
     TabsVariants,
 } from '../common';
+import {normalizeTabKeyFromUrl} from '../tab-key';
 
 import {
     getClosestScrollableParent,
@@ -64,6 +65,25 @@ function findTabsByGroupAndKey(doc: Document, group: string, key: string): Eleme
     return result;
 }
 
+function hasTabByGroupKeyAndVariant(
+    doc: Document,
+    group: string,
+    key: string,
+    variant: TabsVariants,
+): boolean {
+    const containers = doc.querySelectorAll(
+        `${Selector.TABS}[${GROUP_DATA_KEY}="${escapeCssAttrValue(group)}"]` +
+            `[${TAB_DATA_VARIANT}="${variant}"]`,
+    );
+
+    return Array.from(containers).some((container) =>
+        Array.from(container.querySelectorAll(Selector.TAB)).some(
+            (tab) =>
+                tab.closest(Selector.TABS) === container && tab.getAttribute(TAB_DATA_KEY) === key,
+        ),
+    );
+}
+
 /** Options for selectTabById (e.g. scroll the selected tab into view). */
 export interface ISelectTabByIdOptions {
     scrollToElement: boolean;
@@ -92,6 +112,7 @@ export class TabsController {
     private _options: TabsControllerOptions;
     private _currentPageTabGroups: string[] = [];
     private _isRestoringTabs = false;
+    private _defaultTabKeys = new WeakMap<Element, string | null>();
 
     // TODO: remove side effects from constructor
     constructor(document: Document, options: Partial<TabsControllerOptions> = {}) {
@@ -177,6 +198,8 @@ export class TabsController {
             this.selectTab(tabs[newIndex]);
             nodes[newIndex].focus();
         });
+
+        this.rememberDefaultTabs();
     }
 
     /**
@@ -246,7 +269,7 @@ export class TabsController {
         try {
             for (const [group, fields] of Object.entries(tabsHistory)) {
                 if (group) {
-                    const tab = {group, ...fields};
+                    const tab = {group, ...fields, key: normalizeTabKeyFromUrl(fields.key)};
                     this.selectTab(tab);
                 }
             }
@@ -273,18 +296,63 @@ export class TabsController {
         if (urlParams.has('tabs')) {
             const tabsFromQuery = urlParams.get('tabs') || '';
             const tabConfigs = tabsFromQuery.split(',');
+            const currentGroups = this.getCurrentPageTabGroups().sort(
+                (left, right) => right.length - left.length,
+            );
 
             tabConfigs.forEach((config) => {
-                const splitConfig = config.split('_');
-                const [group, key] = splitConfig;
-                let variant = TabsVariants.Regular;
-                if (splitConfig.length === 3) {
-                    variant = splitConfig[2] as TabsVariants;
+                const knownGroup = currentGroups.find((group) => config.startsWith(`${group}_`));
+
+                if (knownGroup) {
+                    const keyAndVariant = config.slice(knownGroup.length + 1);
+                    const variants = Object.values(TabsVariants).filter(
+                        (variant) => variant !== TabsVariants.Regular,
+                    );
+                    const regularKey = normalizeTabKeyFromUrl(keyAndVariant);
+                    const variant = hasTabByGroupKeyAndVariant(
+                        this._document,
+                        knownGroup,
+                        regularKey,
+                        TabsVariants.Regular,
+                    )
+                        ? undefined
+                        : variants.find((candidate) => {
+                              const suffix = `_${candidate}`;
+                              const candidateKey = keyAndVariant.slice(0, -suffix.length);
+
+                              return (
+                                  keyAndVariant.endsWith(suffix) &&
+                                  hasTabByGroupKeyAndVariant(
+                                      this._document,
+                                      knownGroup,
+                                      normalizeTabKeyFromUrl(candidateKey),
+                                      candidate,
+                                  )
+                              );
+                          });
+                    const key = variant
+                        ? keyAndVariant.slice(0, -`_${variant}`.length)
+                        : keyAndVariant;
+
+                    if (key) {
+                        tabsHistory[knownGroup] = {
+                            key: normalizeTabKeyFromUrl(key),
+                            variant: variant ?? TabsVariants.Regular,
+                        };
+                    }
+
+                    return;
                 }
 
+                const splitConfig = config.split('_');
+                const [group, key] = splitConfig;
+                const variant =
+                    splitConfig.length === 3
+                        ? (splitConfig[2] as TabsVariants)
+                        : TabsVariants.Regular;
+
                 if (group && key && Object.values(TabsVariants).includes(variant)) {
-                    const keyWithSpaces = key;
-                    tabsHistory[group] = {key: keyWithSpaces, variant: variant};
+                    tabsHistory[group] = {key: normalizeTabKeyFromUrl(key), variant: variant};
                 }
             });
         }
@@ -312,12 +380,24 @@ export class TabsController {
         }
 
         const urlParams = new URLSearchParams(window.location.search);
-        const tabsArray = Object.entries(tabsHistory).map(([group, {key, variant}]) => {
-            if (variant === TabsVariants.Regular) {
-                return `${group}_${key}`;
-            }
-            return `${group}_${key}_${variant}`;
-        });
+        const tabsArray = Object.entries(tabsHistory).reduce<string[]>(
+            (result, [group, {key, variant}]) => {
+                const normalizedKey = normalizeTabKeyFromUrl(key);
+
+                if (this.isDefaultTab(group, normalizedKey, variant)) {
+                    return result;
+                }
+
+                result.push(
+                    variant === TabsVariants.Regular
+                        ? `${group}_${normalizedKey}`
+                        : `${group}_${normalizedKey}_${variant}`,
+                );
+
+                return result;
+            },
+            [],
+        );
 
         // Clear or set tabs parameter
         if (tabsArray.length > 0) {
@@ -354,6 +434,7 @@ export class TabsController {
      * @returns void
      */
     onPageChanged(): void {
+        this.rememberDefaultTabs();
         this._currentPageTabGroups = this.getCurrentPageTabGroups();
     }
 
@@ -451,6 +532,56 @@ export class TabsController {
                 break;
             }
         }
+    }
+
+    private isDefaultTab(group: string, key: string, variant: TabsVariants): boolean {
+        if (variant !== TabsVariants.Regular) {
+            return false;
+        }
+
+        this.rememberDefaultTabs();
+
+        const containers = Array.from(
+            this._document.querySelectorAll(
+                `${Selector.TABS}[${GROUP_DATA_KEY}="${escapeCssAttrValue(group)}"]` +
+                    `[${TAB_DATA_VARIANT}="${variant}"]`,
+            ),
+        );
+        const containersWithTab = containers
+            .map((container) =>
+                Array.from(container.querySelectorAll(Selector.TAB)).filter(
+                    (tab) => tab.closest(Selector.TABS) === container,
+                ),
+            )
+            .filter((tabs) => tabs.some((tab) => tab.getAttribute(TAB_DATA_KEY) === key));
+
+        return (
+            containersWithTab.length > 0 &&
+            containersWithTab.every((tabs) => {
+                const container = tabs[0]?.closest(Selector.TABS);
+                return container ? this._defaultTabKeys.get(container) === key : false;
+            })
+        );
+    }
+
+    private rememberDefaultTabs(): void {
+        const containers = this._document.querySelectorAll(
+            `${Selector.TABS}[${TAB_DATA_VARIANT}="${TabsVariants.Regular}"]`,
+        );
+
+        containers.forEach((container) => {
+            if (this._defaultTabKeys.has(container)) {
+                return;
+            }
+
+            const tabs = Array.from(container.querySelectorAll(Selector.TAB)).filter(
+                (tab) => tab.closest(Selector.TABS) === container,
+            );
+            const defaultTab =
+                tabs.find((tab) => tab.classList.contains(ACTIVE_CLASSNAME)) ?? tabs[0];
+
+            this._defaultTabKeys.set(container, defaultTab?.getAttribute(TAB_DATA_KEY) ?? null);
+        });
     }
 
     private updateHTMLRadio(tab: Required<Tab>, target: HTMLElement | undefined) {

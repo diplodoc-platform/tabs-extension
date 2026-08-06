@@ -183,8 +183,8 @@ Array [
 exports[`plugin > html snapshots > should render common tabs 1`] = `
 "<div class=\\"yfm-tabs\\" data-diplodoc-group=\\"defaultTabsGroup-4fzzzxjy\\" data-diplodoc-variant=\\"regular\\">
 <div class=\\"yfm-tab-list\\" role=\\"tablist\\">
-<div data-diplodoc-id=\\"tab-1\\" data-diplodoc-key=\\"tab%201\\" class=\\"yfm-tab yfm-tab-group active\\" role=\\"tab\\" aria-controls=\\"regular-zk00000y\\" aria-selected=\\"true\\" tabindex=\\"0\\" data-diplodoc-is-active=\\"true\\">Tab 1</div>
-<div data-diplodoc-id=\\"tab-2\\" data-diplodoc-key=\\"tab%202\\" class=\\"yfm-tab yfm-tab-group\\" role=\\"tab\\" aria-controls=\\"regular-ofvc1cad\\" aria-selected=\\"false\\" tabindex=\\"-1\\" data-diplodoc-is-active=\\"false\\">Tab 2</div>
+<div data-diplodoc-id=\\"tab-1\\" data-diplodoc-key=\\"tab-1\\" class=\\"yfm-tab yfm-tab-group active\\" role=\\"tab\\" aria-controls=\\"regular-zk00000y\\" aria-selected=\\"true\\" tabindex=\\"0\\" data-diplodoc-is-active=\\"true\\">Tab 1</div>
+<div data-diplodoc-id=\\"tab-2\\" data-diplodoc-key=\\"tab-2\\" class=\\"yfm-tab yfm-tab-group\\" role=\\"tab\\" aria-controls=\\"regular-ofvc1cad\\" aria-selected=\\"false\\" tabindex=\\"-1\\" data-diplodoc-is-active=\\"false\\">Tab 2</div>
 </div>
 <div id=\\"regular-zk00000y\\" class=\\"yfm-tab-panel active\\" role=\\"tabpanel\\" aria-labelledby=\\"tab-1\\" data-title=\\"Tab 1\\">
 <p>Content of tab 1</p>
@@ -198,13 +198,13 @@ exports[`plugin > html snapshots > should render common tabs 1`] = `
 
 exports[`plugin > html snapshots > should render radio tabs 1`] = `
 "<div class=\\"yfm-tabs yfm-tabs-vertical\\" data-diplodoc-group=\\"defaultTabsGroup-7ptgcyuj\\" data-diplodoc-variant=\\"radio\\">
-<div data-diplodoc-id=\\"radio-1\\" data-diplodoc-key=\\"radio%201\\" class=\\"yfm-tab yfm-tab-group yfm-vertical-tab\\" role=\\"tab\\" aria-controls=\\"radio-gfzybi81\\" aria-selected=\\"false\\" tabindex=\\"0\\" data-diplodoc-is-active=\\"false\\" data-diplodoc-vertical-tab=\\"true\\">
+<div data-diplodoc-id=\\"radio-1\\" data-diplodoc-key=\\"radio-1\\" class=\\"yfm-tab yfm-tab-group yfm-vertical-tab\\" role=\\"tab\\" aria-controls=\\"radio-gfzybi81\\" aria-selected=\\"false\\" tabindex=\\"0\\" data-diplodoc-is-active=\\"false\\" data-diplodoc-vertical-tab=\\"true\\">
 <input class=\\"radio\\" type=\\"radio\\">
 <label>Radio 1</label></div>
 <div id=\\"radio-gfzybi81\\" class=\\"yfm-tab-panel\\" role=\\"tabpanel\\" aria-labelledby=\\"radio-1\\" data-title=\\"Radio 1\\">
 <p>Content of radio 1</p>
 </div>
-<div data-diplodoc-id=\\"radio-2\\" data-diplodoc-key=\\"radio%202\\" class=\\"yfm-tab yfm-tab-group yfm-vertical-tab\\" role=\\"tab\\" aria-controls=\\"radio-4gfir17c\\" aria-selected=\\"false\\" tabindex=\\"-1\\" data-diplodoc-is-active=\\"false\\" data-diplodoc-vertical-tab=\\"true\\">
+<div data-diplodoc-id=\\"radio-2\\" data-diplodoc-key=\\"radio-2\\" class=\\"yfm-tab yfm-tab-group yfm-vertical-tab\\" role=\\"tab\\" aria-controls=\\"radio-4gfir17c\\" aria-selected=\\"false\\" tabindex=\\"-1\\" data-diplodoc-is-active=\\"false\\" data-diplodoc-vertical-tab=\\"true\\">
 <input class=\\"radio\\" type=\\"radio\\">
 <label>Radio 2</label></div>
 <div id=\\"radio-4gfir17c\\" class=\\"yfm-tab-panel\\" role=\\"tabpanel\\" aria-labelledby=\\"radio-2\\" data-title=\\"Radio 2\\">
