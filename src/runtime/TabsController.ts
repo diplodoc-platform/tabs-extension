@@ -312,18 +312,24 @@ export class TabsController {
         }
 
         const urlParams = new URLSearchParams(window.location.search);
-        const tabsArray = Object.entries(tabsHistory).flatMap(([group, {key, variant}]) => {
-            const normalizedKey = normalizeTabKeyFromUrl(key);
+        const tabsArray = Object.entries(tabsHistory).reduce<string[]>(
+            (result, [group, {key, variant}]) => {
+                const normalizedKey = normalizeTabKeyFromUrl(key);
 
-            if (this.isFirstTab(group, normalizedKey, variant)) {
-                return [];
-            }
+                if (this.isFirstTab(group, normalizedKey, variant)) {
+                    return result;
+                }
 
-            if (variant === TabsVariants.Regular) {
-                return [`${group}_${normalizedKey}`];
-            }
-            return [`${group}_${normalizedKey}_${variant}`];
-        });
+                result.push(
+                    variant === TabsVariants.Regular
+                        ? `${group}_${normalizedKey}`
+                        : `${group}_${normalizedKey}_${variant}`,
+                );
+
+                return result;
+            },
+            [],
+        );
 
         // Clear or set tabs parameter
         if (tabsArray.length > 0) {
