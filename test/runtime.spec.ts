@@ -277,6 +277,36 @@ describe('Testing runtime features', () => {
         });
     });
 
+    it('keeps the first tab in URL when another tab is selected by default', () => {
+        document.body.innerHTML = renderWithTabsPlugin(`
+{% list tabs group=custom_default %}
+
+- First tab
+
+  First content.
+
+- Second tab {selected}
+
+  Second content.
+
+{% endlist %}
+`);
+        tabController.onPageChanged();
+
+        const customTabs = document.querySelectorAll<HTMLElement>(
+            `[${GROUP_DATA_KEY}="custom_default"] > .${TABS_LIST_CLASSNAME} > .${TAB_CLASSNAME}`,
+        );
+        expect(customTabs[1].classList.contains('active')).toBeTruthy();
+
+        tabController.selectTab(getTabDataOrThrow(customTabs[0]));
+        expect(new URLSearchParams(window.location.search).get('tabs')).toBe(
+            'custom_default_first-tab',
+        );
+
+        tabController.selectTab(getTabDataOrThrow(customTabs[1]));
+        expect(new URLSearchParams(window.location.search).has('tabs')).toBe(false);
+    });
+
     it('keeps the first radio tab in URL because it is closed by default', () => {
         document.body.innerHTML = renderWithTabsPlugin(`
 {% list tabs group=radio radio %}
@@ -428,6 +458,68 @@ describe('Testing runtime features', () => {
         expect(tabController.getTabsFromSearchQuery()).toEqual({
             russian: {
                 key: 'vtoroj-russkij-tab',
+                variant: TabsVariants.Regular,
+            },
+        });
+    });
+
+    it('restores a tab when its group contains underscores', () => {
+        document.body.innerHTML = renderWithTabsPlugin(`
+{% list tabs group=height_demo %}
+
+- Короткая
+
+  Короткий блок.
+
+- Высокая
+
+  Высокий блок.
+
+{% endlist %}
+`);
+        const searchParams = new URLSearchParams();
+        searchParams.set('tabs', 'height_demo_vysokaya');
+
+        const newUrl = `${window.location.origin}${window.location.pathname}?${searchParams.toString()}`;
+        window.history.replaceState({}, document.title, newUrl);
+
+        expect(tabController.getTabsFromSearchQuery()).toEqual({
+            height_demo: {
+                key: 'vysokaya',
+                variant: TabsVariants.Regular,
+            },
+        });
+
+        tabController.restoreTabs(tabController.getTabsFromSearchQuery());
+        const heightTabs = document.querySelectorAll<HTMLElement>(
+            `[${GROUP_DATA_KEY}="height_demo"] > .${TABS_LIST_CLASSNAME} > .${TAB_CLASSNAME}`,
+        );
+        expect(heightTabs[1].classList.contains('active')).toBeTruthy();
+    });
+
+    it('restores a legacy tab key containing underscores', () => {
+        document.body.innerHTML = renderWithTabsPlugin(`
+{% list tabs group=legacy %}
+
+- First tab
+
+  First content.
+
+- Legacy tab {#legacy_tab}
+
+  Legacy content.
+
+{% endlist %}
+`);
+        const searchParams = new URLSearchParams();
+        searchParams.set('tabs', 'legacy_legacy_tab');
+
+        const newUrl = `${window.location.origin}${window.location.pathname}?${searchParams.toString()}`;
+        window.history.replaceState({}, document.title, newUrl);
+
+        expect(tabController.getTabsFromSearchQuery()).toEqual({
+            legacy: {
+                key: 'legacytab',
                 variant: TabsVariants.Regular,
             },
         });
