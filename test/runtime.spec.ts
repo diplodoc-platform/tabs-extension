@@ -252,7 +252,7 @@ describe('Testing runtime features', () => {
         const savedState = JSON.parse(localStorage.getItem('tabsHistory') as string);
         expect(savedState).toEqual({
             g0: {
-                key: 'tab%20with%20ordered%20list',
+                key: 'tab-with-ordered-list',
                 variant: 'regular',
             },
         });
@@ -268,7 +268,7 @@ describe('Testing runtime features', () => {
             'tabsHistory',
             JSON.stringify({
                 g0: {
-                    key: 'tab%20with%20ordered%20list',
+                    key: 'tab-with-ordered-list',
                     variant: 'regular',
                 },
             }),
@@ -283,6 +283,41 @@ describe('Testing runtime features', () => {
         expect(tabs[0].classList.contains('active')).not.toBeTruthy();
         expect(tabs[1].classList.contains('active')).toBeTruthy();
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
+    });
+
+    it('does not migrate legacy localStorage keys', () => {
+        localStorage.setItem(
+            'tabsHistory',
+            JSON.stringify({
+                g0: {
+                    key: 'tab%20with%20ordered%20list',
+                    variant: 'regular',
+                },
+            }),
+        );
+
+        tabController.restoreTabs(tabController.getTabsFromLocalStorage());
+
+        expect(tabs[0].classList.contains('active')).toBeTruthy();
+        expect(tabs[1].classList.contains('active')).not.toBeTruthy();
+        expect(localStorage.getItem('tabsHistory')).toContain('tab%20with%20ordered%20list');
+    });
+
+    it('writes legacy localStorage keys to URL as slugs without migrating localStorage', () => {
+        const legacyKey = encodeURIComponent('Первый русский таб').toLocaleLowerCase();
+        const tabsHistory = {
+            platforms: {key: 'windows', variant: TabsVariants.Regular},
+            russian: {key: legacyKey, variant: TabsVariants.Regular},
+            height_demo: {key: 'korotkaya', variant: TabsVariants.Regular},
+        };
+        localStorage.setItem('tabsHistory', JSON.stringify(tabsHistory));
+
+        tabController.updateQueryParamWithTabs(tabsHistory);
+
+        expect(new URLSearchParams(window.location.search).get('tabs')).toBe(
+            'platforms_windows,russian_pervyj-russkij-tab,height_demo_korotkaya',
+        );
+        expect(localStorage.getItem('tabsHistory')).toContain(legacyKey);
     });
 
     it('should handle invalid or missing saved state during restore', () => {
@@ -337,6 +372,22 @@ describe('Testing runtime features', () => {
         expect(tabs[0].classList.contains('active')).not.toBeTruthy();
         expect(tabs[1].classList.contains('active')).toBeTruthy();
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
+    });
+
+    it('normalizes a legacy Russian key from search query', () => {
+        const legacyKey = encodeURIComponent('Второй русский таб').toLocaleLowerCase();
+        const searchParams = new URLSearchParams();
+        searchParams.set('tabs', `russian_${legacyKey}`);
+
+        const newUrl = `${window.location.origin}${window.location.pathname}?${searchParams.toString()}`;
+        window.history.replaceState({}, document.title, newUrl);
+
+        expect(tabController.getTabsFromSearchQuery()).toEqual({
+            russian: {
+                key: 'vtoroj-russkij-tab',
+                variant: TabsVariants.Regular,
+            },
+        });
     });
 
     it('returns correct tab groups from the document', () => {

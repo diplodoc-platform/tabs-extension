@@ -17,6 +17,7 @@ import {
     TAB_PANEL_CLASSNAME,
     TabsVariants,
 } from '../common';
+import {normalizeTabKeyFromUrl} from '../tab-key';
 
 import {
     getClosestScrollableParent,
@@ -283,8 +284,7 @@ export class TabsController {
                 }
 
                 if (group && key && Object.values(TabsVariants).includes(variant)) {
-                    const keyWithSpaces = key;
-                    tabsHistory[group] = {key: keyWithSpaces, variant: variant};
+                    tabsHistory[group] = {key: normalizeTabKeyFromUrl(key), variant: variant};
                 }
             });
         }
@@ -313,10 +313,12 @@ export class TabsController {
 
         const urlParams = new URLSearchParams(window.location.search);
         const tabsArray = Object.entries(tabsHistory).map(([group, {key, variant}]) => {
+            const normalizedKey = normalizeTabKeyFromUrl(key);
+
             if (variant === TabsVariants.Regular) {
-                return `${group}_${key}`;
+                return `${group}_${normalizedKey}`;
             }
-            return `${group}_${key}_${variant}`;
+            return `${group}_${normalizedKey}_${variant}`;
         });
 
         // Clear or set tabs parameter
