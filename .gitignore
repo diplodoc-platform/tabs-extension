@@ -8,6 +8,9 @@ index.d.ts
 example/package-lock.json
 example/build
 *.d.ts
+# A source declaration, not a build artifact: the compiler needs it for
+# side-effect style imports (TS2882 in TypeScript 7).
+!src/styles.d.ts
 
 .vscode
 .history
