@@ -258,6 +258,52 @@ describe('Testing runtime features', () => {
         });
     });
 
+    it('omits the first tab from URL while keeping it in localStorage', () => {
+        tabController.onPageChanged();
+
+        tabController.selectTab(getTabDataOrThrow(tabs[1]));
+        expect(new URLSearchParams(window.location.search).get('tabs')).toBe(
+            'g0_tab-with-ordered-list',
+        );
+
+        tabController.selectTab(getTabDataOrThrow(tabs[0]));
+
+        expect(new URLSearchParams(window.location.search).has('tabs')).toBe(false);
+        expect(tabController.getTabsFromLocalStorage()).toEqual({
+            g0: {
+                key: 'tab-with-unordered-list',
+                variant: TabsVariants.Regular,
+            },
+        });
+    });
+
+    it('keeps the first radio tab in URL because it is closed by default', () => {
+        document.body.innerHTML = renderWithTabsPlugin(`
+{% list tabs group=radio radio %}
+
+- First radio tab
+
+  First content.
+
+- Second radio tab
+
+  Second content.
+
+{% endlist %}
+`);
+
+        tabController.updateQueryParamWithTabs({
+            radio: {
+                key: 'first-radio-tab',
+                variant: TabsVariants.Radio,
+            },
+        });
+
+        expect(new URLSearchParams(window.location.search).get('tabs')).toBe(
+            'radio_first-radio-tab_radio',
+        );
+    });
+
     it('should restore the state of grouped tabs from localStorage', () => {
         tabController.selectTab(getTabDataOrThrow(tabs[2]));
         expect(tabs[0].classList.contains('active')).not.toBeTruthy();
@@ -298,26 +344,23 @@ describe('Testing runtime features', () => {
 
         tabController.restoreTabs(tabController.getTabsFromLocalStorage());
 
-        expect(tabs[0].classList.contains('active')).toBeTruthy();
-        expect(tabs[1].classList.contains('active')).not.toBeTruthy();
+        expect(tabs[0].classList.contains('active')).not.toBeTruthy();
+        expect(tabs[1].classList.contains('active')).toBeTruthy();
         expect(localStorage.getItem('tabsHistory')).toContain('tab%20with%20ordered%20list');
     });
 
     it('writes legacy localStorage keys to URL as slugs without migrating localStorage', () => {
-        const legacyKey = encodeURIComponent('Первый русский таб').toLocaleLowerCase();
+        const legacyFirstKey = encodeURIComponent('Tab with unordered list').toLocaleLowerCase();
         const tabsHistory = {
-            platforms: {key: 'windows', variant: TabsVariants.Regular},
-            russian: {key: legacyKey, variant: TabsVariants.Regular},
-            height_demo: {key: 'korotkaya', variant: TabsVariants.Regular},
+            g0: {key: legacyFirstKey, variant: TabsVariants.Regular},
+            g1: {key: 'nested-tab-2', variant: TabsVariants.Regular},
         };
         localStorage.setItem('tabsHistory', JSON.stringify(tabsHistory));
 
         tabController.updateQueryParamWithTabs(tabsHistory);
 
-        expect(new URLSearchParams(window.location.search).get('tabs')).toBe(
-            'platforms_windows,russian_pervyj-russkij-tab,height_demo_korotkaya',
-        );
-        expect(localStorage.getItem('tabsHistory')).toContain(legacyKey);
+        expect(new URLSearchParams(window.location.search).get('tabs')).toBe('g1_nested-tab-2');
+        expect(localStorage.getItem('tabsHistory')).toContain(legacyFirstKey);
     });
 
     it('should handle invalid or missing saved state during restore', () => {

@@ -247,7 +247,7 @@ export class TabsController {
         try {
             for (const [group, fields] of Object.entries(tabsHistory)) {
                 if (group) {
-                    const tab = {group, ...fields};
+                    const tab = {group, ...fields, key: normalizeTabKeyFromUrl(fields.key)};
                     this.selectTab(tab);
                 }
             }
@@ -312,13 +312,17 @@ export class TabsController {
         }
 
         const urlParams = new URLSearchParams(window.location.search);
-        const tabsArray = Object.entries(tabsHistory).map(([group, {key, variant}]) => {
+        const tabsArray = Object.entries(tabsHistory).flatMap(([group, {key, variant}]) => {
             const normalizedKey = normalizeTabKeyFromUrl(key);
 
-            if (variant === TabsVariants.Regular) {
-                return `${group}_${normalizedKey}`;
+            if (this.isFirstTab(group, normalizedKey, variant)) {
+                return [];
             }
-            return `${group}_${normalizedKey}_${variant}`;
+
+            if (variant === TabsVariants.Regular) {
+                return [`${group}_${normalizedKey}`];
+            }
+            return [`${group}_${normalizedKey}_${variant}`];
         });
 
         // Clear or set tabs parameter
@@ -453,6 +457,31 @@ export class TabsController {
                 break;
             }
         }
+    }
+
+    private isFirstTab(group: string, key: string, variant: TabsVariants): boolean {
+        if (variant !== TabsVariants.Regular) {
+            return false;
+        }
+
+        const containers = Array.from(
+            this._document.querySelectorAll(
+                `${Selector.TABS}[${GROUP_DATA_KEY}="${escapeCssAttrValue(group)}"]` +
+                    `[${TAB_DATA_VARIANT}="${variant}"]`,
+            ),
+        );
+        const containersWithTab = containers
+            .map((container) =>
+                Array.from(container.querySelectorAll(Selector.TAB)).filter(
+                    (tab) => tab.closest(Selector.TABS) === container,
+                ),
+            )
+            .filter((tabs) => tabs.some((tab) => tab.getAttribute(TAB_DATA_KEY) === key));
+
+        return (
+            containersWithTab.length > 0 &&
+            containersWithTab.every((tabs) => tabs[0]?.getAttribute(TAB_DATA_KEY) === key)
+        );
     }
 
     private updateHTMLRadio(tab: Required<Tab>, target: HTMLElement | undefined) {
