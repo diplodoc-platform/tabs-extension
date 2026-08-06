@@ -7,6 +7,7 @@ import type {RuntimeTab} from '../types';
 import GithubSlugger from 'github-slugger';
 
 import {ACTIVE_TAB_TEXT} from '../../common';
+import {createTabKey} from '../../tab-key';
 
 const CUSTOM_ID_REGEXP = /\[?{ ?#(\S+) ?}]?/;
 
@@ -63,12 +64,12 @@ export function isTabSelected(tab: RuntimeTab): boolean {
 }
 
 /**
- * URL-encoded tab key used in state (localStorage, query).
+ * Canonical slug key used in state (localStorage, query).
  * @param tab - Runtime tab
- * @returns Encoded key
+ * @returns Canonical slug key
  */
 export function getTabKey(tab: RuntimeTab): string {
-    return encodeURIComponent(getRawId(tab)).toLocaleLowerCase();
+    return createTabKey(getRawId(tab));
 }
 
 /**

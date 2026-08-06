@@ -720,8 +720,8 @@ describe('plugin', () => {
             expect(attrsObject1['data-diplodoc-id']).toEqual('tab-with-list');
             expect(attrsObject2['data-diplodoc-id']).toEqual('tab-with-list-1');
             expect(attrsObject0['data-diplodoc-key']).toEqual('python');
-            expect(attrsObject1['data-diplodoc-key']).toEqual('tab%20with%20list');
-            expect(attrsObject2['data-diplodoc-key']).toEqual('tab%20with%20list');
+            expect(attrsObject1['data-diplodoc-key']).toEqual('tab-with-list');
+            expect(attrsObject2['data-diplodoc-key']).toEqual('tab-with-list');
             expect(attrsObject0['data-diplodoc-is-active']).toEqual('true');
             expect(attrsObject1['data-diplodoc-is-active']).toEqual('false');
             expect(attrsObject2['data-diplodoc-is-active']).toEqual('false');
@@ -781,8 +781,8 @@ describe('plugin', () => {
             expect(result[result.indexOf(tabs[1]) + 1]?.children?.[0]?.content).toEqual('C++');
             expect(attrsObject0['data-diplodoc-id']).toEqual('c');
             expect(attrsObject1['data-diplodoc-id']).toEqual('c-1');
-            expect(attrsObject0['data-diplodoc-key']).toEqual('c%23');
-            expect(attrsObject1['data-diplodoc-key']).toEqual('c%2b%2b');
+            expect(attrsObject0['data-diplodoc-key']).toEqual('c-u23');
+            expect(attrsObject1['data-diplodoc-key']).toEqual('c-u2b-u2b');
         });
     });
 

@@ -252,10 +252,126 @@ describe('Testing runtime features', () => {
         const savedState = JSON.parse(localStorage.getItem('tabsHistory') as string);
         expect(savedState).toEqual({
             g0: {
-                key: 'tab%20with%20ordered%20list',
+                key: 'tab-with-ordered-list',
                 variant: 'regular',
             },
         });
+    });
+
+    it('omits the first tab from URL while keeping it in localStorage', () => {
+        tabController.onPageChanged();
+
+        tabController.selectTab(getTabDataOrThrow(tabs[1]));
+        expect(new URLSearchParams(window.location.search).get('tabs')).toBe(
+            'g0_tab-with-ordered-list',
+        );
+
+        tabController.selectTab(getTabDataOrThrow(tabs[0]));
+
+        expect(new URLSearchParams(window.location.search).has('tabs')).toBe(false);
+        expect(tabController.getTabsFromLocalStorage()).toEqual({
+            g0: {
+                key: 'tab-with-unordered-list',
+                variant: TabsVariants.Regular,
+            },
+        });
+    });
+
+    it('keeps the first tab in URL when another tab is selected by default', () => {
+        document.body.innerHTML = renderWithTabsPlugin(`
+{% list tabs group=custom_default %}
+
+- First tab
+
+  First content.
+
+- Second tab {selected}
+
+  Second content.
+
+{% endlist %}
+`);
+        tabController.onPageChanged();
+
+        const customTabs = document.querySelectorAll<HTMLElement>(
+            `[${GROUP_DATA_KEY}="custom_default"] > .${TABS_LIST_CLASSNAME} > .${TAB_CLASSNAME}`,
+        );
+        expect(customTabs[1].classList.contains('active')).toBeTruthy();
+
+        tabController.selectTab(getTabDataOrThrow(customTabs[0]));
+        expect(new URLSearchParams(window.location.search).get('tabs')).toBe(
+            'custom_default_first-tab',
+        );
+
+        tabController.selectTab(getTabDataOrThrow(customTabs[1]));
+        expect(new URLSearchParams(window.location.search).has('tabs')).toBe(false);
+    });
+
+    it('keeps the first radio tab in URL because it is closed by default', () => {
+        document.body.innerHTML = renderWithTabsPlugin(`
+{% list tabs group=radio radio %}
+
+- First radio tab
+
+  First content.
+
+- Second radio tab
+
+  Second content.
+
+{% endlist %}
+`);
+
+        tabController.updateQueryParamWithTabs({
+            radio: {
+                key: 'first-radio-tab',
+                variant: TabsVariants.Radio,
+            },
+        });
+
+        expect(new URLSearchParams(window.location.search).get('tabs')).toBe(
+            'radio_first-radio-tab_radio',
+        );
+    });
+
+    it('serializes and restores a radio tab when its group contains underscores', () => {
+        document.body.innerHTML = renderWithTabsPlugin(`
+{% list tabs group=height_demo radio %}
+
+- First radio tab
+
+  First content.
+
+- Second radio tab
+
+  Second content.
+
+{% endlist %}
+`);
+        const tabsHistory = {
+            height_demo: {
+                key: 'first-radio-tab',
+                variant: TabsVariants.Radio,
+            },
+        };
+
+        tabController.updateQueryParamWithTabs(tabsHistory);
+
+        expect(new URLSearchParams(window.location.search).get('tabs')).toBe(
+            'height_demo_first-radio-tab_radio',
+        );
+
+        const parsedTabsHistory = tabController.getTabsFromSearchQuery();
+        expect(parsedTabsHistory).toEqual(tabsHistory);
+
+        tabController.restoreTabs(parsedTabsHistory);
+        const radioTabs = document.querySelectorAll<HTMLElement>(
+            `[${GROUP_DATA_KEY}="height_demo"] > .${TAB_CLASSNAME}`,
+        );
+        expect(Array.from(radioTabs, (tab) => tab.classList.contains('active'))).toEqual([
+            true,
+            false,
+        ]);
     });
 
     it('should restore the state of grouped tabs from localStorage', () => {
@@ -268,7 +384,7 @@ describe('Testing runtime features', () => {
             'tabsHistory',
             JSON.stringify({
                 g0: {
-                    key: 'tab%20with%20ordered%20list',
+                    key: 'tab-with-ordered-list',
                     variant: 'regular',
                 },
             }),
@@ -283,6 +399,38 @@ describe('Testing runtime features', () => {
         expect(tabs[0].classList.contains('active')).not.toBeTruthy();
         expect(tabs[1].classList.contains('active')).toBeTruthy();
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
+    });
+
+    it('does not migrate legacy localStorage keys', () => {
+        localStorage.setItem(
+            'tabsHistory',
+            JSON.stringify({
+                g0: {
+                    key: 'tab%20with%20ordered%20list',
+                    variant: 'regular',
+                },
+            }),
+        );
+
+        tabController.restoreTabs(tabController.getTabsFromLocalStorage());
+
+        expect(tabs[0].classList.contains('active')).not.toBeTruthy();
+        expect(tabs[1].classList.contains('active')).toBeTruthy();
+        expect(localStorage.getItem('tabsHistory')).toContain('tab%20with%20ordered%20list');
+    });
+
+    it('writes legacy localStorage keys to URL as slugs without migrating localStorage', () => {
+        const legacyFirstKey = encodeURIComponent('Tab with unordered list').toLocaleLowerCase();
+        const tabsHistory = {
+            g0: {key: legacyFirstKey, variant: TabsVariants.Regular},
+            g1: {key: 'nested-tab-2', variant: TabsVariants.Regular},
+        };
+        localStorage.setItem('tabsHistory', JSON.stringify(tabsHistory));
+
+        tabController.updateQueryParamWithTabs(tabsHistory);
+
+        expect(new URLSearchParams(window.location.search).get('tabs')).toBe('g1_nested-tab-2');
+        expect(localStorage.getItem('tabsHistory')).toContain(legacyFirstKey);
     });
 
     it('should handle invalid or missing saved state during restore', () => {
@@ -337,6 +485,84 @@ describe('Testing runtime features', () => {
         expect(tabs[0].classList.contains('active')).not.toBeTruthy();
         expect(tabs[1].classList.contains('active')).toBeTruthy();
         expect(tabs[2].classList.contains('active')).not.toBeTruthy();
+    });
+
+    it('normalizes a legacy Russian key from search query', () => {
+        const legacyKey = encodeURIComponent('Второй русский таб').toLocaleLowerCase();
+        const searchParams = new URLSearchParams();
+        searchParams.set('tabs', `russian_${legacyKey}`);
+
+        const newUrl = `${window.location.origin}${window.location.pathname}?${searchParams.toString()}`;
+        window.history.replaceState({}, document.title, newUrl);
+
+        expect(tabController.getTabsFromSearchQuery()).toEqual({
+            russian: {
+                key: 'vtoroj-russkij-tab',
+                variant: TabsVariants.Regular,
+            },
+        });
+    });
+
+    it('restores a tab when its group contains underscores', () => {
+        document.body.innerHTML = renderWithTabsPlugin(`
+{% list tabs group=height_demo %}
+
+- Короткая
+
+  Короткий блок.
+
+- Высокая
+
+  Высокий блок.
+
+{% endlist %}
+`);
+        const searchParams = new URLSearchParams();
+        searchParams.set('tabs', 'height_demo_vysokaya');
+
+        const newUrl = `${window.location.origin}${window.location.pathname}?${searchParams.toString()}`;
+        window.history.replaceState({}, document.title, newUrl);
+
+        expect(tabController.getTabsFromSearchQuery()).toEqual({
+            height_demo: {
+                key: 'vysokaya',
+                variant: TabsVariants.Regular,
+            },
+        });
+
+        tabController.restoreTabs(tabController.getTabsFromSearchQuery());
+        const heightTabs = document.querySelectorAll<HTMLElement>(
+            `[${GROUP_DATA_KEY}="height_demo"] > .${TABS_LIST_CLASSNAME} > .${TAB_CLASSNAME}`,
+        );
+        expect(heightTabs[1].classList.contains('active')).toBeTruthy();
+    });
+
+    it('restores a legacy tab key containing underscores', () => {
+        document.body.innerHTML = renderWithTabsPlugin(`
+{% list tabs group=legacy %}
+
+- First tab
+
+  First content.
+
+- Legacy tab {#legacy_tab}
+
+  Legacy content.
+
+{% endlist %}
+`);
+        const searchParams = new URLSearchParams();
+        searchParams.set('tabs', 'legacy_legacy_tab');
+
+        const newUrl = `${window.location.origin}${window.location.pathname}?${searchParams.toString()}`;
+        window.history.replaceState({}, document.title, newUrl);
+
+        expect(tabController.getTabsFromSearchQuery()).toEqual({
+            legacy: {
+                key: 'legacytab',
+                variant: TabsVariants.Regular,
+            },
+        });
     });
 
     it('returns correct tab groups from the document', () => {
