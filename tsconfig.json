@@ -2,7 +2,8 @@
   "extends": "@diplodoc/infra/tsconfig.json",
   "compilerOptions": {
     "target": "es2019",
-    "declaration": true
+    "declaration": true,
+    "moduleResolution": "bundler"
   },
   "include": ["src", "test"],
   "exclude": []
