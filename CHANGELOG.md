@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.10.6](https://github.com/diplodoc-platform/tabs-extension/compare/v3.10.5...v3.10.6) (2026-08-07)
+
+
+### Bug Fixes
+
+* Upgrade typescript to 5.9.3 DOCSTOOLS-6357 ([337c78b](https://github.com/diplodoc-platform/tabs-extension/commit/337c78b47ac425221641b8e4b608fff63a6391b4))
+* Upgrade typescript to 6.0.3 DOCSTOOLS-6359 ([fe2d3d5](https://github.com/diplodoc-platform/tabs-extension/commit/fe2d3d5ef8654a8e9cc1d6a41f0d5720a86e5145))
+
 ## [3.10.5](https://github.com/diplodoc-platform/tabs-extension/compare/v3.10.4...v3.10.5) (2026-07-27)
 
 
