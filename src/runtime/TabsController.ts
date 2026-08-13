@@ -71,14 +71,17 @@ function hasTabByGroupKeyAndVariant(
     key: string,
     variant: TabsVariants,
 ): boolean {
+    // Ограничиваем поиск блоками табов с нужной группой и вариантом отображения.
     const containers = doc.querySelectorAll(
         `${Selector.TABS}[${GROUP_DATA_KEY}="${escapeCssAttrValue(group)}"]` +
             `[${TAB_DATA_VARIANT}="${variant}"]`,
     );
 
+    // Останавливаемся, как только в одном из подходящих блоков найден нужный ключ таба.
     return Array.from(containers).some((container) =>
         Array.from(container.querySelectorAll(Selector.TAB)).some(
             (tab) =>
+                // Исключаем табы вложенных блоков перед сравнением ключа.
                 tab.closest(Selector.TABS) === container && tab.getAttribute(TAB_DATA_KEY) === key,
         ),
     );
@@ -112,6 +115,7 @@ export class TabsController {
     private _options: TabsControllerOptions;
     private _currentPageTabGroups: string[] = [];
     private _isRestoringTabs = false;
+    // Запоминаем исходный выбор каждого блока, чтобы не записывать default regular-табы в URL.
     private _defaultTabKeys = new WeakMap<Element, string | null>();
 
     // TODO: remove side effects from constructor
@@ -199,6 +203,7 @@ export class TabsController {
             nodes[newIndex].focus();
         });
 
+        // Фиксируем default-табы до того, как пользователь изменит активный таб.
         this.rememberDefaultTabs();
     }
 
@@ -269,6 +274,7 @@ export class TabsController {
         try {
             for (const [group, fields] of Object.entries(tabsHistory)) {
                 if (group) {
+                    // Приводим к новым ключам и текущие slug, и старые percent-encoded значения.
                     const tab = {group, ...fields, key: normalizeTabKeyFromUrl(fields.key)};
                     this.selectTab(tab);
                 }
@@ -296,19 +302,26 @@ export class TabsController {
         if (urlParams.has('tabs')) {
             const tabsFromQuery = urlParams.get('tabs') || '';
             const tabConfigs = tabsFromQuery.split(',');
+            // Сначала проверяем длинные группы: `height_demo_key` относится к `height_demo`, а не `height`.
             const currentGroups = this.getCurrentPageTabGroups().sort(
                 (left, right) => right.length - left.length,
             );
 
+            // Независимо разбираем каждую запись о выбранном табе, разделённую запятой.
             tabConfigs.forEach((config) => {
+                // Ищем группу в DOM, а не делим неоднозначную строку по символу подчёркивания.
                 const knownGroup = currentGroups.find((group) => config.startsWith(`${group}_`));
 
                 if (knownGroup) {
+                    // Удаляем найденную группу и разделитель, оставляя ключ с возможным вариантом.
                     const keyAndVariant = config.slice(knownGroup.length + 1);
+                    // У `regular` нет суффикса в URL; в конце могут находиться только другие варианты.
                     const variants = Object.values(TabsVariants).filter(
                         (variant) => variant !== TabsVariants.Regular,
                     );
+                    // Сначала считаем весь остаток ключом regular-таба, включая старые encoded-значения.
                     const regularKey = normalizeTabKeyFromUrl(keyAndVariant);
+                    // Существующий regular-таб приоритетнее трактовки суффикса вроде `_radio` как варианта.
                     const variant = hasTabByGroupKeyAndVariant(
                         this._document,
                         knownGroup,
@@ -317,9 +330,12 @@ export class TabsController {
                     )
                         ? undefined
                         : variants.find((candidate) => {
+                              // Формируем суффикс, который может обозначать этот нестандартный вариант.
                               const suffix = `_${candidate}`;
+                              // Удаляем суффикс, чтобы получить предполагаемый ключ таба.
                               const candidateKey = keyAndVariant.slice(0, -suffix.length);
 
+                              // Принимаем суффикс только при наличии соответствующего таба в DOM.
                               return (
                                   keyAndVariant.endsWith(suffix) &&
                                   hasTabByGroupKeyAndVariant(
@@ -330,28 +346,36 @@ export class TabsController {
                                   )
                               );
                           });
+                    // Для regular сохраняем весь остаток, иначе удаляем подтверждённый суффикс варианта.
                     const key = variant
                         ? keyAndVariant.slice(0, -`_${variant}`.length)
                         : keyAndVariant;
 
                     if (key) {
+                        // Сохраняем канонический ключ; отсутствие суффикса означает вариант regular.
                         tabsHistory[knownGroup] = {
                             key: normalizeTabKeyFromUrl(key),
                             variant: variant ?? TabsVariants.Regular,
                         };
                     }
 
+                    // Не запускаем старый позиционный парсер после разбора записи по реальной группе.
                     return;
                 }
 
+                // Для отсутствующей в DOM группы используем старый позиционный формат.
                 const splitConfig = config.split('_');
+                // В этом формате первые два поля считаются группой и ключом.
                 const [group, key] = splitConfig;
+                // Третье поле задаёт вариант; два поля означают regular-таб.
                 const variant =
                     splitConfig.length === 3
                         ? (splitConfig[2] as TabsVariants)
                         : TabsVariants.Regular;
 
+                // Игнорируем неполные записи и неизвестные варианты, не восстанавливая неверное состояние.
                 if (group && key && Object.values(TabsVariants).includes(variant)) {
+                    // Нормализуем старый ключ до передачи разобранной истории на восстановление.
                     tabsHistory[group] = {key: normalizeTabKeyFromUrl(key), variant: variant};
                 }
             });
@@ -382,18 +406,22 @@ export class TabsController {
         const urlParams = new URLSearchParams(window.location.search);
         const tabsArray = Object.entries(tabsHistory).reduce<string[]>(
             (result, [group, {key, variant}]) => {
+                // Канонизируем старые ключи localStorage только для URL, не изменяя само хранилище.
                 const normalizedKey = normalizeTabKeyFromUrl(key);
 
+                // Default regular-таб не нужен в query: страница и так открывается в этом состоянии.
                 if (this.isDefaultTab(group, normalizedKey, variant)) {
                     return result;
                 }
 
+                // Для regular используется `group_key`, а остальные варианты дописывают свой суффикс.
                 result.push(
                     variant === TabsVariants.Regular
                         ? `${group}_${normalizedKey}`
                         : `${group}_${normalizedKey}_${variant}`,
                 );
 
+                // Продолжаем накапливать сериализованные выбранные табы остальных групп.
                 return result;
             },
             [],
@@ -434,6 +462,7 @@ export class TabsController {
      * @returns void
      */
     onPageChanged(): void {
+        // Запоминаем default-табы блоков, добавленных при клиентской навигации, до восстановления выбора.
         this.rememberDefaultTabs();
         this._currentPageTabGroups = this.getCurrentPageTabGroups();
     }
@@ -534,19 +563,30 @@ export class TabsController {
         }
     }
 
+    /**
+     * Проверяет, совпадает ли выбор с исходным табом во всех подходящих regular-блоках.
+     * @param group - Синхронизированная группа табов.
+     * @param key - Канонический ключ таба.
+     * @param variant - Вариант блока табов.
+     * @returns Можно ли не записывать этот выбор в URL.
+     */
     private isDefaultTab(group: string, key: string, variant: TabsVariants): boolean {
+        // Нестандартные блоки могут быть изначально закрыты, поэтому их выбор всегда пишем явно.
         if (variant !== TabsVariants.Regular) {
             return false;
         }
 
+        // Запоминаем default для блоков, добавленных после создания контроллера или смены страницы.
         this.rememberDefaultTabs();
 
+        // Находим все regular-блоки, синхронизированные через указанную группу.
         const containers = Array.from(
             this._document.querySelectorAll(
                 `${Selector.TABS}[${GROUP_DATA_KEY}="${escapeCssAttrValue(group)}"]` +
                     `[${TAB_DATA_VARIANT}="${variant}"]`,
             ),
         );
+        // Оставляем прямые табы каждого блока и отбрасываем блоки без указанного ключа.
         const containersWithTab = containers
             .map((container) =>
                 Array.from(container.querySelectorAll(Selector.TAB)).filter(
@@ -555,31 +595,43 @@ export class TabsController {
             )
             .filter((tabs) => tabs.some((tab) => tab.getAttribute(TAB_DATA_KEY) === key));
 
+        // Ключ считается default, только если он существует и был исходным во всех подходящих блоках.
         return (
             containersWithTab.length > 0 &&
             containersWithTab.every((tabs) => {
+                // Прямые табы имеют общий контейнер, поэтому первый из них определяет запись WeakMap.
                 const container = tabs[0]?.closest(Selector.TABS);
                 return container ? this._defaultTabKeys.get(container) === key : false;
             })
         );
     }
 
+    /**
+     * Запоминает исходный активный ключ каждого regular-блока, находящегося в документе.
+     * @returns Ничего не возвращает.
+     */
     private rememberDefaultTabs(): void {
+        // Исключение из URL применимо только к regular-блокам, где исходный таб всегда открыт.
         const containers = this._document.querySelectorAll(
             `${Selector.TABS}[${TAB_DATA_VARIANT}="${TabsVariants.Regular}"]`,
         );
 
+        // Независимо обрабатываем каждый новый блок, включая блоки с одинаковой группой.
         containers.forEach((container) => {
+            // Не перезаписываем исходное значение после изменения active-класса пользователем.
             if (this._defaultTabKeys.has(container)) {
                 return;
             }
 
+            // Исключаем табы, относящиеся к вложенным блокам.
             const tabs = Array.from(container.querySelectorAll(Selector.TAB)).filter(
                 (tab) => tab.closest(Selector.TABS) === container,
             );
+            // Учитываем явный `{selected}`, а при его отсутствии считаем default первый таб.
             const defaultTab =
                 tabs.find((tab) => tab.classList.contains(ACTIVE_CLASSNAME)) ?? tabs[0];
 
+            // Для некорректного пустого блока сохраняем null, чтобы не обрабатывать его повторно.
             this._defaultTabKeys.set(container, defaultTab?.getAttribute(TAB_DATA_KEY) ?? null);
         });
     }
