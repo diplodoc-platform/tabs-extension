@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.10.7](https://github.com/diplodoc-platform/tabs-extension/compare/v3.10.6...v3.10.7) (2026-08-14)
+
+
+### Bug Fixes
+
+* **tabs:** shorten localized tab URLs #DOCSTOOLS-4657 ([b6dfd37](https://github.com/diplodoc-platform/tabs-extension/commit/b6dfd370f8d6de10026f6baabc0b0e98418bf815))
+
 ## [3.10.6](https://github.com/diplodoc-platform/tabs-extension/compare/v3.10.5...v3.10.6) (2026-08-07)
 
 
