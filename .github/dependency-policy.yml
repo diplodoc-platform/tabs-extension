@@ -1,0 +1,11 @@
+# ============================================================================
+# Per-repository dependency policy (AUTO-GENERATED — do not edit)
+# Source of truth: @diplodoc/infra/dependency-policy.yml
+# Regenerated on every infra init/update/sync. Manual edits will be lost.
+# ============================================================================
+
+schema-version: '1.0'
+registry-owner: diplodoc-platform/infra
+generated-for: tabs-extension
+generated-from: central dependency-policy.yml
+entries: []
