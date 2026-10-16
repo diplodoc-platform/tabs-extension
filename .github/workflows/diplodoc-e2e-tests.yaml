@@ -1,4 +1,9 @@
 name: Integration
+run-name: 'External testpack pilot: tabs-extension #162'
+
+# Disposable pilot branch only; do not merge this workflow adaptation.
+permissions:
+  contents: read
 
 on:
   pull_request:
@@ -12,8 +17,20 @@ env:
   PARENT_REPO: diplodoc
 
 jobs:
+  external-testpack-pilot:
+    name: External reusable testpack pilot
+    if: github.event_name == 'workflow_dispatch'
+    uses: diplodoc-platform/testpack/.github/workflows/downstream-check.yml@master
+    with:
+      package: tabs-extension
+      pr-sha: 3e7de0521e6e08caf2658b0e7c349e78988163cf
+      pr-number: '162'
+      profile: document-transform
+
   trigger-parent-e2e:
     name: Run tests
+    # The manual branch pilot calls testpack directly, without the legacy dispatch.
+    if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
 
     steps:
