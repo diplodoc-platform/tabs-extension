@@ -35,4 +35,8 @@
 - GitHub Actions: tests, coverage (e.g. SonarCloud), release, security, dependency updates.
 - Pre-commit (Husky): lint-staged and commit-msg hooks.
 
+Integration calls the metapackage E2E workflow read-only, with the exact PR head SHA and no inherited secrets.
+Keep the required `Run tests` and `Update package-lock.json` result jobs fail-closed.
+Dependabot validates its own lockfile without write-back; coverage still runs, but Sonar upload is not attempted for bot/fork PRs. See `test/ci-workflows.spec.ts`.
+
 When adding features or fixing bugs, keep tests and JSDoc in sync; run `npm run lint` and `npm test` before pushing.
