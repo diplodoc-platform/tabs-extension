@@ -73,6 +73,6 @@
     "slugify": "1.6.6",
     "ts-dedent": "^2.2.0",
     "typescript": "6.0.3",
-    "vitest": "^3.2.4"
+    "vitest": "^5.0.2"
   }
 }
