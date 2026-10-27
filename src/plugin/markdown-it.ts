@@ -1,4 +1,4 @@
-import type MarkdownItConstructor from 'markdown-it';
+import type MarkdownItConstructor from 'markdown-it' with {'resolution-mode': 'import'};
 
 /** Types follow the parser installed by the consumer, including its native types. */
 export type MarkdownIt = InstanceType<typeof MarkdownItConstructor>;
