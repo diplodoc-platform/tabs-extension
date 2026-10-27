@@ -30,12 +30,12 @@ export type PluginOptions = {
     ) => void;
 };
 
-const defaultFeatures = {
+const defaultFeatures: PluginOptions['features'] = {
     enabledVariants: {
         regular: true,
         radio: true,
     },
-} satisfies PluginOptions['features'];
+};
 
 let runsCounter = 0;
 
@@ -50,14 +50,16 @@ type TransformOptions = {
  * @param options - Paths for runtime JS/CSS, container classes, and enabled variants
  * @returns Plugin function that receives (md, options) and registers the core ruler
  */
-export function transform({
-    runtimeJsPath = '_assets/tabs-extension.js',
-    runtimeCssPath = '_assets/tabs-extension.css',
-    containerClasses = '',
-    bundle = true,
-    features = defaultFeatures,
-    onBundle,
-}: Partial<PluginOptions> = {}) {
+export function transform(options: Partial<PluginOptions> = {}) {
+    const {
+        runtimeJsPath = '_assets/tabs-extension.js',
+        runtimeCssPath = '_assets/tabs-extension.css',
+        containerClasses = '',
+        bundle = true,
+        features = defaultFeatures,
+        onBundle,
+    } = options;
+
     return function tabs(md: MarkdownIt, options?: TransformOptions) {
         const {output = '.', generateID: externalGenerateID} = options || {};
 
