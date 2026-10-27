@@ -1,5 +1,4 @@
-import type Token from 'markdown-it/lib/token';
-import type StateCore from 'markdown-it/lib/rules_core/state_core';
+import type {StateCore, Token} from './markdown-it';
 import type {RuntimeTab} from './types';
 import type {TabsGenerationProps} from './variants/types';
 

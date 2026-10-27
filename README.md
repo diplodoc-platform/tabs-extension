@@ -261,3 +261,10 @@ export const App: React.FC = () => {
 ## For contributors
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+
+## MarkdownIt compatibility
+
+The plugin supports MarkdownIt 13 and 15. Its types are derived from the public
+parser constructor, so consumers use the declarations of their installed parser.
+Tokens are created by the active parser state; no private MarkdownIt module is
+loaded at runtime.
