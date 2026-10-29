@@ -4,10 +4,6 @@ import type {
     DirectiveInlineState,
     DirectiveParserHost,
 } from '@diplodoc/directive';
-/**
- * MarkdownIt plugin: finds `{% list tabs %}` blocks, parses tab items, and replaces them
- * with HTML tokens for the chosen variant. Registers runtime script/style in env.meta.
- */
 import type {IDGenerator} from '@diplodoc/utils';
 import type {EnabledVariants} from '../common';
 import type {TabsDirectiveDiagnostic, TabsMarker} from './directive';

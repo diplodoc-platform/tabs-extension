@@ -1,9 +1,6 @@
-import {
-    type PluginOptions,
-    type TabsDirectivePlugin,
-    type TabsPlugin,
-    transform as baseTransform,
-} from './transform';
+import type {PluginOptions, TabsDirectivePlugin, TabsPlugin} from './transform';
+
+import {transform as baseTransform} from './transform';
 
 export * from './index';
 
