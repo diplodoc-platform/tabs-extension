@@ -28,3 +28,15 @@ void [host13, host15, optionalCollect];
 type RuntimeNamespace = typeof import('@diplodoc/tabs-extension/runtime');
 const runtimeNamespace: RuntimeNamespace = {};
 void runtimeNamespace;
+
+const enabled = createTabs({bundle: false, directiveSyntax: 'enabled'});
+const only = createTabs({bundle: false, directiveSyntax: 'only'});
+new MarkdownIt13().use(enabled);
+new MarkdownIt15().use(enabled);
+new MarkdownIt13().use(only);
+new MarkdownIt15().use(only);
+import type {MarkdownIt as MinimalHost} from '@diplodoc/tabs-extension';
+declare const minimalHost: MinimalHost;
+createTabs({bundle: false})(minimalHost);
+// @ts-expect-error Enabled directives require block and inline parser capabilities.
+enabled(minimalHost);

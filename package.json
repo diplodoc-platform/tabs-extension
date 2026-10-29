@@ -1,6 +1,6 @@
 {
   "name": "@diplodoc/tabs-extension",
-  "version": "3.10.8-transform5.2",
+  "version": "3.10.8-transform5.3",
   "description": "Tabs plugin for Diplodoc transformer and builder",
   "main": "build/plugin/index.js",
   "types": "build/plugin/index.d.ts",
@@ -69,6 +69,8 @@
     "github-slugger": "^1.5.0",
     "jsdom": "20.0.3",
     "markdown-it": "^13.0.2",
+    "markdown-it-attrs": "^4.3.1",
+    "markdown-it-footnote": "^4.0.0",
     "markdown-it-transform15": "npm:markdown-it@15.0.3",
     "npm-run-all": "^4.1.5",
     "slugify": "1.6.6",
@@ -77,6 +79,7 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
+    "@diplodoc/directive": "0.5.0-transform5.2",
     "@diplodoc/utils": "2.3.7-transform5.0"
   }
 }

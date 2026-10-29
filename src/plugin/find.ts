@@ -51,6 +51,15 @@ function matchOpenToken(tokens: Token[], i: number): RegExpMatchArray | null {
 }
 
 /**
+ * Allocate a default group even when a source provides an explicit group.
+ * @param generateID - Per-file ID generator
+ * @returns Generated default group
+ */
+export function defaultTabsGroup(generateID: IDGenerator): string {
+    return generateID(DEFAULT_TABS_GROUP_PREFIX.replace(/-$/, ''));
+}
+
+/**
  * Parse `{% list tabs group=... %}` content into variant and group id.
  * @param content - Raw tag content after "list tabs"
  * @param generateID - per-file isolated ID generator used for default group id
@@ -66,7 +75,7 @@ export function props(content: string, generateID: IDGenerator): TabsProps {
         // DEFAULT_TABS_GROUP_PREFIX ends with '-', so strip it before passing to generateID
         // which appends '-N' itself. Result: 'defaultTabsGroup-1', 'defaultTabsGroup-2', …
         // TabsController checks group.startsWith(DEFAULT_TABS_GROUP_PREFIX) which still matches.
-        group: generateID(DEFAULT_TABS_GROUP_PREFIX.replace(/-$/, '')),
+        group: defaultTabsGroup(generateID),
     };
 
     for (const prop of props) {
@@ -172,6 +181,7 @@ export function tryToFindTabs(tokens: Token[], index: number): Result {
  * @param idx - Index after list open
  * @param closeTokenIdx - Index of {% endlist %} paragraph
  * @param TokenConstructor - Token constructor from the current MarkdownIt state
+ * @param end - Exclusive scan bound
  * @returns Array of RuntimeTab
  */
 export function findTabs(
@@ -179,6 +189,7 @@ export function findTabs(
     idx: number,
     closeTokenIdx: number,
     TokenConstructor: StateCore['Token'],
+    end: number,
 ): RuntimeTab[] {
     const tabs: RuntimeTab[] = [];
     let i = idx;
@@ -189,7 +200,7 @@ export function findTabs(
         listItem: new TokenConstructor('list_item_open', '', 0),
     };
 
-    while (i < tokens.length) {
+    while (i < end) {
         const token = tokens[i];
 
         switch (token.type) {

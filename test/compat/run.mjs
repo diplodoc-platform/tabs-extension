@@ -173,6 +173,84 @@ try {
     run(process.execPath, ['runtime.mjs'], fixture, 'runtime');
     copyFileSync(manifestPath, join(evidence, 'fixture-package.json'));
     copyFileSync(join(fixture, 'package-lock.json'), join(evidence, 'fixture-package-lock.json'));
+    const fixture14 = join(fixture, 'native14');
+    mkdirSync(fixture14);
+    copyFileSync(archive, join(fixture14, pack.filename));
+    const manifest14 = {
+        private: true,
+        type: 'module',
+        overrides: {'markdown-it': {mdurl: '2.0.0'}},
+        dependencies: {
+            '@diplodoc/tabs-extension': `file:./${pack.filename}`,
+            '@types/markdown-it': '14.1.0',
+            '@types/node': '24.10.0',
+            '@types/react': '19.2.17',
+            'markdown-it': '14.1.0',
+            typescript: '6.0.3',
+        },
+    };
+    writeFileSync(join(fixture14, 'package.json'), `${JSON.stringify(manifest14, null, 2)}\n`);
+    const typeFixture14 = `import MarkdownIt from 'markdown-it';
+import {transform} from '@diplodoc/tabs-extension';
+new MarkdownIt().use(transform({bundle: false, directiveSyntax: 'enabled'}));
+new MarkdownIt().use(transform({bundle: false, directiveSyntax: 'only'}));
+`;
+    writeFileSync(join(fixture14, 'native.mts'), typeFixture14);
+    writeFileSync(join(fixture14, 'native.cts'), typeFixture14);
+    writeFileSync(
+        join(fixture14, 'tsconfig.json'),
+        JSON.stringify(
+            {
+                compilerOptions: {
+                    target: 'ES2022',
+                    module: 'NodeNext',
+                    moduleResolution: 'NodeNext',
+                    strict: true,
+                    skipLibCheck: false,
+                    noEmit: true,
+                    types: ['node'],
+                },
+                include: [
+                    'native.mts',
+                    'native.cts',
+                    'node_modules/@diplodoc/tabs-extension/build/**/*.d.ts',
+                ],
+            },
+            null,
+            2,
+        ),
+    );
+    writeFileSync(
+        join(fixture14, 'runtime.mjs'),
+        `import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import MarkdownIt from 'markdown-it';
+import {transform} from '@diplodoc/tabs-extension';
+const require = createRequire(import.meta.url);
+assert.equal(require('markdown-it/package.json').version, '14.1.0');
+assert.equal(require('mdurl/package.json').version, '2.0.0');
+for (const Host of [MarkdownIt, require('markdown-it')]) {
+  for (const plugin of [transform, require('@diplodoc/tabs-extension').transform, require('./node_modules/@diplodoc/tabs-extension/build/plugin/index.js').transform]) {
+    const html = new Host().use(plugin({bundle:false, directiveSyntax:'enabled'})).render(':::tabs\\n\\n- First\\n\\n:::');
+    assert.match(html, /yfm-tabs/);
+  }
+}
+`,
+    );
+    run(process.execPath, [npm, 'install'], fixture14, 'native14-install');
+    run(process.execPath, [npm, 'ci'], fixture14, 'native14-ci');
+    run(
+        process.execPath,
+        [join(fixture14, 'node_modules/typescript/bin/tsc'), '-p', 'tsconfig.json'],
+        fixture14,
+        'native14-typecheck',
+    );
+    run(process.execPath, ['runtime.mjs'], fixture14, 'native14-runtime');
+    copyFileSync(join(fixture14, 'package.json'), join(evidence, 'native14-package.json'));
+    copyFileSync(
+        join(fixture14, 'package-lock.json'),
+        join(evidence, 'native14-package-lock.json'),
+    );
     const finalStatus = run('git', ['status', '--porcelain'], root, 'source-status-after');
     if (finalStatus !== report.sourceStatus)
         throw new Error('Source status changed during package verification');

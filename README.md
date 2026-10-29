@@ -89,6 +89,39 @@ Options:
   Example: `my-own-class and-other-class`<br>
   Default: `undefined`<br>
 
+### Colon directive syntax
+
+Legacy `{% list tabs %}` remains the standalone default. Opt in at factory
+creation with `transform({directiveSyntax: 'enabled'})` to accept both forms,
+or use `directiveSyntax: 'only'` for colon directives only. The default
+`'disabled'` retains the legacy-only, core-rule host contract; enabling a
+directive requires a Markdown-it host with the block and inline capabilities
+used by `@diplodoc/directive`.
+
+```markdown
+:::tabs {variant=radio group="shared"}
+
+- First
+
+  First body.
+
+- Second {selected}
+
+  Second body.
+
+:::
+```
+
+The body uses the same Markdown lists and selected markers as legacy tabs.
+`variant` is `regular` (the default), `radio`, `dropdown`, or `accordion`;
+`group`, if present, must be nonempty. A valid but disabled variant falls back
+to regular. Titles, destinations, unknown or repeated attributes, `#id` and
+`.class` are unsupported. Invalid parameters remain ordinary Markdown. An
+optional `onDiagnostic({line, reason})` reports rejected parameters with a
+one-based line; it is not a general Markdown validator and does not promise a
+diagnostic for every malformed or unclosed marker. Directive attributes do not
+require general Markdown attributes to be enabled.
+
 ## API
 
 ### Syntax
