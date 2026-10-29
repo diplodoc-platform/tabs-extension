@@ -1,11 +1,19 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
+
 import MarkdownIt13 from 'markdown-it';
 import MarkdownIt15 from 'markdown-it-transform15';
 import {transform as esmTabs} from '@diplodoc/tabs-extension';
 
 const require = createRequire(import.meta.url);
+assert.equal(require('markdown-it/package.json').version, '13.0.2');
+assert.equal(require('linkify-it/package.json').version, '5.0.2');
+for (const Host of [MarkdownIt13, require('markdown-it')]) {
+    const html = new Host({linkify: true}).render('Visit https://example.com and test@example.com');
+    assert.match(html, /href="https:\/\/example\.com"/);
+    assert.match(html, /href="mailto:test@example\.com"/);
+}
 const cjsTabs = require('@diplodoc/tabs-extension').transform;
 const hosts = [
     MarkdownIt13,

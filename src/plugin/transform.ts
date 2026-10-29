@@ -39,18 +39,21 @@ const defaultFeatures: PluginOptions['features'] = {
 
 let runsCounter = 0;
 
-type TransformOptions = {
+export type TransformOptions = {
     output?: string;
     /** Optional external ID generator provided by the host (e.g. via MarkdownItPluginOpts). */
     generateID?: IDGenerator;
 };
+
+/** The plugin callback returned by transform. */
+export type TabsPlugin = (md: MarkdownIt, options?: TransformOptions) => void;
 
 /**
  * Returns a MarkdownIt plugin that transforms `{% list tabs %}` blocks into tab markup.
  * @param options - Paths for runtime JS/CSS, container classes, and enabled variants
  * @returns Plugin function that receives (md, options) and registers the core ruler
  */
-export function transform(options: Partial<PluginOptions> = {}) {
+export function transform(options: Partial<PluginOptions> = {}): TabsPlugin {
     const {
         runtimeJsPath = '_assets/tabs-extension.js',
         runtimeCssPath = '_assets/tabs-extension.css',

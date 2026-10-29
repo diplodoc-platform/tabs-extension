@@ -8,5 +8,5 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["mixed.mts", "mixed.cts"]
+  "include": ["mixed.mts", "mixed.cts", "reexport.cts"]
 }

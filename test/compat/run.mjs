@@ -69,22 +69,40 @@ try {
     if (pack.integrity !== integrity)
         throw new Error('npm pack integrity differs from archive bytes');
     copyFileSync(archive, join(fixture, pack.filename));
-    for (const name of [
-        'package.json',
-        'package-lock.json',
-        'tsconfig.json',
-        'mixed.mts',
-        'mixed.cts',
-        'runtime.mjs',
-    ]) {
+    for (const name of ['tsconfig.json', 'mixed.mts', 'mixed.cts', 'reexport.cts', 'runtime.mjs']) {
         copyFileSync(join(root, 'test/compat', name), join(fixture, name));
     }
     const manifestPath = join(fixture, 'package.json');
-    const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
-    manifest.dependencies['@diplodoc/tabs-extension'] = `file:./${pack.filename}`;
+    // Markdown-it 13 is required to reproduce the mixed-host boundary. Its
+    // known advisories remain visible in the recorded audit; the override only
+    // fixes linkify-it for this temporary fixture, not the product graph.
+    const manifest = {
+        name: 'tabs-mixed-host-fixture',
+        private: true,
+        type: 'module',
+        overrides: {'markdown-it': {'linkify-it': '5.0.2'}},
+        dependencies: {
+            '@diplodoc/tabs-extension': `file:./${pack.filename}`,
+            '@diplodoc/utils': '2.3.7-transform5.0',
+            '@types/markdown-it': '13.0.9',
+            '@types/node': '24.10.0',
+            'markdown-it': '13.0.2',
+            'markdown-it-transform15': 'npm:markdown-it@15.0.3',
+            typescript: '6.0.3',
+        },
+    };
     writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
     run(process.execPath, [npm, 'install'], fixture, 'install');
     run(process.execPath, [npm, 'ci'], fixture, 'ci');
+    const audit = spawnSync(process.execPath, [npm, 'audit', '--json'], {
+        cwd: fixture,
+        encoding: 'utf8',
+    });
+    writeFileSync(join(evidence, 'fixture-audit.json'), audit.stdout || '');
+    writeFileSync(join(evidence, 'fixture-audit.stderr.log'), audit.stderr || '');
+    if (audit.error || (audit.status !== 0 && audit.status !== 1))
+        throw audit.error || new Error(`Fixture audit failed to run: ${audit.status}`);
+    report.fixtureAudit = {status: audit.status, metadata: JSON.parse(audit.stdout).metadata};
     const lock = JSON.parse(readFileSync(join(fixture, 'package-lock.json'), 'utf8'));
     const locked = lock.packages['node_modules/@diplodoc/tabs-extension'];
     if (locked.integrity !== integrity || locked.resolved !== `file:${pack.filename}`)
@@ -124,6 +142,32 @@ try {
         fixture,
         'typecheck',
     );
+    run(
+        process.execPath,
+        [
+            join(fixture, 'node_modules/typescript/bin/tsc'),
+            '--ignoreConfig',
+            '--strict',
+            '--skipLibCheck',
+            'false',
+            '--module',
+            'NodeNext',
+            '--moduleResolution',
+            'NodeNext',
+            '--target',
+            'ES2022',
+            '--declaration',
+            '--emitDeclarationOnly',
+            '--outDir',
+            'declarations',
+            'reexport.cts',
+        ],
+        fixture,
+        'reexport-declarations',
+    );
+    const declaration = readFileSync(join(fixture, 'declarations/reexport.d.cts'), 'utf8');
+    if (!declaration.includes('@diplodoc/tabs-extension') || declaration.includes('/build/'))
+        throw new Error('Re-export declaration is not portable through the package root');
     run(process.execPath, ['runtime.mjs'], fixture, 'runtime');
     copyFileSync(manifestPath, join(evidence, 'fixture-package.json'));
     copyFileSync(join(fixture, 'package-lock.json'), join(evidence, 'fixture-package-lock.json'));
