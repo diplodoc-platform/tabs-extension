@@ -1,8 +1,10 @@
-import type {MarkdownIt, StateCore, Token} from '../src/plugin/markdown-it';
+import type {MarkdownIt, StateCore} from '../src/plugin/markdown-it';
 /* eslint-disable no-implicit-globals */
 import type {PluginOptions} from '../src/plugin/transform';
 
 import MarkdownItConstructor from 'markdown-it';
+
+type Token = ReturnType<InstanceType<typeof MarkdownItConstructor>['parse']>[number];
 
 import {transform as tabsTransform} from '../src/plugin/transform';
 
@@ -52,7 +54,7 @@ export function callPlugin<T extends {}>(
         env: {},
         Token: TokenConstructor,
         md,
-    } as StateCore;
+    };
 
     const fakeMd = {
         core: {

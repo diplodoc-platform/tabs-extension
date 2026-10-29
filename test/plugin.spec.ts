@@ -1,4 +1,6 @@
-import type {Token} from '../src/plugin/markdown-it';
+import type MarkdownItConstructor from 'markdown-it';
+
+type Token = ReturnType<InstanceType<typeof MarkdownItConstructor>['parse']>[number];
 
 import dd from 'ts-dedent';
 import {afterAll, beforeAll, describe, expect, it, vi} from 'vitest';
