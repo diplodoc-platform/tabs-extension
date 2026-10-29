@@ -232,8 +232,10 @@ assert.equal(require('markdown-it/package.json').version, '14.1.0');
 assert.equal(require('mdurl/package.json').version, '2.0.0');
 for (const Host of [MarkdownIt, require('markdown-it')]) {
   for (const plugin of [transform, require('@diplodoc/tabs-extension').transform, require('./node_modules/@diplodoc/tabs-extension/build/plugin/index.js').transform]) {
-    const html = new Host().use(plugin({bundle:false, directiveSyntax:'enabled'})).render(':::tabs\\n\\n- First\\n\\n:::');
-    assert.match(html, /yfm-tabs/);
+    for (const mode of ['enabled', 'only']) {
+      const html = new Host().use(plugin({bundle:false, directiveSyntax:mode})).render(':::tabs\\n\\n- First\\n\\n:::');
+      assert.match(html, /yfm-tabs/);
+    }
   }
 }
 `,
