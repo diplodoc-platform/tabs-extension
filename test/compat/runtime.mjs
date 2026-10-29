@@ -1,9 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
-
 import MarkdownIt13 from 'markdown-it';
 import MarkdownIt15 from 'markdown-it-transform15';
+
 import {transform as esmTabs} from '@diplodoc/tabs-extension';
 
 const require = createRequire(import.meta.url);

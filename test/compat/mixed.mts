@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars, no-void */
 import MarkdownIt13 from 'markdown-it';
 import MarkdownIt15 from 'markdown-it-transform15';
+
 import {transform as createTabs} from '@diplodoc/tabs-extension';
 
 const tabs = createTabs({
