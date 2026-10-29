@@ -1,6 +1,6 @@
 {
   "name": "@diplodoc/tabs-extension",
-  "version": "3.10.7",
+  "version": "3.10.8-transform5.1",
   "description": "Tabs plugin for Diplodoc transformer and builder",
   "main": "build/plugin/index.js",
   "types": "build/plugin/index.d.ts",
@@ -61,7 +61,6 @@
   },
   "devDependencies": {
     "@diplodoc/infra": "2.3.0",
-    "@diplodoc/utils": "^2.3.6",
     "@types/github-slugger": "^1.3.0",
     "@types/markdown-it": "^13.0.9",
     "@types/node": "*",
@@ -76,5 +75,8 @@
     "ts-dedent": "^2.2.0",
     "typescript": "6.0.3",
     "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "@diplodoc/utils": "2.3.7-transform5.0"
   }
 }
