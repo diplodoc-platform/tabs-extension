@@ -81,5 +81,10 @@
   "dependencies": {
     "@diplodoc/directive": "0.5.0-transform5.2",
     "@diplodoc/utils": "2.3.7-transform5.0"
+  },
+  "overrides": {
+    "markdown-it": {
+      "linkify-it": "5.0.2"
+    }
   }
 }
