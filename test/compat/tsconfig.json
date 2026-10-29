@@ -8,5 +8,10 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["mixed.mts", "mixed.cts", "reexport.cts"]
+  "include": [
+    "mixed.mts",
+    "mixed.cts",
+    "reexport.cts",
+    "node_modules/@diplodoc/tabs-extension/build/**/*.d.ts"
+  ]
 }

@@ -87,6 +87,7 @@ try {
             '@diplodoc/utils': '2.3.7-transform5.0',
             '@types/markdown-it': '13.0.9',
             '@types/node': '24.10.0',
+            '@types/react': '19.2.17',
             'markdown-it': '13.0.2',
             'markdown-it-transform15': 'npm:markdown-it@15.0.3',
             typescript: '6.0.3',
