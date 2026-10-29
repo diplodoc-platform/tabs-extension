@@ -1,4 +1,4 @@
-import Constructor from 'markdown-it-transform15';
+import Constructor from 'markdown-it';
 import {describe, expect, it} from 'vitest';
 
 import {transform} from '../src/plugin/transform';

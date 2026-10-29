@@ -70,7 +70,15 @@ try {
     if (pack.integrity !== integrity)
         throw new Error('npm pack integrity differs from archive bytes');
     copyFileSync(archive, join(fixture, pack.filename));
-    for (const name of ['tsconfig.json', 'mixed.mts', 'mixed.cts', 'reexport.cts', 'runtime.mjs']) {
+    for (const name of [
+        'tsconfig.json',
+        'mixed.mts',
+        'mixed.cts',
+        'reexport.cts',
+        'runtime.mjs',
+        'directive-13.spec.ts',
+        'mixed-host.spec.ts',
+    ]) {
         const source = name === 'tsconfig.json' ? name : `${name}.template`;
         copyFileSync(join(root, 'test/compat', source), join(fixture, name));
     }
@@ -91,13 +99,29 @@ try {
             '@types/react': '19.2.17',
             jsdom: '20.0.3',
             'markdown-it': '13.0.2',
+            'markdown-it-attrs': '4.3.1',
+            'markdown-it-footnote': '4.0.0',
             'markdown-it-transform15': 'npm:markdown-it@15.0.3',
             typescript: '6.0.3',
+            vitest: '3.2.4',
         },
     };
     writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
     run(process.execPath, [npm, 'install'], fixture, 'install');
     run(process.execPath, [npm, 'ci'], fixture, 'ci');
+    run(
+        process.execPath,
+        [
+            join(fixture, 'node_modules/vitest/vitest.mjs'),
+            'run',
+            '--environment',
+            'jsdom',
+            'directive-13.spec.ts',
+            'mixed-host.spec.ts',
+        ],
+        fixture,
+        'native13-source-cases',
+    );
     const audit = spawnSync(process.execPath, [npm, 'audit', '--json'], {
         cwd: fixture,
         encoding: 'utf8',
@@ -211,6 +235,7 @@ try {
             '@types/react': '19.2.17',
             'markdown-it': '14.1.0',
             typescript: '6.0.3',
+            vitest: '3.2.4',
         },
     };
     writeFileSync(join(fixture14, 'package.json'), `${JSON.stringify(manifest14, null, 2)}\n`);

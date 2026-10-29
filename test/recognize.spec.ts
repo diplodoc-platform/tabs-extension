@@ -1,5 +1,4 @@
 import MarkdownIt from 'markdown-it';
-import MarkdownIt15 from 'markdown-it-transform15';
 import {describe, expect, it} from 'vitest';
 
 import {recognizeTabsBoundary} from '../src/plugin';
@@ -15,16 +14,11 @@ function observations(source: string) {
 }
 
 describe('pure legacy tabs boundary recognition', () => {
-    it('accepts actual native 13 and 15 normalized block tokens', () => {
-        const text = '{% list tabs radio group=shared %}\n\n- A\n\n{% endlist %}';
-        const md13 = new MarkdownIt();
-        const md15 = new MarkdownIt15();
-        md13.core.ruler.enableOnly(['normalize', 'block']);
-        md15.core.ruler.enableOnly(['normalize', 'block']);
-        const t13 = md13.parse(text, {});
-        const t15 = md15.parse(text, {});
-        expect(recognizeTabsBoundary(t13, 0)).toEqual(recognizeTabsBoundary(t15, 0));
-        expect(recognizeTabsBoundary(t13, 0)?.kind).toBe('open');
+    it('accepts native 15 normalized block tokens', () => {
+        const md = new MarkdownIt();
+        md.core.ruler.enableOnly(['normalize', 'block']);
+        const tokens = md.parse('{% list tabs radio group=shared %}\n\n- A\n\n{% endlist %}', {});
+        expect(recognizeTabsBoundary(tokens, 0)?.kind).toBe('open');
     });
     it('distinguishes authored defaults and copies maps', () => {
         const md = new MarkdownIt();

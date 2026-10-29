@@ -134,3 +134,11 @@ for (const Host of hosts) {
     assert.notEqual(boundary.map, tokens[0].map);
     assert.equal(JSON.stringify(tokens), original);
 }
+
+const hostEdges = [MarkdownIt13, MarkdownIt15].map((Host) => {
+    const md = new Host();
+    md.core.ruler.enableOnly(['normalize', 'block']);
+    const tokens = md.parse('{% list tabs radio group=shared %}\n\n- A\n\n{% endlist %}', {});
+    return tokens.map((_, index) => purePlugin.recognizeTabsBoundary(tokens, index)).filter(Boolean);
+});
+assert.deepEqual(hostEdges[0], hostEdges[1]);

@@ -1,7 +1,6 @@
 import type {MarkdownIt} from '../src/plugin/markdown-it';
 
-import MarkdownIt13 from 'markdown-it';
-import MarkdownIt15 from 'markdown-it-transform15';
+import MarkdownIt15 from 'markdown-it';
 
 import {transform} from '../src/plugin/transform';
 
@@ -12,5 +11,5 @@ transform({directiveSyntax: 'disabled'})(minimal);
 transform({directiveSyntax: 'enabled'})(minimal);
 // @ts-expect-error A dynamic mode can enable Directive and therefore needs the full host.
 transform({directiveSyntax: Math.random() ? 'disabled' : 'enabled'})(minimal);
-new MarkdownIt13().use(transform({directiveSyntax: 'enabled'}));
+new MarkdownIt15().use(transform({directiveSyntax: 'enabled'}));
 new MarkdownIt15().use(transform({directiveSyntax: 'only'}));
