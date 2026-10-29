@@ -1,0 +1,144 @@
+/* eslint-disable import/no-extraneous-dependencies */
+import assert from 'node:assert/strict';
+import {readFileSync, existsSync, mkdirSync} from 'node:fs';
+import {join} from 'node:path';
+import {createRequire} from 'node:module';
+import {JSDOM} from 'jsdom';
+import MarkdownIt13 from 'markdown-it';
+import MarkdownIt15 from 'markdown-it-transform15';
+
+import {transform as esmTabs} from '@diplodoc/tabs-extension';
+
+const require = createRequire(import.meta.url);
+assert.equal(require('markdown-it/package.json').version, '13.0.2');
+assert.equal(require('linkify-it/package.json').version, '5.0.2');
+for (const Host of [MarkdownIt13, require('markdown-it')]) {
+    const html = new Host({linkify: true}).render('Visit https://example.com and test@example.com');
+    assert.match(html, /href="https:\/\/example\.com"/);
+    assert.match(html, /href="mailto:test@example\.com"/);
+}
+const cjsTabs = require('@diplodoc/tabs-extension').transform;
+const hosts = [
+    MarkdownIt13,
+    MarkdownIt15,
+    require('markdown-it'),
+    require('markdown-it-transform15'),
+];
+const features = {enabledVariants: {regular: true, radio: true, dropdown: true, accordion: true}};
+
+for (const createTabs of [esmTabs, cjsTabs]) {
+    for (const Host of hosts) {
+        for (const variant of Object.keys(features.enabledVariants)) {
+            const calls = [];
+            const generateID = (prefix = '') => {
+                calls.push(prefix);
+                return `host-${prefix}-${calls.length}`;
+            };
+            const md = new Host().use(createTabs({bundle: false, features}), {generateID});
+            const env = {};
+            const html = md.render(
+                `{% list tabs ${variant} %}\n\n- First\n\n  One\n\n- Second {selected}\n\n  Two\n\n{% endlist %}`,
+                env,
+            );
+            assert.match(html, new RegExp(`data-diplodoc-variant="${variant}"`));
+            assert.match(html, /data-diplodoc-group="host-defaultTabsGroup-1"/);
+            assert.match(html, new RegExp(`id="host-${variant}-2"`));
+            assert.match(html, new RegExp(`id="host-${variant}-3"`));
+            assert.match(html, /data-diplodoc-key="second"/);
+            assert.match(html, new RegExp(`id="host-${variant}-3" class="[^"]*\\bactive\\b`));
+            assert.deepEqual(calls, ['defaultTabsGroup', variant, variant]);
+            assert.deepEqual(env.meta, {
+                script: ['_assets/tabs-extension.js'],
+                style: ['_assets/tabs-extension.css'],
+            });
+        }
+    }
+}
+
+// The default package entry selects the Node wrapper; the built pure entry has
+// the same parser behavior but never copies files.
+const pureTabs = require('./node_modules/@diplodoc/tabs-extension/build/plugin/index.js').transform;
+const directiveSource = ':::tabs {variant=radio group="shared"}\n\n- First\n\n  One\n\n- Second {selected}\n\n  Two\n\n:::';
+const legacySource = '{% list tabs radio group=shared %}\n\n- First\n\n  One\n\n- Second {selected}\n\n  Two\n\n{% endlist %}';
+for (const createTabs of [esmTabs, cjsTabs, pureTabs]) {
+    for (const Host of hosts) {
+        for (const mode of ['enabled', 'only']) {
+            const calls = [];
+            const md = new Host().use(createTabs({bundle: false, features, directiveSyntax: mode}), {
+                generateID: (prefix = '') => { calls.push(prefix); return `host-${prefix}-${calls.length}`; },
+            });
+            const env = {};
+            const html = md.render(directiveSource, env);
+            assert.match(html, /data-diplodoc-variant="radio"/);
+            assert.match(html, /data-diplodoc-group="shared"/);
+            assert.deepEqual(calls, ['defaultTabsGroup', 'radio', 'radio']);
+            assert.deepEqual(env.meta, {script: ['_assets/tabs-extension.js'], style: ['_assets/tabs-extension.css']});
+            const legacy = md.render(legacySource, {});
+            assert.equal(legacy.includes('yfm-tabs'), mode === 'enabled');
+        }
+    }
+}
+const output = join(process.cwd(), 'bundle-check');
+mkdirSync(output, {recursive: true});
+const mdNode = new MarkdownIt13().use(cjsTabs({directiveSyntax: 'enabled'}), {output});
+mdNode.render(directiveSource, {});
+for (const name of ['js', 'css']) {
+    const copied = join(output, `_assets/tabs-extension.${name}`);
+    const original = join(process.cwd(), 'node_modules/@diplodoc/tabs-extension/build/runtime', `index.${name}`);
+    assert.deepEqual(readFileSync(copied), readFileSync(original));
+}
+const noCopy = join(process.cwd(), 'bundle-undefined');
+new MarkdownIt13().use(cjsTabs({directiveSyntax: 'enabled', onBundle: undefined}), {output:noCopy}).render(directiveSource, {});
+assert.equal(existsSync(noCopy), false);
+const bundleCalls = [];
+const custom = new MarkdownIt13().use(cjsTabs({directiveSyntax:'enabled', onBundle: (args, cache) => {
+    bundleCalls.push({args, size: cache.size});
+}}), {output});
+const sharedEnv = {};
+custom.render('plain', sharedEnv);
+assert.equal(bundleCalls.length, 0);
+custom.render(directiveSource, sharedEnv);
+custom.render(directiveSource, sharedEnv);
+assert.deepEqual(bundleCalls, [0, 0].map((size) => ({args: {runtimeJsPath:'_assets/tabs-extension.js', runtimeCssPath:'_assets/tabs-extension.css', output}, size})));
+
+// Exercise the shipped browser bundle against colon-generated markup and CSS.
+const browserHtml = new MarkdownIt13().use(pureTabs({bundle:false, directiveSyntax:'enabled'})).render(
+    ':::tabs {group=browser}\n\n- First\n\n  One\n\n- Second\n\n  Two\n\n:::',
+);
+const dom = new JSDOM(`<!doctype html><body>${browserHtml}</body>`, {runScripts:'outside-only', url:'https://example.com/'});
+const runtimeDir = join(process.cwd(), 'node_modules/@diplodoc/tabs-extension/build/runtime');
+const css = readFileSync(join(runtimeDir, 'index.css'), 'utf8');
+assert.match(css, /yfm-tabs/);
+dom.window.eval(readFileSync(join(runtimeDir, 'index.js'), 'utf8'));
+const controller = dom.window[Symbol.for('diplodocTabs')];
+assert.ok(controller);
+const tabs = dom.window.document.querySelectorAll('.yfm-tab');
+assert.equal(tabs.length, 2);
+assert.equal(tabs[0].classList.contains('active'), true);
+controller.selectTab({group:'browser', key:'second', variant:'regular'});
+assert.equal(tabs[1].classList.contains('active'), true);
+assert.equal(tabs[0].classList.contains('active'), false);
+dom.window.close();
+
+const purePlugin = require('@diplodoc/tabs-extension/plugin');
+assert.equal(typeof purePlugin.transform, 'function');
+for (const Host of hosts) {
+    const md = new Host();
+    md.core.ruler.enableOnly(['normalize', 'block']);
+    const tokens = md.parse('{% list tabs group="shared" %}\n\n- A', {});
+    const original = JSON.stringify(tokens);
+    const boundary = purePlugin.recognizeTabsBoundary(tokens, 0);
+    assert.equal(boundary.kind, 'open');
+    assert.deepEqual(boundary.group, {present:true, raw:'"shared"', value:'shared'});
+    assert.deepEqual(boundary.map, [0,1]);
+    assert.notEqual(boundary.map, tokens[0].map);
+    assert.equal(JSON.stringify(tokens), original);
+}
+
+const hostEdges = [MarkdownIt13, MarkdownIt15].map((Host) => {
+    const md = new Host();
+    md.core.ruler.enableOnly(['normalize', 'block']);
+    const tokens = md.parse('{% list tabs radio group=shared %}\n\n- A\n\n{% endlist %}', {});
+    return tokens.map((_, index) => purePlugin.recognizeTabsBoundary(tokens, index)).filter(Boolean);
+});
+assert.deepEqual(hostEdges[0], hostEdges[1]);
