@@ -70,7 +70,8 @@ try {
         throw new Error('npm pack integrity differs from archive bytes');
     copyFileSync(archive, join(fixture, pack.filename));
     for (const name of ['tsconfig.json', 'mixed.mts', 'mixed.cts', 'reexport.cts', 'runtime.mjs']) {
-        copyFileSync(join(root, 'test/compat', name), join(fixture, name));
+        const source = name === 'tsconfig.json' ? name : `${name}.template`;
+        copyFileSync(join(root, 'test/compat', source), join(fixture, name));
     }
     const manifestPath = join(fixture, 'package.json');
     // Markdown-it 13 is required to reproduce the mixed-host boundary. Its
