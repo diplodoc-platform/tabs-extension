@@ -28,6 +28,10 @@
     "./react": {
       "types": "./build/react/index.d.ts",
       "default": "./build/react/index.js"
+    },
+    "./plugin": {
+      "types": "./build/plugin/index.d.ts",
+      "default": "./build/plugin/index.js"
     }
   },
   "scripts": {

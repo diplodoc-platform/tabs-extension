@@ -10,6 +10,12 @@ import {DEFAULT_TABS_GROUP_PREFIX, TAB_RE, TabsVariants} from '../common';
 
 import {trim, unquote} from './utils';
 
+export type TabsBoundaryToken = {
+    readonly type: string;
+    readonly content: string;
+    readonly map: readonly [number, number] | null;
+};
+
 /**
  * Find the token index of the matching `{% endlist %}` for a list starting at idx.
  * @param tokens - Full token list
@@ -35,7 +41,7 @@ function findCloseTokenIndex(tokens: Token[], idx: number): number | null {
     return null;
 }
 
-function matchCloseToken(tokens: Token[], i: number): boolean {
+function matchCloseToken(tokens: readonly TabsBoundaryToken[], i: number): boolean {
     return (
         tokens[i].type === 'paragraph_open' &&
         tokens[i + 1].type === 'inline' &&
@@ -43,7 +49,7 @@ function matchCloseToken(tokens: Token[], i: number): boolean {
     );
 }
 
-function matchOpenToken(tokens: Token[], i: number): RegExpMatchArray | null {
+function matchOpenToken(tokens: readonly TabsBoundaryToken[], i: number): RegExpMatchArray | null {
     if (tokens[i].type !== 'paragraph_open' || tokens[i + 1].type !== 'inline') {
         return null;
     }
@@ -78,9 +84,7 @@ export function props(content: string, generateID: IDGenerator): TabsProps {
         group: defaultTabsGroup(generateID),
     };
 
-    for (const prop of props) {
-        const [key, value] = prop.split('=').map(trim);
-
+    visitProps(props, (key, value) => {
         switch (key) {
             case 'horizontal':
             case 'radio':
@@ -94,9 +98,77 @@ export function props(content: string, generateID: IDGenerator): TabsProps {
             default:
             // TODO: lint unknown tabs props
         }
-    }
+    });
 
     return result;
+}
+
+function visitProps(
+    parts: readonly string[],
+    visit: (key: string, value: string, pieces: string[]) => void,
+): void {
+    for (const prop of parts) {
+        const pieces = prop.split('=').map(trim);
+        visit(pieces[0], pieces[1], pieces);
+    }
+}
+
+export type TabsBoundary = {
+    readonly map: readonly [number, number] | null;
+    readonly raw: string;
+} & (
+    | {
+          readonly kind: 'open';
+          readonly variant:
+              | {readonly present: false}
+              | {readonly present: true; readonly raw: string};
+          readonly group:
+              | {readonly present: false}
+              | {readonly present: true; readonly raw: string; readonly value: string};
+      }
+    | {readonly kind: 'close' | 'unsupported'}
+);
+
+/**
+ * Classify one original block edge without pairing it or validating the body.
+ * @param tokens - Original pre-semantic block tokens.
+ * @param i - Candidate paragraph index.
+ * @returns A copied boundary observation when recognized.
+ */
+export function recognizeTabsBoundary(
+    tokens: readonly TabsBoundaryToken[],
+    i: number,
+): TabsBoundary | undefined {
+    if (!tokens[i] || !tokens[i + 1]) return undefined;
+    const match = matchOpenToken(tokens, i);
+    const close = !match && matchCloseToken(tokens, i);
+    if (!match && !close) return undefined;
+    const map = tokens[i].map;
+    const common = {map: map ? ([map[0], map[1]] as const) : null, raw: tokens[i + 1].content};
+    if (close) return {kind: 'close', ...common};
+    if (!match || (match[0].startsWith('`') && match[0].endsWith('`'))) return undefined;
+    if (tokens[i + 1].content.trim() !== match[0]) return {kind: 'unsupported', ...common};
+    let variant: {present: false} | {present: true; raw: string} = {present: false};
+    let group: {present: false} | {present: true; raw: string; value: string} = {present: false};
+    let unsupported = false;
+    const parts = trim(match[0].replace('list tabs', '')).split(' ');
+    visitProps(parts, (key, value, pieces) => {
+        if ((!key || key === '{%' || key === '%}') && pieces.length === 1) return;
+        if (
+            ['horizontal', 'radio', 'dropdown', 'accordion'].includes(key) &&
+            pieces.length === 1 &&
+            !variant.present
+        ) {
+            variant = {present: true, raw: key};
+        } else if (key === 'group' && pieces.length === 2 && value && !group.present) {
+            group = {present: true, raw: value, value: unquote(value)};
+        } else {
+            unsupported = true;
+        }
+    });
+    return unsupported
+        ? {kind: 'unsupported', ...common}
+        : {kind: 'open', ...common, variant, group};
 }
 
 type Result =

@@ -40,3 +40,23 @@ declare const minimalHost: MinimalHost;
 createTabs({bundle: false})(minimalHost);
 // @ts-expect-error Enabled directives require block and inline parser capabilities.
 enabled(minimalHost);
+
+import {recognizeTabsBoundary, transform as pureTransform} from '@diplodoc/tabs-extension/plugin';
+const candidateTokens = new MarkdownIt13().parse('{% list tabs %}', {});
+const boundary = recognizeTabsBoundary(candidateTokens, 0);
+if (boundary?.kind === 'open') {
+    if (boundary.group.present) {
+        const value: string = boundary.group.value;
+        void value;
+        // @ts-expect-error Authored group values are readonly.
+        boundary.group.value = 'modified';
+    }
+    if (boundary.map) {
+        // @ts-expect-error The copied map is readonly.
+        boundary.map[0] = 99;
+    }
+    // @ts-expect-error Recognition results are readonly.
+    boundary.raw = 'modified';
+}
+new MarkdownIt13().use(pureTransform({bundle:false, directiveSyntax:'enabled'}));
+new MarkdownIt15().use(pureTransform({bundle:false, directiveSyntax:'enabled'}));

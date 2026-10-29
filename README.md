@@ -122,6 +122,24 @@ one-based line; it is not a general Markdown validator and does not promise a
 diagnostic for every malformed or unclosed marker. Directive attributes do not
 require general Markdown attributes to be enabled.
 
+### Inspect legacy boundaries
+
+The pure `@diplodoc/tabs-extension/plugin` entry exports
+`recognizeTabsBoundary(tokens, index)` alongside `transform`. Pass original
+normalized block tokens before semantic core plugins run. The helper returns a
+readonly observation with a copied line map and raw source marker, or
+`undefined` when the candidate is not a recognized legacy boundary. An opening
+reports whether a variant or group was authored; an authored group includes its
+raw spelling and the value decoded by the existing Tabs parser. Unknown,
+repeated, or ambiguous parameters are reported as unsupported. Missing group
+and variant are distinct from explicitly authored defaults.
+
+This observes one edge at a time, including unclosed openings. It does not pair
+boundaries, validate nesting or body eligibility, allocate a default group ID,
+render tokens, or modify the input. A caller that rewrites source must verify
+matching scopes and renderer equivalence separately; line maps refer to the
+parser's normalized input, not original byte offsets.
+
 ## API
 
 ### Syntax
