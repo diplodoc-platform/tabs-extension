@@ -6,5 +6,5 @@
     "moduleResolution": "bundler"
   },
   "include": ["src", "test"],
-  "exclude": []
+  "exclude": ["test/compat"]
 }
