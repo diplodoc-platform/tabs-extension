@@ -7,4 +7,4 @@ const stylesheetImport = /^import '\.\/scss\/tabs\.scss';\r?\n/gm;
 if ([...contents.matchAll(stylesheetImport)].length !== 1) {
     throw new Error('Unexpected runtime declaration stylesheet import');
 }
-writeFileSync(file, contents.replace(stylesheetImport, ''));
+writeFileSync(file, contents.replace(stylesheetImport, 'export {};\n'));

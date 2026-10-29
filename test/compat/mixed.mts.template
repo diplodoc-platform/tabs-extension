@@ -24,3 +24,7 @@ const optionalCollect: Host15WithOptionalCollect = tabs;
 new MarkdownIt13().use(tabs);
 new MarkdownIt15().use(tabs);
 void [host13, host15, optionalCollect];
+
+type RuntimeNamespace = typeof import('@diplodoc/tabs-extension/runtime');
+const runtimeNamespace: RuntimeNamespace = {};
+void runtimeNamespace;
