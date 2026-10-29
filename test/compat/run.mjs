@@ -14,6 +14,7 @@ import {createRequire} from 'node:module';
 import {tmpdir} from 'node:os';
 import {dirname, isAbsolute, join, relative, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {buildSync} from '@diplodoc/infra/esbuild';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const evidenceRoot = resolve(process.env.TABS_PACKAGE_EVIDENCE_DIR || tmpdir());
@@ -172,6 +173,28 @@ try {
     if (!declaration.includes('@diplodoc/tabs-extension') || declaration.includes('/build/'))
         throw new Error('Re-export declaration is not portable through the package root');
     run(process.execPath, ['runtime.mjs'], fixture, 'runtime');
+    const browserGraph = buildSync({
+        stdin: {
+            contents:
+                "import {transform, recognizeTabsBoundary} from '@diplodoc/tabs-extension/plugin'; globalThis.tabs = {transform, recognizeTabsBoundary};",
+            resolveDir: fixture,
+        },
+        bundle: true,
+        platform: 'browser',
+        format: 'esm',
+        metafile: true,
+        write: false,
+        logLevel: 'silent',
+    });
+    if (Object.values(browserGraph.metafile.outputs).some((output) => output.imports.length))
+        throw new Error('Pure plugin browser graph has external imports');
+    if (Object.keys(browserGraph.metafile.inputs).some((input) => /index-node|node:fs/.test(input)))
+        throw new Error('Pure plugin browser graph includes a Node wrapper');
+    writeFileSync(
+        join(evidence, 'pure-browser-graph.json'),
+        JSON.stringify(browserGraph.metafile, null, 2),
+    );
+
     copyFileSync(manifestPath, join(evidence, 'fixture-package.json'));
     copyFileSync(join(fixture, 'package-lock.json'), join(evidence, 'fixture-package-lock.json'));
     const fixture14 = join(fixture, 'native14');
