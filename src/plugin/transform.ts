@@ -48,6 +48,29 @@ export type TransformOptions = {
 /** The plugin callback returned by transform. */
 export type TabsPlugin = (md: MarkdownIt, options?: TransformOptions) => void;
 
+function appendRuntimeMeta(
+    env: Record<string | symbol, unknown>,
+    runtimeJsPath: string,
+    runtimeCssPath: string,
+) {
+    const meta = (env.meta ||= {});
+    if (typeof meta !== 'object' || meta === null) {
+        throw new TypeError('Expected env.meta to be an object.');
+    }
+    if (!('script' in meta) || !meta.script) Object.assign(meta, {script: []});
+    if (!('style' in meta) || !meta.style) Object.assign(meta, {style: []});
+    if (
+        !('script' in meta) ||
+        !Array.isArray(meta.script) ||
+        !('style' in meta) ||
+        !Array.isArray(meta.style)
+    ) {
+        throw new TypeError('Expected runtime script and style arrays.');
+    }
+    meta.script.push(runtimeJsPath);
+    meta.style.push(runtimeCssPath);
+}
+
 /**
  * Returns a MarkdownIt plugin that transforms `{% list tabs %}` blocks into tab markup.
  * @param options - Paths for runtime JS/CSS, container classes, and enabled variants
@@ -124,22 +147,7 @@ export function transform(options: Partial<PluginOptions> = {}): TabsPlugin {
             }
 
             if (tabsAreInserted) {
-                const meta = (env.meta ||= {});
-                if (typeof meta !== 'object' || meta === null) {
-                    throw new TypeError('Expected env.meta to be an object.');
-                }
-                if (!('script' in meta) || !meta.script) Object.assign(meta, {script: []});
-                if (!('style' in meta) || !meta.style) Object.assign(meta, {style: []});
-                if (
-                    !('script' in meta) ||
-                    !Array.isArray(meta.script) ||
-                    !('style' in meta) ||
-                    !Array.isArray(meta.style)
-                ) {
-                    throw new TypeError('Expected runtime script and style arrays.');
-                }
-                meta.script.push(runtimeJsPath);
-                meta.style.push(runtimeCssPath);
+                appendRuntimeMeta(env, runtimeJsPath, runtimeCssPath);
 
                 if (bundle && onBundle) {
                     onBundle({runtimeJsPath, runtimeCssPath, output}, env.bundled);

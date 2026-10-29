@@ -18,6 +18,38 @@ describe.each([
             new MarkdownIt15().use(plugin, {generateID}),
     ],
 ])('%s', (_name, createParser) => {
+    const source = '{% list tabs %}\n\n- First\n\n  One\n\n{% endlist %}';
+
+    it.each([true, 42, 'invalid'])('rejects invalid metadata %s', (meta) => {
+        const md = createParser(transform({bundle: false, features}), (prefix = '') => prefix);
+        expect(() => md.render(source, {meta})).toThrow('Expected env.meta to be an object.');
+    });
+
+    it.each([
+        {script: 'invalid', style: []},
+        {script: [], style: 'invalid'},
+    ])('rejects non-array runtime metadata', (meta) => {
+        const md = createParser(transform({bundle: false, features}), (prefix = '') => prefix);
+        expect(() => md.render(source, {meta})).toThrow(
+            'Expected runtime script and style arrays.',
+        );
+    });
+
+    it('appends runtime resources to the existing arrays without replacing metadata', () => {
+        const md = createParser(transform({bundle: false, features}), (prefix = '') => prefix);
+        const script = ['existing.js'];
+        const style = ['existing.css'];
+        const meta = {script, style, other: 'preserved'};
+        const env = {meta};
+        md.render(source, env);
+        expect(env.meta).toBe(meta);
+        expect(meta.script).toBe(script);
+        expect(meta.style).toBe(style);
+        expect(script).toEqual(['existing.js', '_assets/tabs-extension.js']);
+        expect(style).toEqual(['existing.css', '_assets/tabs-extension.css']);
+        expect(meta.other).toBe('preserved');
+    });
+
     it.each(['regular', 'radio', 'dropdown', 'accordion'])(
         'preserves %s tabs and host IDs',
         (variant) => {
