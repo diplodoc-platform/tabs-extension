@@ -20,14 +20,14 @@ const evidenceRoot = resolve(process.env.TABS_PACKAGE_EVIDENCE_DIR || tmpdir());
 mkdirSync(evidenceRoot, {recursive: true});
 const evidence = mkdtempSync(join(evidenceRoot, 'tabs-package-'));
 const fixture = mkdtempSync(join(tmpdir(), 'tabs-fixture-'));
-const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+const npm = process.env.npm_execpath;
+if (!npm) throw new Error('Run this check with npm run test:package.');
 const report = {node: process.version, evidence, commands: []};
 
 function run(command, args, cwd, label) {
     const result = spawnSync(command, args, {
         cwd,
         encoding: 'utf8',
-        shell: process.platform === 'win32',
     });
     writeFileSync(join(evidence, `${label}.stdout.log`), result.stdout || '');
     writeFileSync(join(evidence, `${label}.stderr.log`), result.stderr || '');
@@ -53,10 +53,15 @@ function digest(bytes) {
 try {
     report.sourceHead = run('git', ['rev-parse', 'HEAD'], root, 'source-head').trim();
     report.sourceStatus = run('git', ['status', '--porcelain'], root, 'source-status');
-    report.npm = run(npm, ['--version'], root, 'npm-version').trim();
-    run(npm, ['run', 'build'], root, 'build');
+    report.npm = run(process.execPath, [npm, '--version'], root, 'npm-version').trim();
+    run(process.execPath, [npm, 'run', 'build'], root, 'build');
     const pack = JSON.parse(
-        run(npm, ['pack', '--json', '--pack-destination', evidence], root, 'pack'),
+        run(
+            process.execPath,
+            [npm, 'pack', '--json', '--pack-destination', evidence],
+            root,
+            'pack',
+        ),
     )[0];
     const archive = join(evidence, pack.filename);
     const archiveBytes = readFileSync(archive);
@@ -78,8 +83,8 @@ try {
     const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
     manifest.dependencies['@diplodoc/tabs-extension'] = `file:./${pack.filename}`;
     writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
-    run(npm, ['install'], fixture, 'install');
-    run(npm, ['ci'], fixture, 'ci');
+    run(process.execPath, [npm, 'install'], fixture, 'install');
+    run(process.execPath, [npm, 'ci'], fixture, 'ci');
     const lock = JSON.parse(readFileSync(join(fixture, 'package-lock.json'), 'utf8'));
     const locked = lock.packages['node_modules/@diplodoc/tabs-extension'];
     if (locked.integrity !== integrity || locked.resolved !== `file:${pack.filename}`)
