@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync, existsSync, mkdirSync} from 'node:fs';
 import {join} from 'node:path';
 import {createRequire} from 'node:module';
+import {JSDOM} from 'jsdom';
 import MarkdownIt13 from 'markdown-it';
 import MarkdownIt15 from 'markdown-it-transform15';
 
@@ -99,3 +100,22 @@ assert.equal(bundleCalls.length, 0);
 custom.render(directiveSource, sharedEnv);
 custom.render(directiveSource, sharedEnv);
 assert.deepEqual(bundleCalls, [0, 0].map((size) => ({args: {runtimeJsPath:'_assets/tabs-extension.js', runtimeCssPath:'_assets/tabs-extension.css', output}, size})));
+
+// Exercise the shipped browser bundle against colon-generated markup and CSS.
+const browserHtml = new MarkdownIt13().use(pureTabs({bundle:false, directiveSyntax:'enabled'})).render(
+    ':::tabs {group=browser}\n\n- First\n\n  One\n\n- Second\n\n  Two\n\n:::',
+);
+const dom = new JSDOM(`<!doctype html><body>${browserHtml}</body>`, {runScripts:'outside-only', url:'https://example.com/'});
+const runtimeDir = join(process.cwd(), 'node_modules/@diplodoc/tabs-extension/build/runtime');
+const css = readFileSync(join(runtimeDir, 'index.css'), 'utf8');
+assert.match(css, /yfm-tabs/);
+dom.window.eval(readFileSync(join(runtimeDir, 'index.js'), 'utf8'));
+const controller = dom.window[Symbol.for('diplodocTabs')];
+assert.ok(controller);
+const tabs = dom.window.document.querySelectorAll('.yfm-tab');
+assert.equal(tabs.length, 2);
+assert.equal(tabs[0].classList.contains('active'), true);
+controller.selectTab({group:'browser', key:'second', variant:'regular'});
+assert.equal(tabs[1].classList.contains('active'), true);
+assert.equal(tabs[0].classList.contains('active'), false);
+dom.window.close();
