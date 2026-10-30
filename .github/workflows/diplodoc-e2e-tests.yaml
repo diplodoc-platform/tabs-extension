@@ -13,11 +13,121 @@ permissions:
 jobs:
   parent-e2e:
     name: Full E2E
-    uses: diplodoc-platform/diplodoc/.github/workflows/e2e-tests.yaml@master
-    with:
-      candidate_repository: ${{ github.repository }}
-      candidate_sha: ${{ github.event.pull_request.head.sha || github.sha }}
-      trigger_id: ${{ format('{0}-{1}', github.event.repository.name, github.run_id) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout reviewed metapackage
+        uses: actions/checkout@v4
+        with:
+          repository: diplodoc-platform/diplodoc
+          ref: 81a7f4cc6772ebe4f3bc0cd51ac25b850c810cbd
+          fetch-depth: 0
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+          cache: npm
+
+      - name: Install latest npm (>= 11.5.1)
+        shell: bash
+        run: |
+          [ "$(printf '%s\n' "11.5.1" "$(npm -v)" | sort -V | head -n1)" = "11.5.1" ] || npm install -g npm@11.5.1
+
+      - name: Test candidate binding and report contract
+        run: node --test scripts/e2e-candidate.test.js scripts/e2e-artifacts.test.js
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Bind exact candidate and record source identity
+        id: candidate
+        env:
+          E2E_CANDIDATE_REPOSITORY: ${{ github.repository }}
+          E2E_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          E2E_CALLER_REPOSITORY: ${{ github.repository }}
+          E2E_EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/e2e-candidate.js
+
+      - name: Pin reviewed Directive source for this test
+        env:
+          DIRECTIVE_SHA: c6b5d4c3f8d1cbe013c369efaa4545aa0a40f51b
+          METAPACKAGE_SHA: 81a7f4cc6772ebe4f3bc0cd51ac25b850c810cbd
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$METAPACKAGE_SHA"
+          git -C packages/directive fetch --no-tags --depth=1 https://github.com/diplodoc-platform/directive.git "$DIRECTIVE_SHA"
+          git -C packages/directive checkout --detach FETCH_HEAD
+          test "$(git -C packages/directive rev-parse HEAD)" = "$DIRECTIVE_SHA"
+          node -e "const fs = require('node:fs'); const p = require('./packages/directive/package.json'); if (p.version !== '0.5.0-transform5.2') throw Error('Unexpected Directive version'); fs.writeFileSync('e2e-directive-source.json', JSON.stringify({metapackageSha: process.env.METAPACKAGE_SHA, directiveSha: process.env.DIRECTIVE_SHA, version: p.version}, null, 2) + '\n', {flag: 'wx'});"
+
+      - name: Pin reviewed File source for this test
+        env:
+          FILE_SHA: cd485ffbd63c860d77e9dcb6444aee62368f2783
+          METAPACKAGE_SHA: 81a7f4cc6772ebe4f3bc0cd51ac25b850c810cbd
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$METAPACKAGE_SHA"
+          git -C extensions/file fetch --no-tags --depth=1 https://github.com/diplodoc-platform/file-extension.git "$FILE_SHA"
+          git -C extensions/file checkout --detach FETCH_HEAD
+          test "$(git -C extensions/file rev-parse HEAD)" = "$FILE_SHA"
+          node -e "const fs = require('node:fs'); const p = require('./extensions/file/package.json'); if (p.version !== '0.2.7-transform5.1') throw Error('Unexpected File version'); fs.writeFileSync('e2e-file-source.json', JSON.stringify({metapackageSha: process.env.METAPACKAGE_SHA, fileSha: process.env.FILE_SHA, version: p.version}, null, 2) + '\n', {flag: 'wx'});"
+
+      - name: Upload source identity
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-source
+          path: |
+            e2e-source.json
+            e2e-directive-source.json
+            e2e-file-source.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Setup node_modules
+        run: |
+          npm i
+          npm run reset -- -u -q
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps
+
+      - name: Build projects
+        run: npm run build -- --verbose
+
+      - name: Link CLI binaries
+        run: npm i @diplodoc/cli --ignore-scripts
+
+      - name: Restore workspace links
+        run: npm run reset -- -u -q
+
+      - name: Run E2E tests
+        id: browser
+        run: npm run test
+
+      - name: Upload test results
+        if: always() && (steps.browser.outcome == 'success' || steps.browser.outcome == 'failure')
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            devops/testpack/.playwright/result/
+            devops/testpack/.playwright/html/
+            devops/testpack/.playwright/json/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
 
   trigger-parent-e2e:
     name: Run tests

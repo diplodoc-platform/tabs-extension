@@ -89,6 +89,76 @@ Options:
   Example: `my-own-class and-other-class`<br>
   Default: `undefined`<br>
 
+### Colon directive syntax
+
+Legacy `{% list tabs %}` remains the standalone default. Opt in at factory
+creation with `transform({directiveSyntax: 'enabled'})` to accept both forms,
+or use `directiveSyntax: 'only'` for colon directives only. The default
+`'disabled'` retains the legacy-only, core-rule host contract; enabling a
+directive requires a Markdown-it host with the block and inline capabilities
+used by `@diplodoc/directive`.
+
+```markdown
+:::tabs {variant=radio group="shared"}
+
+- First
+
+  First body.
+
+- Second {selected}
+
+  Second body.
+
+:::
+```
+
+The body uses the same Markdown lists and selected markers as legacy tabs.
+`variant` is `regular` (the default), `radio`, `dropdown`, or `accordion`;
+`group`, if present, must be nonempty. A valid but disabled variant falls back
+to regular. Titles, destinations, unknown or repeated attributes, `#id` and
+`.class` are unsupported. Invalid parameters remain ordinary Markdown. An
+optional `onDiagnostic({line, reason})` reports rejected parameters with a
+one-based line; it is not a general Markdown validator and does not promise a
+diagnostic for every malformed or unclosed marker. Directive attributes do not
+require general Markdown attributes to be enabled.
+
+### Observe item source titles
+
+Pass `onItemSource(snapshot)` to `transform` to observe each accepted tab item
+before its markup is generated, in both legacy and colon syntax. The callback
+receives a frozen snapshot with `rawName`, a copied `inlineMap`, and a nullable
+`containerMap` bounded by the owner's opening and closing token maps. Line maps
+refer to the current normalized Markdown input and use zero-based, exclusive end
+lines; they are not guaranteed offsets into an original file. Character spans
+are zero-based UTF-16 offsets in `rawName`, with exclusive ends.
+
+For `kind: 'ok'`, `markers` identifies the first custom anchor, the first
+literal `{selected}` used for activation in the original title, and the first
+literal removed from the display title after the anchor is removed. These ranges
+can overlap or differ. `kind: 'unsupported'` reports `missing-title` or
+`discontinuous-display-marker`; consumers should conservatively preserve the
+affected source. Maps can be null and a consumer must establish an unambiguous
+mapping to its own source before editing it. The callback may be called again
+on later or nested parses and its exceptions propagate to the caller.
+
+### Inspect legacy boundaries
+
+The pure `@diplodoc/tabs-extension/plugin` entry exports
+`recognizeTabsBoundary(tokens, index)` alongside `transform`. Pass original
+normalized block tokens before semantic core plugins run. The helper returns a
+readonly observation with a copied line map and raw source marker, or
+`undefined` when the candidate is not a recognized legacy boundary. An opening
+reports whether a variant or group was authored; an authored group includes its
+raw spelling and the value decoded by the existing Tabs parser. Unknown,
+repeated, or ambiguous parameters are reported as unsupported. Missing group
+and variant are distinct from explicitly authored defaults.
+
+This observes one edge at a time, including unclosed openings. It does not pair
+boundaries, validate nesting or body eligibility, allocate a default group ID,
+render tokens, or modify the input. A caller that rewrites source must verify
+matching scopes and renderer equivalence separately; line maps refer to the
+parser's normalized input, not original byte offsets.
+
 ## API
 
 ### Syntax
@@ -261,3 +331,13 @@ export const App: React.FC = () => {
 ## For contributors
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+
+## MarkdownIt compatibility
+
+The plugin supports MarkdownIt 13, 14 and 15. Its plugin callback describes the
+core rule and token capabilities it uses, so different supported parser versions
+can coexist in a TypeScript application. Tokens are created by the active parser
+state; no private MarkdownIt module is loaded at runtime.
+
+The installed-package compatibility tests use TypeScript 6.0.3 with NodeNext
+module resolution and `skipLibCheck: false`, including CommonJS and ESM hosts.

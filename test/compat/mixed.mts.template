@@ -1,0 +1,78 @@
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable no-unused-vars, no-void */
+import MarkdownIt13 from 'markdown-it';
+import MarkdownIt15 from 'markdown-it-transform15';
+
+import {transform as createTabs} from '@diplodoc/tabs-extension';
+
+const tabs = createTabs({
+    bundle: false,
+    features: {enabledVariants: {regular: true, radio: true, dropdown: true, accordion: true}},
+});
+type HostOptions = {output?: string; generateID: (value?: string) => string};
+type Host13Callback = (md: InstanceType<typeof MarkdownIt13>, options: HostOptions) => void;
+type Host15Callback = (md: InstanceType<typeof MarkdownIt15>, options: HostOptions) => void;
+const host13: Host13Callback = tabs;
+const host15: Host15Callback = tabs;
+type Host15WithOptionalCollect = Host15Callback & {
+    collect?: (
+        input: string,
+        options: {tokenStream: ReturnType<InstanceType<typeof MarkdownIt15>['parse']>},
+    ) => string | void;
+};
+const optionalCollect: Host15WithOptionalCollect = tabs;
+new MarkdownIt13().use(tabs);
+new MarkdownIt15().use(tabs);
+void [host13, host15, optionalCollect];
+
+type RuntimeNamespace = typeof import('@diplodoc/tabs-extension/runtime');
+const runtimeNamespace: RuntimeNamespace = {};
+void runtimeNamespace;
+
+const enabled = createTabs({bundle: false, directiveSyntax: 'enabled'});
+const only = createTabs({bundle: false, directiveSyntax: 'only'});
+new MarkdownIt13().use(enabled);
+new MarkdownIt15().use(enabled);
+new MarkdownIt13().use(only);
+new MarkdownIt15().use(only);
+import type {MarkdownIt as MinimalHost} from '@diplodoc/tabs-extension';
+declare const minimalHost: MinimalHost;
+createTabs({bundle: false})(minimalHost);
+// @ts-expect-error Enabled directives require block and inline parser capabilities.
+enabled(minimalHost);
+
+import {recognizeTabsBoundary, transform as pureTransform} from '@diplodoc/tabs-extension/plugin';
+const candidateTokens = new MarkdownIt13().parse('{% list tabs %}', {});
+const boundary = recognizeTabsBoundary(candidateTokens, 0);
+if (boundary?.kind === 'open') {
+    if (boundary.group.present) {
+        const value: string = boundary.group.value;
+        void value;
+        // @ts-expect-error Authored group values are readonly.
+        boundary.group.value = 'modified';
+    }
+    if (boundary.map) {
+        // @ts-expect-error The copied map is readonly.
+        boundary.map[0] = 99;
+    }
+    // @ts-expect-error Recognition results are readonly.
+    boundary.raw = 'modified';
+}
+new MarkdownIt13().use(pureTransform({bundle:false, directiveSyntax:'enabled'}));
+new MarkdownIt15().use(pureTransform({bundle:false, directiveSyntax:'enabled'}));
+for (const factory of [createTabs, pureTransform]) {
+    const observer = factory({bundle: false, directiveSyntax: 'enabled', onItemSource(snapshot) {
+        // @ts-expect-error Snapshot and nested ranges are readonly.
+        snapshot.rawName = 'changed';
+        if (snapshot.inlineMap) {
+            // @ts-expect-error Map is readonly.
+            snapshot.inlineMap[0] = 0;
+        }
+        if (snapshot.kind === 'ok' && snapshot.markers.selectedForActivation) {
+            // @ts-expect-error Marker range is readonly.
+            snapshot.markers.selectedForActivation[0] = 0;
+        }
+    }});
+    new MarkdownIt13().use(observer);
+    new MarkdownIt15().use(observer);
+}
