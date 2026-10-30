@@ -28,6 +28,18 @@ const features = {enabledVariants: {regular: true, radio: true, dropdown: true, 
 
 for (const createTabs of [esmTabs, cjsTabs]) {
     for (const Host of hosts) {
+        for (const source of [
+            '{% list tabs %}\n\n- A {selected} {#id}\n\n{% endlist %}',
+            ':::tabs\n\n- A {selected} {#id}\n\n:::',
+        ]) {
+            const observed = [];
+            const md = new Host().use(createTabs({bundle: false, directiveSyntax: 'enabled', onItemSource: (item) => observed.push(item)}));
+            md.render(source);
+            assert.equal(observed.length, 1);
+            assert.equal(observed[0].rawName, 'A {selected} {#id}');
+            assert.deepEqual(observed[0].markers, {selectedForActivation: [2, 12], selectedForDisplay: [2, 12], customAnchor: [13, 18]});
+            assert.ok(Object.isFrozen(observed[0]));
+        }
         for (const variant of Object.keys(features.enabledVariants)) {
             const calls = [];
             const generateID = (prefix = '') => {

@@ -8,12 +8,14 @@ import type {IDGenerator} from '@diplodoc/utils';
 import type {EnabledVariants} from '../common';
 import type {TabsDirectiveDiagnostic, TabsMarker} from './directive';
 import type {MarkdownIt, StateCore, Token} from './markdown-it';
+import type {RuntimeTab} from './types';
+import type {TabNameMarkers, TabSourceSpan} from './utils/tabs';
 
 import {createIDGeneratorByStrategy} from '@diplodoc/utils';
 
 import {TabsVariants} from '../common';
 
-import {addHiddenProperty} from './utils';
+import {addHiddenProperty, observeTabName} from './utils';
 import {generateTabsTokens} from './generate';
 import {defaultTabsGroup, findTabs, props, tryToFindTabs} from './find';
 import {installTabsDirective, validateTabsMarkers} from './directive';
@@ -26,6 +28,8 @@ export type PluginOptions = {
     bundle: boolean;
     directiveSyntax?: 'disabled' | 'enabled' | 'only';
     onDiagnostic?: (diagnostic: TabsDirectiveDiagnostic) => void;
+    /** Observe accepted item titles before rendering. Callback exceptions propagate. */
+    onItemSource?: (snapshot: TabsItemSource) => void;
     features: {
         enabledVariants: EnabledVariants;
     };
@@ -35,6 +39,24 @@ export type PluginOptions = {
         cache: Set<string>,
     ) => void;
 };
+
+/** Lines refer to the current normalized Markdown input; character spans use UTF-16 offsets in rawName. */
+export type TabsItemSource = {
+    readonly rawName: string;
+    readonly inlineMap: TabSourceSpan | null;
+    /** Bounding lines from the accepted opening and closing tokens, when available. */
+    readonly containerMap: TabSourceSpan | null;
+} & (
+    | {readonly kind: 'ok'; readonly markers: TabNameMarkers}
+    | {
+          readonly kind: 'unsupported';
+          readonly reason: 'missing-title' | 'discontinuous-display-marker';
+      }
+);
+
+function copyMap(map: readonly [number, number] | null): TabSourceSpan | null {
+    return map ? Object.freeze([map[0], map[1]] as const) : null;
+}
 
 const defaultFeatures: PluginOptions['features'] = {
     enabledVariants: {
@@ -153,6 +175,7 @@ export function transform(options: Partial<PluginOptions> = {}): TabsPlugin | Ta
         onBundle,
         directiveSyntax = 'disabled',
         onDiagnostic,
+        onItemSource,
     } = options;
 
     function installCore(
@@ -188,15 +211,39 @@ export function transform(options: Partial<PluginOptions> = {}): TabsPlugin | Ta
                 const variant = features.enabledVariants[match.variant]
                     ? match.variant
                     : TabsVariants.Regular;
+                const titleTokens = onItemSource ? new WeakMap<RuntimeTab, Token>() : undefined;
                 const tabs = findTabs(
                     state.tokens,
                     match.bodyStart,
                     match.close,
                     state.Token,
                     match.end,
+                    titleTokens,
                 );
 
                 if (tabs.length > 0) {
+                    if (onItemSource && titleTokens) {
+                        const openMap = tokens[i].map;
+                        const closeMap = tokens[match.close].map;
+                        const containerMap =
+                            openMap && closeMap && openMap[0] <= closeMap[1]
+                                ? copyMap([openMap[0], closeMap[1]])
+                                : null;
+                        for (const tab of tabs) {
+                            const title = titleTokens.get(tab);
+                            const source = title
+                                ? observeTabName(tab.name)
+                                : {kind: 'unsupported' as const, reason: 'missing-title' as const};
+                            onItemSource(
+                                Object.freeze({
+                                    rawName: tab.name,
+                                    inlineMap: title ? copyMap(title.map) : null,
+                                    containerMap,
+                                    ...source,
+                                }),
+                            );
+                        }
+                    }
                     const tabsTokens = generateTabsTokens(tabs, state, {
                         containerClasses,
                         tabsGroup: match.group,

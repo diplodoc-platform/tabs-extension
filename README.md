@@ -122,6 +122,25 @@ one-based line; it is not a general Markdown validator and does not promise a
 diagnostic for every malformed or unclosed marker. Directive attributes do not
 require general Markdown attributes to be enabled.
 
+### Observe item source titles
+
+Pass `onItemSource(snapshot)` to `transform` to observe each accepted tab item
+before its markup is generated, in both legacy and colon syntax. The callback
+receives a frozen snapshot with `rawName`, a copied `inlineMap`, and a nullable
+`containerMap` bounded by the owner's opening and closing token maps. Line maps
+refer to the current normalized Markdown input and use zero-based, exclusive end
+lines; they are not guaranteed offsets into an original file. Character spans
+are zero-based UTF-16 offsets in `rawName`, with exclusive ends.
+
+For `kind: 'ok'`, `markers` identifies the first custom anchor, the first
+literal `{selected}` used for activation in the original title, and the first
+literal removed from the display title after the anchor is removed. These ranges
+can overlap or differ. `kind: 'unsupported'` reports `missing-title` or
+`discontinuous-display-marker`; consumers should conservatively preserve the
+affected source. Maps can be null and a consumer must establish an unambiguous
+mapping to its own source before editing it. The callback may be called again
+on later or nested parses and its exceptions propagate to the caller.
+
 ### Inspect legacy boundaries
 
 The pure `@diplodoc/tabs-extension/plugin` entry exports

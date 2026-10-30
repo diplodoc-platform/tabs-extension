@@ -254,6 +254,7 @@ export function tryToFindTabs(tokens: Token[], index: number): Result {
  * @param closeTokenIdx - Index of {% endlist %} paragraph
  * @param TokenConstructor - Token constructor from the current MarkdownIt state
  * @param end - Exclusive scan bound
+ * @param titleTokens - Optional association of returned items with their original inline title tokens
  * @returns Array of RuntimeTab
  */
 export function findTabs(
@@ -262,6 +263,7 @@ export function findTabs(
     closeTokenIdx: number,
     TokenConstructor: StateCore['Token'],
     end: number,
+    titleTokens?: WeakMap<RuntimeTab, Token>,
 ): RuntimeTab[] {
     const tabs: RuntimeTab[] = [];
     let i = idx;
@@ -328,6 +330,7 @@ export function findTabs(
 
                 if (!pending.name && tokens[i + 1].type === 'inline') {
                     pending.name = tokens[i + 1].content;
+                    titleTokens?.set(pending, tokens[i + 1]);
 
                     i += 2;
                 } else {

@@ -60,3 +60,19 @@ if (boundary?.kind === 'open') {
 }
 new MarkdownIt13().use(pureTransform({bundle:false, directiveSyntax:'enabled'}));
 new MarkdownIt15().use(pureTransform({bundle:false, directiveSyntax:'enabled'}));
+for (const factory of [createTabs, pureTransform]) {
+    const observer = factory({bundle: false, directiveSyntax: 'enabled', onItemSource(snapshot) {
+        // @ts-expect-error Snapshot and nested ranges are readonly.
+        snapshot.rawName = 'changed';
+        if (snapshot.inlineMap) {
+            // @ts-expect-error Map is readonly.
+            snapshot.inlineMap[0] = 0;
+        }
+        if (snapshot.kind === 'ok' && snapshot.markers.selectedForActivation) {
+            // @ts-expect-error Marker range is readonly.
+            snapshot.markers.selectedForActivation[0] = 0;
+        }
+    }});
+    new MarkdownIt13().use(observer);
+    new MarkdownIt15().use(observer);
+}

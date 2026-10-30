@@ -242,7 +242,12 @@ try {
     const typeFixture14 = `import MarkdownIt from 'markdown-it';
 import {transform} from '@diplodoc/tabs-extension';
 new MarkdownIt().use(transform({bundle: false, directiveSyntax: 'enabled'}));
-new MarkdownIt().use(transform({bundle: false, directiveSyntax: 'only'}));
+new MarkdownIt().use(transform({bundle: false, directiveSyntax: 'only', onItemSource(snapshot) {
+  if (snapshot.kind === 'ok' && snapshot.markers.customAnchor) {
+    // @ts-expect-error Marker range is readonly.
+    snapshot.markers.customAnchor[0] = 0;
+  }
+}}));
 `;
     writeFileSync(join(fixture14, 'native.mts'), typeFixture14);
     writeFileSync(join(fixture14, 'native.cts'), typeFixture14);
@@ -281,8 +286,11 @@ assert.equal(require('mdurl/package.json').version, '2.0.0');
 for (const Host of [MarkdownIt, require('markdown-it')]) {
   for (const plugin of [transform, require('@diplodoc/tabs-extension').transform, require('./node_modules/@diplodoc/tabs-extension/build/plugin/index.js').transform]) {
     for (const mode of ['enabled', 'only']) {
-      const html = new Host().use(plugin({bundle:false, directiveSyntax:mode})).render(':::tabs\\n\\n- First\\n\\n:::');
+      const observed = [];
+      const html = new Host().use(plugin({bundle:false, directiveSyntax:mode, onItemSource: item => observed.push(item)})).render(':::tabs\\n\\n- First\\n\\n:::');
       assert.match(html, /yfm-tabs/);
+      assert.equal(observed[0].rawName, 'First');
+      assert.ok(Object.isFrozen(observed[0]));
     }
   }
 }
