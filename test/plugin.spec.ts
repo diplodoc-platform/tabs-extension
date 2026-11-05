@@ -1,4 +1,6 @@
-import type MarkdownIt from 'markdown-it';
+import type MarkdownItConstructor from 'markdown-it';
+
+type Token = ReturnType<InstanceType<typeof MarkdownItConstructor>['parse']>[number];
 
 import dd from 'ts-dedent';
 import {afterAll, beforeAll, describe, expect, it, vi} from 'vitest';
@@ -52,15 +54,15 @@ const defaultVerticalContent = [
     'After tabs',
 ];
 
-const convertAttrsToObject = ({attrs}: MarkdownIt.Token) =>
-    attrs?.reduce((acc: Record<string, string>, [name, value]) => {
+const convertAttrsToObject = ({attrs}: Token) =>
+    attrs?.reduce((acc: Record<string, string | number>, [name, value]) => {
         acc[name] = value;
 
         return acc;
     }, {}) || {};
 
 function makeTransform(params?: {
-    transformOptions?: Partial<tabsExtension.PluginOptions>;
+    transformOptions?: Partial<tabsExtension.PluginOptions> & {directiveSyntax?: 'disabled'};
     content?: string[] | string;
 }) {
     return callPlugin(

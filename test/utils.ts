@@ -1,13 +1,15 @@
+import type {MarkdownIt, StateCore} from '../src/plugin/markdown-it';
 /* eslint-disable no-implicit-globals */
 import type {PluginOptions} from '../src/plugin/transform';
-import type StateCore from 'markdown-it/lib/rules_core/state_core';
 
-import Token from 'markdown-it/lib/token';
-import MarkdownIt from 'markdown-it';
+import MarkdownItConstructor from 'markdown-it';
+
+type Token = ReturnType<InstanceType<typeof MarkdownItConstructor>['parse']>[number];
 
 import {transform as tabsTransform} from '../src/plugin/transform';
 
-const md = new MarkdownIt();
+const md = new MarkdownItConstructor();
+const TokenConstructor = new md.core.State('', md, {}).Token;
 
 const defaultPluginFeatures = {
     enabledVariants: {radio: true, regular: true} as PluginOptions['features']['enabledVariants'],
@@ -23,7 +25,7 @@ export function renderWithTabsPlugin(
     content: string | string[],
     pluginOpts?: Partial<PluginOptions>,
 ): string {
-    const mdForRender = new MarkdownIt();
+    const mdForRender = new MarkdownItConstructor();
     const pluginFn = tabsTransform({
         bundle: false,
         features: {
@@ -50,9 +52,9 @@ export function callPlugin<T extends {}>(
     const state = {
         tokens,
         env: {},
-        Token,
+        Token: TokenConstructor,
         md,
-    } as StateCore;
+    };
 
     const fakeMd = {
         core: {
