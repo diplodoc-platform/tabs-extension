@@ -153,6 +153,22 @@ try {
     run('tar', ['-xzf', archive, '-C', extracted], fixture, 'extract');
     const packedDir = join(extracted, 'package');
     const installedDir = join(fixture, 'node_modules/@diplodoc/tabs-extension');
+    // Both server entries must load the host graph's Directive runtime. Its
+    // module-local symbols and boundary registry cannot be duplicated in Tabs.
+    for (const entry of ['index.js', 'index-node.js']) {
+        const bundle = readFileSync(join(installedDir, 'build/plugin', entry), 'utf8');
+        const map = JSON.parse(
+            readFileSync(join(installedDir, 'build/plugin', `${entry}.map`), 'utf8'),
+        );
+        if (!bundle.includes('require("@diplodoc/directive")'))
+            throw new Error(`${entry} must load the external Directive runtime`);
+        if (
+            map.sources.some((source) =>
+                /(?:@diplodoc\/directive|markdown-it-directive)\//.test(source),
+            )
+        )
+            throw new Error(`${entry} embeds a private Directive runtime`);
+    }
     const packedFiles = files(packedDir).sort();
     const installedFiles = files(installedDir).sort();
     if (JSON.stringify(packedFiles) !== JSON.stringify(installedFiles))
@@ -310,6 +326,45 @@ for (const Host of [MarkdownIt, require('markdown-it')]) {
         join(fixture14, 'package-lock.json'),
         join(evidence, 'native14-package-lock.json'),
     );
+    // Keep the product's .2 compatibility gate above. This separate consumer
+    // uses the published boundary API to prove shared runtime behavior without
+    // introducing a dependency on Transform or changing product pins.
+    const sharedFixture = join(fixture, 'shared-directive');
+    mkdirSync(sharedFixture);
+    copyFileSync(archive, join(sharedFixture, pack.filename));
+    copyFileSync(
+        join(root, 'test/compat/shared-directive.mjs.template'),
+        join(sharedFixture, 'shared-directive.mjs'),
+    );
+    writeFileSync(
+        join(sharedFixture, 'package.json'),
+        JSON.stringify(
+            {
+                private: true,
+                type: 'module',
+                dependencies: {
+                    '@diplodoc/tabs-extension': `file:./${pack.filename}`,
+                    'markdown-it': '13.0.2',
+                    'markdown-it-transform15': 'npm:markdown-it@15.0.3',
+                },
+                overrides: {'@diplodoc/directive': '0.5.0-transform5.3'},
+            },
+            null,
+            2,
+        ),
+    );
+    run(process.execPath, [npm, 'install'], sharedFixture, 'shared-directive-install');
+    run(process.execPath, [npm, 'ci'], sharedFixture, 'shared-directive-ci');
+    run(process.execPath, ['shared-directive.mjs'], sharedFixture, 'shared-directive-runtime');
+    copyFileSync(
+        join(sharedFixture, 'package.json'),
+        join(evidence, 'shared-directive-package.json'),
+    );
+    copyFileSync(
+        join(sharedFixture, 'package-lock.json'),
+        join(evidence, 'shared-directive-package-lock.json'),
+    );
+
     const finalStatus = run('git', ['status', '--porcelain'], root, 'source-status-after');
     if (finalStatus !== report.sourceStatus)
         throw new Error('Source status changed during package verification');
