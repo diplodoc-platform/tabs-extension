@@ -1,0 +1,49 @@
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import {dirname, join} from 'node:path';
+
+const require = createRequire(import.meta.url);
+const directive = require('@diplodoc/directive');
+const tabsRoot = dirname(require.resolve('@diplodoc/tabs-extension'));
+assert.equal(require('@diplodoc/directive/package.json').version, '0.5.0-transform5.3');
+
+for (const host of ['markdown-it', 'markdown-it-transform15']) {
+    for (const entry of ['index.js', 'index-node.js']) {
+        for (const opener of [':::', ':::::']) {
+            const md = new (require(host))().use(directive.directiveParser());
+            const boundaries = [];
+            directive.registerContainerDirective(md, 'box', (state, params) => {
+                boundaries.push([params.startLine, params.endLine]);
+                state.push('box_open', 'section', 1);
+                directive.tokenizeBlockContent(state, params.content);
+                state.push('box_close', 'section', -1);
+                return true;
+            });
+
+            const recognize = (state, start, end) => {
+                const line = state.src.slice(state.bMarks[start] + state.tShift[start], state.eMarks[start]);
+                return line === 'opaque' && start + 5 <= end ? start + 5 : null;
+            };
+            const opaque = (state, start, end, silent) => {
+                const next = recognize(state, start, end);
+                if (next === null) return false;
+                if (!silent) {
+                    const token = state.push('code_block', 'code', 0);
+                    token.content = ':::\n';
+                    state.line = next;
+                }
+                return true;
+            };
+            md.block.ruler.before('code', 'opaque', opaque);
+            directive.registerBlockBoundary(md, 'opaque', opaque, recognize);
+            md.use(require(join(tabsRoot, entry)).transform({bundle: false, directiveSyntax: 'enabled'}));
+            md.use(directive.directiveParser());
+
+            const html = md.render(`${opener}box\n\n:::box\nopaque\n|| \`\`\`\n:::\n\`\`\` ||\nend\n:::\n\n::: \n\nAFTER`);
+            assert.deepEqual(boundaries, [[0, 11], [2, 9]], `${host}/${entry}/${opener}`);
+            assert.equal((html.match(/<section>/g) || []).length, 2);
+            assert.match(html, /<pre><code>:::/);
+            assert.match(html, /<p>AFTER<\/p>/);
+        }
+    }
+}
