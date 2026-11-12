@@ -93,7 +93,7 @@ try {
         overrides: {'markdown-it': {'linkify-it': '5.0.2'}},
         dependencies: {
             '@diplodoc/tabs-extension': `file:./${pack.filename}`,
-            '@diplodoc/utils': '2.3.7-transform5.0',
+            '@diplodoc/utils': '3.0.0-beta.1',
             '@types/markdown-it': '13.0.9',
             '@types/node': '24.10.0',
             '@types/react': '19.2.17',
@@ -326,9 +326,8 @@ for (const Host of [MarkdownIt, require('markdown-it')]) {
         join(fixture14, 'package-lock.json'),
         join(evidence, 'native14-package-lock.json'),
     );
-    // Keep the product's .2 compatibility gate above. This separate consumer
-    // uses the published boundary API to prove shared runtime behavior without
-    // introducing a dependency on Transform or changing product pins.
+    // This consumer uses the same published Directive beta as Tabs to verify
+    // that the host and plugin share the boundary registry.
     const sharedFixture = join(fixture, 'shared-directive');
     mkdirSync(sharedFixture);
     copyFileSync(archive, join(sharedFixture, pack.filename));
@@ -344,10 +343,10 @@ for (const Host of [MarkdownIt, require('markdown-it')]) {
                 type: 'module',
                 dependencies: {
                     '@diplodoc/tabs-extension': `file:./${pack.filename}`,
+                    '@diplodoc/directive': '1.0.0-beta.1',
                     'markdown-it': '13.0.2',
                     'markdown-it-transform15': 'npm:markdown-it@15.0.3',
                 },
-                overrides: {'@diplodoc/directive': '0.5.0-transform5.3'},
             },
             null,
             2,
