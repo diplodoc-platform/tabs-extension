@@ -59,7 +59,7 @@ jobs:
 
       - name: Pin reviewed Directive source for this test
         env:
-          DIRECTIVE_SHA: c6b5d4c3f8d1cbe013c369efaa4545aa0a40f51b
+          DIRECTIVE_SHA: ad434f088b725ccb2dbd6da9a3019cdbe3d8ffd0
           METAPACKAGE_SHA: 81a7f4cc6772ebe4f3bc0cd51ac25b850c810cbd
         shell: bash
         run: |
@@ -68,11 +68,11 @@ jobs:
           git -C packages/directive fetch --no-tags --depth=1 https://github.com/diplodoc-platform/directive.git "$DIRECTIVE_SHA"
           git -C packages/directive checkout --detach FETCH_HEAD
           test "$(git -C packages/directive rev-parse HEAD)" = "$DIRECTIVE_SHA"
-          node -e "const fs = require('node:fs'); const p = require('./packages/directive/package.json'); if (p.version !== '0.5.0-transform5.2') throw Error('Unexpected Directive version'); fs.writeFileSync('e2e-directive-source.json', JSON.stringify({metapackageSha: process.env.METAPACKAGE_SHA, directiveSha: process.env.DIRECTIVE_SHA, version: p.version}, null, 2) + '\n', {flag: 'wx'});"
+          node -e "const fs = require('node:fs'); const p = require('./packages/directive/package.json'); if (p.version !== '1.0.0-beta.1') throw Error('Unexpected Directive version'); fs.writeFileSync('e2e-directive-source.json', JSON.stringify({metapackageSha: process.env.METAPACKAGE_SHA, directiveSha: process.env.DIRECTIVE_SHA, version: p.version}, null, 2) + '\n', {flag: 'wx'});"
 
       - name: Pin reviewed File source for this test
         env:
-          FILE_SHA: cd485ffbd63c860d77e9dcb6444aee62368f2783
+          FILE_SHA: 87ea79a957de89cd10eb4641c429af4fc0d9a674
           METAPACKAGE_SHA: 81a7f4cc6772ebe4f3bc0cd51ac25b850c810cbd
         shell: bash
         run: |
@@ -81,7 +81,7 @@ jobs:
           git -C extensions/file fetch --no-tags --depth=1 https://github.com/diplodoc-platform/file-extension.git "$FILE_SHA"
           git -C extensions/file checkout --detach FETCH_HEAD
           test "$(git -C extensions/file rev-parse HEAD)" = "$FILE_SHA"
-          node -e "const fs = require('node:fs'); const p = require('./extensions/file/package.json'); if (p.version !== '0.2.7-transform5.1') throw Error('Unexpected File version'); fs.writeFileSync('e2e-file-source.json', JSON.stringify({metapackageSha: process.env.METAPACKAGE_SHA, fileSha: process.env.FILE_SHA, version: p.version}, null, 2) + '\n', {flag: 'wx'});"
+          node -e "const fs = require('node:fs'); const p = require('./extensions/file/package.json'); if (p.version !== '1.0.0-beta.1') throw Error('Unexpected File version'); fs.writeFileSync('e2e-file-source.json', JSON.stringify({metapackageSha: process.env.METAPACKAGE_SHA, fileSha: process.env.FILE_SHA, version: p.version}, null, 2) + '\n', {flag: 'wx'});"
 
       - name: Upload source identity
         uses: actions/upload-artifact@v4

@@ -13,10 +13,10 @@ describe('Secretless dependency CI contract', () => {
         const source = workflow('diplodoc-e2e-tests.yaml');
         expect(source).toContain('repository: diplodoc-platform/diplodoc');
         expect(source).toContain('ref: 81a7f4cc6772ebe4f3bc0cd51ac25b850c810cbd');
-        expect(source).toContain('DIRECTIVE_SHA: c6b5d4c3f8d1cbe013c369efaa4545aa0a40f51b');
-        expect(source).toContain("p.version !== '0.5.0-transform5.2'");
-        expect(source).toContain('FILE_SHA: cd485ffbd63c860d77e9dcb6444aee62368f2783');
-        expect(source).toContain("p.version !== '0.2.7-transform5.1'");
+        expect(source).toContain('DIRECTIVE_SHA: ad434f088b725ccb2dbd6da9a3019cdbe3d8ffd0');
+        expect(source).toContain("p.version !== '1.0.0-beta.1'");
+        expect(source).toContain('FILE_SHA: 87ea79a957de89cd10eb4641c429af4fc0d9a674');
+        expect(source).toContain("p.version !== '1.0.0-beta.1'");
         expect(source).toContain('test "$(git -C extensions/file rev-parse HEAD)" = "$FILE_SHA"');
         expect(source).toContain('test "$(git rev-parse HEAD)" = "$METAPACKAGE_SHA"');
         expect(source).toContain(
