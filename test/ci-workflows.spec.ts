@@ -9,17 +9,50 @@ function workflow(name: string) {
 }
 
 describe('Secretless dependency CI contract', () => {
-    it('keeps full E2E on an exact candidate SHA without a dispatch token', () => {
+    it('binds the event candidate and reviewed Directive and File in an isolated metapackage', () => {
         const source = workflow('diplodoc-e2e-tests.yaml');
+        expect(source).toContain('repository: diplodoc-platform/diplodoc');
+        expect(source).toContain('ref: 81a7f4cc6772ebe4f3bc0cd51ac25b850c810cbd');
+        expect(source).toContain('DIRECTIVE_SHA: b0937adf95797700eb58228c9f4e46236f17433f');
+        expect(source).toContain("p.version !== '1.0.0-beta.2'");
+        expect(source).toContain('FILE_SHA: f5fb568678673af731f7db0f2a15f771c2316068');
+        expect(source).toContain("p.version !== '1.0.0-beta.1'");
+        expect(source).toContain('test "$(git -C extensions/file rev-parse HEAD)" = "$FILE_SHA"');
+        expect(source).toContain('test "$(git rev-parse HEAD)" = "$METAPACKAGE_SHA"');
         expect(source).toContain(
-            'uses: diplodoc-platform/diplodoc/.github/workflows/e2e-tests.yaml@master',
+            'test "$(git -C packages/directive rev-parse HEAD)" = "$DIRECTIVE_SHA"',
         );
-        expect(source).toContain('candidate_repository: ${{ github.repository }}');
+        expect(source).toContain('E2E_CANDIDATE_REPOSITORY: ${{ github.repository }}');
+        expect(source).toContain('E2E_CALLER_REPOSITORY: ${{ github.repository }}');
         expect(source).toContain(
-            'candidate_sha: ${{ github.event.pull_request.head.sha || github.sha }}',
+            'E2E_CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}',
         );
+        expect(source).toContain(
+            'E2E_EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}',
+        );
+        expect(source).toContain(
+            'node --test scripts/e2e-candidate.test.js scripts/e2e-artifacts.test.js',
+        );
+        expect(source).toContain('node scripts/e2e-candidate.js');
+        expect(source.indexOf('node scripts/e2e-candidate.js')).toBeLessThan(
+            source.indexOf('Pin reviewed Directive source'),
+        );
+        expect(source.indexOf('Pin reviewed Directive source')).toBeLessThan(
+            source.indexOf('Pin reviewed File source'),
+        );
+        expect(source.indexOf('Pin reviewed File source')).toBeLessThan(
+            source.indexOf('Setup node_modules'),
+        );
+        expect(source).toContain('e2e-source.json');
+        expect(source).toContain('e2e-directive-source.json');
+        expect(source).toContain('e2e-file-source.json');
+        expect(source).toContain('npm run build -- --verbose');
+        expect(source).toContain('npm run test');
+        expect(source).toContain('test-results');
         expect(source).toContain('contents: read');
-        expect(source).not.toMatch(/secrets|pull_request_target|contents: write|gh workflow run/);
+        expect(source).not.toMatch(
+            /secrets|pull_request_target|contents: write|gh workflow run|submodules_override/,
+        );
     });
 
     it('preserves the required Run tests context and rejects unsuccessful E2E', () => {
