@@ -1,5 +1,4 @@
-import MarkdownIt13 from 'markdown-it';
-import MarkdownIt15 from 'markdown-it-transform15';
+import MarkdownIt15 from 'markdown-it';
 import {describe, expect, it} from 'vitest';
 
 import {transform} from '../src/plugin/transform';
@@ -7,11 +6,6 @@ import {transform} from '../src/plugin/transform';
 const features = {enabledVariants: {regular: true, radio: true, dropdown: true, accordion: true}};
 
 describe.each([
-    [
-        'markdown-it 13',
-        (plugin: ReturnType<typeof transform>, generateID: (prefix?: string) => string) =>
-            new MarkdownIt13().use(plugin, {generateID}),
-    ],
     [
         'markdown-it 15',
         (plugin: ReturnType<typeof transform>, generateID: (prefix?: string) => string) =>

@@ -14,6 +14,7 @@ import {createRequire} from 'node:module';
 import {tmpdir} from 'node:os';
 import {dirname, isAbsolute, join, relative, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {buildSync} from '@diplodoc/infra/esbuild';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const evidenceRoot = resolve(process.env.TABS_PACKAGE_EVIDENCE_DIR || tmpdir());
@@ -54,6 +55,7 @@ try {
     report.sourceHead = run('git', ['rev-parse', 'HEAD'], root, 'source-head').trim();
     report.sourceStatus = run('git', ['status', '--porcelain'], root, 'source-status');
     report.npm = run(process.execPath, [npm, '--version'], root, 'npm-version').trim();
+    const {dependencies} = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
     run(process.execPath, [npm, 'run', 'build'], root, 'build');
     const pack = JSON.parse(
         run(
@@ -69,7 +71,15 @@ try {
     if (pack.integrity !== integrity)
         throw new Error('npm pack integrity differs from archive bytes');
     copyFileSync(archive, join(fixture, pack.filename));
-    for (const name of ['tsconfig.json', 'mixed.mts', 'mixed.cts', 'reexport.cts', 'runtime.mjs']) {
+    for (const name of [
+        'tsconfig.json',
+        'mixed.mts',
+        'mixed.cts',
+        'reexport.cts',
+        'runtime.mjs',
+        'directive-13.spec.ts',
+        'mixed-host.spec.ts',
+    ]) {
         const source = name === 'tsconfig.json' ? name : `${name}.template`;
         copyFileSync(join(root, 'test/compat', source), join(fixture, name));
     }
@@ -84,18 +94,35 @@ try {
         overrides: {'markdown-it': {'linkify-it': '5.0.2'}},
         dependencies: {
             '@diplodoc/tabs-extension': `file:./${pack.filename}`,
-            '@diplodoc/utils': '3.0.0-beta.2',
+            '@diplodoc/utils': dependencies['@diplodoc/utils'],
             '@types/markdown-it': '13.0.9',
             '@types/node': '24.10.0',
             '@types/react': '19.2.17',
+            jsdom: '20.0.3',
             'markdown-it': '13.0.2',
+            'markdown-it-attrs': '4.3.1',
+            'markdown-it-footnote': '4.0.0',
             'markdown-it-transform15': 'npm:markdown-it@15.0.3',
             typescript: '6.0.3',
+            vitest: '3.2.4',
         },
     };
     writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
     run(process.execPath, [npm, 'install'], fixture, 'install');
     run(process.execPath, [npm, 'ci'], fixture, 'ci');
+    run(
+        process.execPath,
+        [
+            join(fixture, 'node_modules/vitest/vitest.mjs'),
+            'run',
+            '--environment',
+            'jsdom',
+            'directive-13.spec.ts',
+            'mixed-host.spec.ts',
+        ],
+        fixture,
+        'native13-source-cases',
+    );
     const audit = spawnSync(process.execPath, [npm, 'audit', '--json'], {
         cwd: fixture,
         encoding: 'utf8',
@@ -127,6 +154,22 @@ try {
     run('tar', ['-xzf', archive, '-C', extracted], fixture, 'extract');
     const packedDir = join(extracted, 'package');
     const installedDir = join(fixture, 'node_modules/@diplodoc/tabs-extension');
+    // Both server entries must load the host graph's Directive runtime. Its
+    // module-local symbols and boundary registry cannot be duplicated in Tabs.
+    for (const entry of ['index.js', 'index-node.js']) {
+        const bundle = readFileSync(join(installedDir, 'build/plugin', entry), 'utf8');
+        const map = JSON.parse(
+            readFileSync(join(installedDir, 'build/plugin', `${entry}.map`), 'utf8'),
+        );
+        if (!bundle.includes('require("@diplodoc/directive")'))
+            throw new Error(`${entry} must load the external Directive runtime`);
+        if (
+            map.sources.some((source) =>
+                /(?:@diplodoc\/directive|markdown-it-directive)\//.test(source),
+            )
+        )
+            throw new Error(`${entry} embeds a private Directive runtime`);
+    }
     const packedFiles = files(packedDir).sort();
     const installedFiles = files(installedDir).sort();
     if (JSON.stringify(packedFiles) !== JSON.stringify(installedFiles))
@@ -171,8 +214,157 @@ try {
     if (!declaration.includes('@diplodoc/tabs-extension') || declaration.includes('/build/'))
         throw new Error('Re-export declaration is not portable through the package root');
     run(process.execPath, ['runtime.mjs'], fixture, 'runtime');
+    const browserGraph = buildSync({
+        stdin: {
+            contents:
+                "import {transform, recognizeTabsBoundary} from '@diplodoc/tabs-extension/plugin'; globalThis.tabs = {transform, recognizeTabsBoundary};",
+            resolveDir: fixture,
+        },
+        bundle: true,
+        platform: 'browser',
+        format: 'esm',
+        metafile: true,
+        write: false,
+        logLevel: 'silent',
+    });
+    if (Object.values(browserGraph.metafile.outputs).some((output) => output.imports.length))
+        throw new Error('Pure plugin browser graph has external imports');
+    if (Object.keys(browserGraph.metafile.inputs).some((input) => /index-node|node:fs/.test(input)))
+        throw new Error('Pure plugin browser graph includes a Node wrapper');
+    writeFileSync(
+        join(evidence, 'pure-browser-graph.json'),
+        JSON.stringify(browserGraph.metafile, null, 2),
+    );
+
     copyFileSync(manifestPath, join(evidence, 'fixture-package.json'));
     copyFileSync(join(fixture, 'package-lock.json'), join(evidence, 'fixture-package-lock.json'));
+    const fixture14 = join(fixture, 'native14');
+    mkdirSync(fixture14);
+    copyFileSync(archive, join(fixture14, pack.filename));
+    const manifest14 = {
+        private: true,
+        type: 'module',
+        overrides: {'markdown-it': {mdurl: '2.0.0'}},
+        dependencies: {
+            '@diplodoc/tabs-extension': `file:./${pack.filename}`,
+            '@types/markdown-it': '14.1.0',
+            '@types/node': '24.10.0',
+            '@types/react': '19.2.17',
+            'markdown-it': '14.1.0',
+            typescript: '6.0.3',
+            vitest: '3.2.4',
+        },
+    };
+    writeFileSync(join(fixture14, 'package.json'), `${JSON.stringify(manifest14, null, 2)}\n`);
+    const typeFixture14 = `import MarkdownIt from 'markdown-it';
+import {transform} from '@diplodoc/tabs-extension';
+new MarkdownIt().use(transform({bundle: false, directiveSyntax: 'enabled'}));
+new MarkdownIt().use(transform({bundle: false, directiveSyntax: 'only', onItemSource(snapshot) {
+  if (snapshot.kind === 'ok' && snapshot.markers.customAnchor) {
+    // @ts-expect-error Marker range is readonly.
+    snapshot.markers.customAnchor[0] = 0;
+  }
+}}));
+`;
+    writeFileSync(join(fixture14, 'native.mts'), typeFixture14);
+    writeFileSync(join(fixture14, 'native.cts'), typeFixture14);
+    writeFileSync(
+        join(fixture14, 'tsconfig.json'),
+        JSON.stringify(
+            {
+                compilerOptions: {
+                    target: 'ES2022',
+                    module: 'NodeNext',
+                    moduleResolution: 'NodeNext',
+                    strict: true,
+                    skipLibCheck: false,
+                    noEmit: true,
+                    types: ['node'],
+                },
+                include: [
+                    'native.mts',
+                    'native.cts',
+                    'node_modules/@diplodoc/tabs-extension/build/**/*.d.ts',
+                ],
+            },
+            null,
+            2,
+        ),
+    );
+    writeFileSync(
+        join(fixture14, 'runtime.mjs'),
+        `import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import MarkdownIt from 'markdown-it';
+import {transform} from '@diplodoc/tabs-extension';
+const require = createRequire(import.meta.url);
+assert.equal(require('markdown-it/package.json').version, '14.1.0');
+assert.equal(require('mdurl/package.json').version, '2.0.0');
+for (const Host of [MarkdownIt, require('markdown-it')]) {
+  for (const plugin of [transform, require('@diplodoc/tabs-extension').transform, require('./node_modules/@diplodoc/tabs-extension/build/plugin/index.js').transform]) {
+    for (const mode of ['enabled', 'only']) {
+      const observed = [];
+      const html = new Host().use(plugin({bundle:false, directiveSyntax:mode, onItemSource: item => observed.push(item)})).render(':::tabs\\n\\n- First\\n\\n:::');
+      assert.match(html, /yfm-tabs/);
+      assert.equal(observed[0].rawName, 'First');
+      assert.ok(Object.isFrozen(observed[0]));
+    }
+  }
+}
+`,
+    );
+    run(process.execPath, [npm, 'install'], fixture14, 'native14-install');
+    run(process.execPath, [npm, 'ci'], fixture14, 'native14-ci');
+    run(
+        process.execPath,
+        [join(fixture14, 'node_modules/typescript/bin/tsc'), '-p', 'tsconfig.json'],
+        fixture14,
+        'native14-typecheck',
+    );
+    run(process.execPath, ['runtime.mjs'], fixture14, 'native14-runtime');
+    copyFileSync(join(fixture14, 'package.json'), join(evidence, 'native14-package.json'));
+    copyFileSync(
+        join(fixture14, 'package-lock.json'),
+        join(evidence, 'native14-package-lock.json'),
+    );
+    // This consumer uses the same Directive dependency as Tabs to verify
+    // that the host and plugin share the boundary registry.
+    const sharedFixture = join(fixture, 'shared-directive');
+    mkdirSync(sharedFixture);
+    copyFileSync(archive, join(sharedFixture, pack.filename));
+    copyFileSync(
+        join(root, 'test/compat/shared-directive.mjs.template'),
+        join(sharedFixture, 'shared-directive.mjs'),
+    );
+    writeFileSync(
+        join(sharedFixture, 'package.json'),
+        JSON.stringify(
+            {
+                private: true,
+                type: 'module',
+                dependencies: {
+                    '@diplodoc/tabs-extension': `file:./${pack.filename}`,
+                    '@diplodoc/directive': dependencies['@diplodoc/directive'],
+                    'markdown-it': '13.0.2',
+                    'markdown-it-transform15': 'npm:markdown-it@15.0.3',
+                },
+            },
+            null,
+            2,
+        ),
+    );
+    run(process.execPath, [npm, 'install'], sharedFixture, 'shared-directive-install');
+    run(process.execPath, [npm, 'ci'], sharedFixture, 'shared-directive-ci');
+    run(process.execPath, ['shared-directive.mjs'], sharedFixture, 'shared-directive-runtime');
+    copyFileSync(
+        join(sharedFixture, 'package.json'),
+        join(evidence, 'shared-directive-package.json'),
+    );
+    copyFileSync(
+        join(sharedFixture, 'package-lock.json'),
+        join(evidence, 'shared-directive-package-lock.json'),
+    );
+
     const finalStatus = run('git', ['status', '--porcelain'], root, 'source-status-after');
     if (finalStatus !== report.sourceStatus)
         throw new Error('Source status changed during package verification');
