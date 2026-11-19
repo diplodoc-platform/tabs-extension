@@ -62,7 +62,7 @@ const convertAttrsToObject = ({attrs}: Token) =>
     }, {}) || {};
 
 function makeTransform(params?: {
-    transformOptions?: Partial<tabsExtension.PluginOptions>;
+    transformOptions?: Partial<tabsExtension.PluginOptions> & {directiveSyntax?: 'disabled'};
     content?: string[] | string;
 }) {
     return callPlugin(
