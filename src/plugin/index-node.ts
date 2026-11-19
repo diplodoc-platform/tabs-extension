@@ -1,4 +1,4 @@
-import {type PluginOptions, transform as baseTransform} from './transform';
+import {type PluginOptions, type TabsPlugin, transform as baseTransform} from './transform';
 
 export * from './index';
 
@@ -6,7 +6,7 @@ const onBundle: NonNullable<PluginOptions['onBundle']> = (args, cache) => {
     copyRuntimeFiles(args, cache);
 };
 
-export function transform(options: Partial<PluginOptions> = {}) {
+export function transform(options: Partial<PluginOptions> = {}): TabsPlugin {
     return baseTransform({onBundle, ...options});
 }
 

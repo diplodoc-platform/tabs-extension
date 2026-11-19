@@ -1,11 +1,10 @@
+import type {StateCore, Token} from './markdown-it';
 /**
  * Parsing of `{% list tabs %}` blocks: locate open/close tags, parse props, and extract tab items
  * from the list tokens between them.
  */
 import type {RuntimeTab, TabsProps} from './types';
 import type {IDGenerator} from '@diplodoc/utils';
-
-import Token from 'markdown-it/lib/token';
 
 import {DEFAULT_TABS_GROUP_PREFIX, TAB_RE, TabsVariants} from '../common';
 
@@ -172,16 +171,22 @@ export function tryToFindTabs(tokens: Token[], index: number): Result {
  * @param tokens - Full token list
  * @param idx - Index after list open
  * @param closeTokenIdx - Index of {% endlist %} paragraph
+ * @param TokenConstructor - Token constructor from the current MarkdownIt state
  * @returns Array of RuntimeTab
  */
-export function findTabs(tokens: Token[], idx: number, closeTokenIdx: number): RuntimeTab[] {
+export function findTabs(
+    tokens: Token[],
+    idx: number,
+    closeTokenIdx: number,
+    TokenConstructor: StateCore['Token'],
+): RuntimeTab[] {
     const tabs: RuntimeTab[] = [];
     let i = idx;
     let nestedLevel = -1;
     let pending: RuntimeTab = {
         name: '',
         tokens: [],
-        listItem: new Token('list_item_open', '', 0),
+        listItem: new TokenConstructor('list_item_open', '', 0),
     };
 
     while (i < tokens.length) {
