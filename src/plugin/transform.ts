@@ -1,9 +1,8 @@
+import type {MarkdownIt, StateCore} from './markdown-it';
 /**
  * MarkdownIt plugin: finds `{% list tabs %}` blocks, parses tab items, and replaces them
  * with HTML tokens for the chosen variant. Registers runtime script/style in env.meta.
  */
-import type StateCore from 'markdown-it/lib/rules_core/state_core';
-import type MarkdownIt from 'markdown-it';
 import type {IDGenerator} from '@diplodoc/utils';
 import type {EnabledVariants} from '../common';
 
@@ -31,34 +30,62 @@ export type PluginOptions = {
     ) => void;
 };
 
-const defaultFeatures = {
+const defaultFeatures: PluginOptions['features'] = {
     enabledVariants: {
         regular: true,
         radio: true,
     },
-} satisfies PluginOptions['features'];
+};
 
 let runsCounter = 0;
 
-type TransformOptions = {
+export type TransformOptions = {
     output?: string;
     /** Optional external ID generator provided by the host (e.g. via MarkdownItPluginOpts). */
     generateID?: IDGenerator;
 };
+
+/** The plugin callback returned by transform. */
+export type TabsPlugin = (md: MarkdownIt, options?: TransformOptions) => void;
+
+function appendRuntimeMeta(
+    env: Record<string | symbol, unknown>,
+    runtimeJsPath: string,
+    runtimeCssPath: string,
+) {
+    const meta = (env.meta ||= {});
+    if (typeof meta !== 'object' || meta === null) {
+        throw new TypeError('Expected env.meta to be an object.');
+    }
+    if (!('script' in meta) || !meta.script) Object.assign(meta, {script: []});
+    if (!('style' in meta) || !meta.style) Object.assign(meta, {style: []});
+    if (
+        !('script' in meta) ||
+        !Array.isArray(meta.script) ||
+        !('style' in meta) ||
+        !Array.isArray(meta.style)
+    ) {
+        throw new TypeError('Expected runtime script and style arrays.');
+    }
+    meta.script.push(runtimeJsPath);
+    meta.style.push(runtimeCssPath);
+}
 
 /**
  * Returns a MarkdownIt plugin that transforms `{% list tabs %}` blocks into tab markup.
  * @param options - Paths for runtime JS/CSS, container classes, and enabled variants
  * @returns Plugin function that receives (md, options) and registers the core ruler
  */
-export function transform({
-    runtimeJsPath = '_assets/tabs-extension.js',
-    runtimeCssPath = '_assets/tabs-extension.css',
-    containerClasses = '',
-    bundle = true,
-    features = defaultFeatures,
-    onBundle,
-}: Partial<PluginOptions> = {}) {
+export function transform(options: Partial<PluginOptions> = {}): TabsPlugin {
+    const {
+        runtimeJsPath = '_assets/tabs-extension.js',
+        runtimeCssPath = '_assets/tabs-extension.css',
+        containerClasses = '',
+        bundle = true,
+        features = defaultFeatures,
+        onBundle,
+    } = options;
+
     return function tabs(md: MarkdownIt, options?: TransformOptions) {
         const {output = '.', generateID: externalGenerateID} = options || {};
 
@@ -70,10 +97,9 @@ export function transform({
             externalGenerateID ?? (createIDGeneratorByStrategy('random') as IDGenerator);
 
         const plugin = (state: StateCore) => {
-            const {env, tokens} = state;
+            const {tokens} = state;
+            const env = addHiddenProperty(state.env, 'bundled', new Set<string>());
             const runId = String(++runsCounter);
-
-            addHiddenProperty(env, 'bundled', new Set<string>());
 
             let i = 0;
             let tabsAreInserted = false;
@@ -95,7 +121,7 @@ export function transform({
                     parsedProps.variant = TabsVariants.Regular;
                 }
 
-                const tabs = findTabs(state.tokens, i + 3, closeTokenIndex);
+                const tabs = findTabs(state.tokens, i + 3, closeTokenIndex, state.Token);
 
                 if (tabs.length > 0) {
                     const tabsTokens = generateTabsTokens(tabs, state, {
@@ -121,11 +147,7 @@ export function transform({
             }
 
             if (tabsAreInserted) {
-                env.meta = env.meta || {};
-                env.meta.script = env.meta.script || [];
-                env.meta.style = env.meta.style || [];
-                env.meta.script.push(runtimeJsPath);
-                env.meta.style.push(runtimeCssPath);
+                appendRuntimeMeta(env, runtimeJsPath, runtimeCssPath);
 
                 if (bundle && onBundle) {
                     onBundle({runtimeJsPath, runtimeCssPath, output}, env.bundled);
