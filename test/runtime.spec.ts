@@ -2,9 +2,12 @@ import {afterEach, beforeEach, describe, expect, it, test} from 'vitest';
 
 import {
     GROUP_DATA_KEY,
+    TABS_DROPDOWN_SELECT,
     TABS_LIST_CLASSNAME,
     TAB_CLASSNAME,
+    TAB_DATA_ID,
     TAB_DATA_KEY,
+    TAB_PANEL_CLASSNAME,
     TabsVariants,
 } from '../src/common';
 import {TabsController, type TabsHistory} from '../src/runtime/TabsController';
@@ -608,5 +611,60 @@ describe('Testing runtime features', () => {
                 variant: 'regular',
             },
         });
+    });
+});
+
+describe('Dropdown accessibility', () => {
+    const content = `
+{% list tabs dropdown group=dropdown %}
+
+- First {selected}
+
+  First content.
+
+- Second
+
+  Second content.
+
+{% endlist %}
+`;
+
+    it.each(['current', 'legacy'])('updates ARIA on click with %s markup', (markup) => {
+        const doc = document.implementation.createHTMLDocument();
+        doc.body.innerHTML = renderWithTabsPlugin(content, {
+            features: {enabledVariants: {dropdown: true}},
+        });
+
+        const [first, second] = doc.querySelectorAll<HTMLElement>(`.${TAB_CLASSNAME}`);
+        const select = doc.querySelector<HTMLElement>(`.${TABS_DROPDOWN_SELECT}`);
+        const [firstPanel, secondPanel] = doc.querySelectorAll(`.${TAB_PANEL_CLASSNAME}`);
+        if (markup === 'legacy') {
+            firstPanel.setAttribute('aria-labelledby', first.getAttribute(TAB_DATA_ID) ?? '');
+            secondPanel.setAttribute('aria-labelledby', second.getAttribute(TAB_DATA_ID) ?? '');
+            for (const tab of [first, second]) {
+                tab.removeAttribute('id');
+                tab.removeAttribute('aria-controls');
+                tab.removeAttribute('role');
+            }
+        }
+
+        const controller = new TabsController(doc);
+        expect(first.getAttribute('aria-selected')).toBe('true');
+        expect(second.getAttribute('aria-selected')).toBe('false');
+
+        select?.click();
+        second.click();
+
+        expect(first.getAttribute('aria-selected')).toBe('false');
+        expect(second.getAttribute('aria-selected')).toBe('true');
+        expect(firstPanel.classList.contains('active')).toBe(false);
+        expect(secondPanel.classList.contains('active')).toBe(true);
+        expect(select?.textContent).toBe('Second');
+
+        // Client passes the panel label id to the runtime when navigating to an anchor.
+        controller.selectTabById(firstPanel.getAttribute('aria-labelledby') ?? '');
+        expect(first.getAttribute('aria-selected')).toBe('true');
+        expect(second.getAttribute('aria-selected')).toBe('false');
+        expect(select?.textContent).toBe(first.textContent);
     });
 });

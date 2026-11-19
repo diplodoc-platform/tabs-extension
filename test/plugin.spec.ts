@@ -107,6 +107,7 @@ describe('plugin', () => {
         const attrs = [
             'data-diplodoc-id',
             'data-diplodoc-key',
+            'id',
             'class',
             'role',
             'aria-controls',
@@ -132,24 +133,50 @@ describe('plugin', () => {
         });
     });
 
-    it('Tab should fit tabPanel', () => {
-        // ACT
-        const {tokens: result} = makeTransform();
+    it.each(['regular', 'radio', 'accordion', 'dropdown'] as const)(
+        '%s links each panel and its tab label across separate renders',
+        (variant) => {
+            const markdown = dd`
+                {% list tabs ${variant} group=shared %}
 
-        // ASSERT
-        const tabs = result.filter(({type}) => type === 'tab_open');
-        const tabPanels = result.filter(({type}) => type === 'tab-panel_open');
+                - First {#same}
 
-        expect(tabs.length).toEqual(tabPanels.length);
+                  Content 1
 
-        tabs.forEach((tab, i) => {
-            const tabPanel = tabPanels[i];
-            const attrsObject = convertAttrsToObject(tab);
-            const panelAttrsObject = convertAttrsToObject(tabPanel);
+                - Second {#same}
 
-            expect(attrsObject['aria-controls']).toEqual(panelAttrsObject['id']);
-        });
-    });
+                  Content 2
+
+                {% endlist %}
+            `;
+            const options = {features: {enabledVariants: {[variant]: true}}};
+            const doc = document.implementation.createHTMLDocument();
+            doc.body.innerHTML =
+                renderWithTabsPlugin(markdown, options) + renderWithTabsPlugin(markdown, options);
+
+            const tabs = Array.from(doc.querySelectorAll('[role="tab"]'));
+            const panels = Array.from(doc.querySelectorAll('[role="tabpanel"]'));
+            const ids = [...tabs, ...panels].map(({id}) => id);
+
+            expect(tabs.map((tab) => tab.getAttribute('data-diplodoc-id'))).toEqual([
+                'same',
+                'same-1',
+                'same',
+                'same-1',
+            ]);
+            expect(tabs.map((tab) => tab.getAttribute('data-diplodoc-key'))).toEqual(
+                Array(4).fill('same'),
+            );
+            expect(panels).toHaveLength(4);
+            expect(doc.querySelectorAll('[data-diplodoc-group="shared"]')).toHaveLength(2);
+            expect(new Set(ids).size).toBe(8);
+            tabs.forEach((tab, index) => {
+                const panel = panels[index];
+                expect(doc.getElementById(tab.getAttribute('aria-controls') ?? '')).toBe(panel);
+                expect(doc.getElementById(panel.getAttribute('aria-labelledby') ?? '')).toBe(tab);
+            });
+        },
+    );
 
     it('TabPanel structure for regular tabs', () => {
         // ACT
