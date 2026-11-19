@@ -1,7 +1,7 @@
+import type {Token} from '../markdown-it';
 /**
  * Helpers for tab content: slug ids, keys, selected marker, and source map ranges.
  */
-import type Token from 'markdown-it/lib/token';
 import type {RuntimeTab} from '../types';
 
 import GithubSlugger from 'github-slugger';

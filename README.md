@@ -261,3 +261,13 @@ export const App: React.FC = () => {
 ## For contributors
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+
+## MarkdownIt compatibility
+
+The plugin supports MarkdownIt 13, 14 and 15. Its plugin callback describes the
+core rule and token capabilities it uses, so different supported parser versions
+can coexist in a TypeScript application. Tokens are created by the active parser
+state; no private MarkdownIt module is loaded at runtime.
+
+The installed-package compatibility tests use TypeScript 6.0.3 with NodeNext
+module resolution and `skipLibCheck: false`, including CommonJS and ESM hosts.
