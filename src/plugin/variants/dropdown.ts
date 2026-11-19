@@ -1,4 +1,4 @@
-import type StateCore from 'markdown-it/lib/rules_core/state_core';
+import type {StateCore} from '../markdown-it';
 
 import {
     ACTIVE_CLASSNAME,
@@ -64,7 +64,6 @@ export const dropdown: TabsTokensGenerator = (
     dropdownOpen.attrSet(GROUP_DATA_KEY, tabsGroup);
     dropdownOpen.attrSet(TAB_DATA_VARIANT, 'dropdown');
 
-    dropdownSelectOpen.attrSet('role', 'tablist');
     dropdownSelectOpen.attrSet('class', TABS_DROPDOWN_SELECT);
 
     if (activeTab) {
@@ -85,8 +84,10 @@ export const dropdown: TabsTokensGenerator = (
     const dropdownMenuClose = new state.Token('dropdown-menu_close', 'ul', -1);
 
     dropdownMenuOpen.attrSet('class', TABS_DROPDOWN_MENU_CLASSNAME);
+    dropdownMenuOpen.attrSet('role', 'tablist');
 
     const tabIds = tabs.map((tab) => getTabId(tab, {runId}));
+    const tabPanelIds = tabs.map(() => generateID('dropdown'));
 
     const menuTokens = tabs.flatMap((tab, i) => {
         const menuListItemOpen = new state.Token('dropdown-menu-item_open', 'li', 1);
@@ -104,6 +105,9 @@ export const dropdown: TabsTokensGenerator = (
         );
         menuListItemOpen.attrSet(TAB_DATA_ID, tabId);
         menuListItemOpen.attrSet(TAB_DATA_KEY, tabKey);
+        menuListItemOpen.attrSet('id', `${tabPanelIds[i]}-tab`);
+        menuListItemOpen.attrSet('role', 'tab');
+        menuListItemOpen.attrSet('aria-controls', tabPanelIds[i]);
         menuListItemOpen.attrSet('aria-selected', String(isActive));
 
         menuListItemText.content = tab.name;
@@ -119,12 +123,11 @@ export const dropdown: TabsTokensGenerator = (
         const tabPanelClose = new state.Token('tab-panel_close', 'div', -1);
 
         const tab = tabs[i];
-        const tabId = tabIds[i];
         const didTabHasActiveAttr = isTabSelected(tab);
 
         tab.name = getName(tab);
 
-        const tabPanelId = generateID('dropdown');
+        const tabPanelId = tabPanelIds[i];
 
         tabPanelOpen.map = getContentMap(tabs[i].tokens);
         tabPanelOpen.block = true;
@@ -132,7 +135,7 @@ export const dropdown: TabsTokensGenerator = (
         tabPanelOpen.attrSet('id', tabPanelId);
         tabPanelOpen.attrSet('class', TAB_PANEL_CLASSNAME);
         tabPanelOpen.attrSet('role', 'tabpanel');
-        tabPanelOpen.attrSet('aria-labelledby', tabId);
+        tabPanelOpen.attrSet('aria-labelledby', `${tabPanelId}-tab`);
         tabPanelOpen.attrSet('data-title', tab.name);
 
         if (didTabHasActiveAttr) {

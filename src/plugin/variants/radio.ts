@@ -1,4 +1,4 @@
-import type StateCore from 'markdown-it/lib/rules_core/state_core';
+import type {StateCore} from '../markdown-it';
 
 import {
     ACTIVE_CLASSNAME,
@@ -85,6 +85,7 @@ export const radio: TabsTokensGenerator = (
         tab.name = getName(tab);
 
         const tabPanelId = generateID('radio');
+        const tabDomId = `${tabPanelId}-tab`;
 
         verticalTabInput.block = true;
 
@@ -102,6 +103,7 @@ export const radio: TabsTokensGenerator = (
         tabPanelClose.block = true;
         tabOpen.attrSet(TAB_DATA_ID, tabId);
         tabOpen.attrSet(TAB_DATA_KEY, tabKey);
+        tabOpen.attrSet('id', tabDomId);
         tabOpen.attrSet(
             'class',
             [TAB_CLASSNAME, TAB_GROUP_CLASSNAME, VERTICAL_TAB_CLASSNAME].join(' '),
@@ -114,7 +116,7 @@ export const radio: TabsTokensGenerator = (
         tabPanelOpen.attrSet('id', tabPanelId);
         tabPanelOpen.attrSet('class', TAB_PANEL_CLASSNAME);
         tabPanelOpen.attrSet('role', 'tabpanel');
-        tabPanelOpen.attrSet('aria-labelledby', tabId);
+        tabPanelOpen.attrSet('aria-labelledby', tabDomId);
         tabPanelOpen.attrSet('data-title', tab.name);
         tabOpen.attrSet(TAB_DATA_VERTICAL_TAB, 'true');
 
