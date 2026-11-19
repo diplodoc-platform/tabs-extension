@@ -95,6 +95,7 @@ export const regular: TabsTokensGenerator = (
         tab.name = getName(tab);
 
         const tabPanelId = generateID('regular');
+        const tabDomId = `${tabPanelId}-tab`;
 
         verticalTabInput.block = true;
 
@@ -112,6 +113,7 @@ export const regular: TabsTokensGenerator = (
         tabPanelClose.block = true;
         tabOpen.attrSet(TAB_DATA_ID, tabId);
         tabOpen.attrSet(TAB_DATA_KEY, tabKey);
+        tabOpen.attrSet('id', tabDomId);
         tabOpen.attrSet('class', TAB_CLASSNAME);
         tabOpen.attrJoin('class', 'yfm-tab-group');
         tabOpen.attrSet('role', 'tab');
@@ -122,7 +124,7 @@ export const regular: TabsTokensGenerator = (
         tabPanelOpen.attrSet('id', tabPanelId);
         tabPanelOpen.attrSet('class', TAB_PANEL_CLASSNAME);
         tabPanelOpen.attrSet('role', 'tabpanel');
-        tabPanelOpen.attrSet('aria-labelledby', tabId);
+        tabPanelOpen.attrSet('aria-labelledby', tabDomId);
         tabPanelOpen.attrSet('data-title', tab.name);
 
         if (orientation === 'radio') {
