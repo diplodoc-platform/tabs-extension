@@ -4,8 +4,12 @@ import {dirname, join} from 'node:path';
 
 const require = createRequire(import.meta.url);
 const directive = require('@diplodoc/directive');
-const tabsRoot = dirname(require.resolve('@diplodoc/tabs-extension'));
-assert.equal(require('@diplodoc/directive/package.json').version, '1.0.0-beta.2');
+const tabsEntry = require.resolve('@diplodoc/tabs-extension');
+const tabsRoot = dirname(tabsEntry);
+const tabsRequire = createRequire(tabsEntry);
+const expectedVersion = require('./package.json').dependencies['@diplodoc/directive'];
+assert.equal(require('@diplodoc/directive/package.json').version, expectedVersion);
+assert.equal(tabsRequire.resolve('@diplodoc/directive'), require.resolve('@diplodoc/directive'));
 
 for (const host of ['markdown-it', 'markdown-it-transform15']) {
     for (const entry of ['index.js', 'index-node.js']) {
