@@ -42,7 +42,7 @@ const plugin = {
     entryPoints: ['src/plugin/index.ts'],
     outfile: outDir + '/plugin/index.js',
     platform: 'node',
-    external: ['markdown-it', 'node:*'],
+    external: ['@diplodoc/directive', 'markdown-it', 'node:*'],
     define: {
         PACKAGE: JSON.stringify(packageJson.name),
     },
@@ -54,7 +54,7 @@ const pluginNode = {
     entryPoints: ['src/plugin/index-node.ts'],
     outfile: outDir + '/plugin/index-node.js',
     platform: 'node',
-    external: ['markdown-it', 'node:*'],
+    external: ['@diplodoc/directive', 'markdown-it', 'node:*'],
     define: {
         PACKAGE: JSON.stringify(packageJson.name),
     },
