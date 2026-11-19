@@ -80,6 +80,7 @@ export const accordion: TabsTokensGenerator = (
         tab.name = getName(tab);
 
         const tabPanelId = generateID('accordion');
+        const tabDomId = `${tabPanelId}-tab`;
 
         tabOpen.map = tabs[i].listItem.map;
         tabOpen.markup = tabs[i].listItem.markup;
@@ -92,6 +93,7 @@ export const accordion: TabsTokensGenerator = (
         tabPanelClose.block = true;
         tabOpen.attrSet(TAB_DATA_ID, tabId);
         tabOpen.attrSet(TAB_DATA_KEY, tabKey);
+        tabOpen.attrSet('id', tabDomId);
         tabOpen.attrSet('class', [TAB_CLASSNAME, TAB_GROUP_CLASSNAME].join(' '));
         tabOpen.attrSet('role', 'tab');
         tabOpen.attrSet('aria-controls', tabPanelId);
@@ -101,7 +103,7 @@ export const accordion: TabsTokensGenerator = (
         tabPanelOpen.attrSet('id', tabPanelId);
         tabPanelOpen.attrSet('class', TAB_PANEL_CLASSNAME);
         tabPanelOpen.attrSet('role', 'tabpanel');
-        tabPanelOpen.attrSet('aria-labelledby', tabId);
+        tabPanelOpen.attrSet('aria-labelledby', tabDomId);
         tabPanelOpen.attrSet('data-title', tab.name);
 
         if (didTabHasActiveAttr) {

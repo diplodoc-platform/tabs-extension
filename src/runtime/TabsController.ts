@@ -225,15 +225,19 @@ export class TabsController {
     }
 
     /**
-     * Select tab by data-diplodoc-id and optionally scroll it into view.
-     * @param id - data-diplodoc-id value
+     * Select a tab by its DOM id or data-diplodoc-id and optionally scroll it into view.
+     * @param id - Tab DOM id or data-diplodoc-id value
      * @param options - e.g. scrollToElement
      * @returns void
      */
     selectTabById(id: string, options?: ISelectTabByIdOptions) {
-        const target = this._document.querySelector(
-            `${Selector.TAB}[${TAB_DATA_ID}="${id}"]`,
-        ) as HTMLElement;
+        const domTab = this._document.getElementById(id);
+        const target =
+            domTab?.matches(Selector.TAB) && this.isValidTabElement(domTab)
+                ? domTab
+                : this._document.querySelector<HTMLElement>(
+                      `${Selector.TAB}[${TAB_DATA_ID}="${id}"]`,
+                  );
 
         if (!target || !this.isValidTabElement(target)) {
             return;
@@ -710,10 +714,12 @@ export class TabsController {
             for (let i = 2; i < dropdown.children.length; i++) {
                 const item = dropdown.children.item(i) as HTMLElement;
                 const menuItem = menu?.children.item(i - 2) as HTMLElement;
+                const isSelected = changedIndex === i;
 
                 changed++;
+                menuItem.setAttribute('aria-selected', String(isSelected));
 
-                if (changedIndex === i) {
+                if (isSelected) {
                     item?.classList.add(ACTIVE_CLASSNAME);
                     menuItem.classList.add(ACTIVE_CLASSNAME);
 
