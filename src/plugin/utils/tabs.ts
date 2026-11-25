@@ -64,12 +64,15 @@ export function isTabSelected(tab: RuntimeTab): boolean {
 }
 
 /**
- * Canonical slug key used in state (localStorage, query).
- * @param tab - Runtime tab
- * @returns Canonical slug key
+ * Canonical slug keys of one tabs block, used in state (localStorage, query).
+ * Different titles can share a slug (`-1 floor` and `1 floor`).
+ * @param tabs - Tabs of one block
+ * @returns Keys unique within the block, in tab order
  */
-export function getTabKey(tab: RuntimeTab): string {
-    return createTabKey(getRawId(tab));
+export function getTabKeys(tabs: RuntimeTab[]): string[] {
+    const slugger = new GithubSlugger();
+
+    return tabs.map((tab) => slugger.slug(createTabKey(getRawId(tab))));
 }
 
 /**

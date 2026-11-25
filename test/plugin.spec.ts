@@ -721,7 +721,7 @@ describe('plugin', () => {
             expect(attrsObject2['data-diplodoc-id']).toEqual('tab-with-list-1');
             expect(attrsObject0['data-diplodoc-key']).toEqual('python');
             expect(attrsObject1['data-diplodoc-key']).toEqual('tab-with-list');
-            expect(attrsObject2['data-diplodoc-key']).toEqual('tab-with-list');
+            expect(attrsObject2['data-diplodoc-key']).toEqual('tab-with-list-1');
             expect(attrsObject0['data-diplodoc-is-active']).toEqual('true');
             expect(attrsObject1['data-diplodoc-is-active']).toEqual('false');
             expect(attrsObject2['data-diplodoc-is-active']).toEqual('false');
@@ -752,7 +752,31 @@ describe('plugin', () => {
             expect(attrsObject0['data-diplodoc-id']).toEqual('my-tab');
             expect(attrsObject1['data-diplodoc-id']).toEqual('my-tab-1');
             expect(attrsObject0['data-diplodoc-key']).toEqual('my-tab');
-            expect(attrsObject1['data-diplodoc-key']).toEqual('my-tab');
+            expect(attrsObject1['data-diplodoc-key']).toEqual('my-tab-1');
+        });
+
+        it('should make keys unique within a block when titles share a slug', () => {
+            // ACT
+            const {tokens: result} = makeTransform({
+                content: [
+                    '{% list tabs %}',
+                    '',
+                    '- -1 floor',
+                    '',
+                    '- 1 floor',
+                    '',
+                    '- 1 floor 1',
+                    '',
+                    '{% endlist %}',
+                ],
+            });
+
+            // ASSERT
+            const keys = result
+                .filter(({type}) => type === 'tab_open')
+                .map((tab) => convertAttrsToObject(tab)['data-diplodoc-key']);
+
+            expect(keys).toEqual(['1-floor', '1-floor-1', '1-floor-1-1']);
         });
 
         it('should process tabs with special letters', () => {

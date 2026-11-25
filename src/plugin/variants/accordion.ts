@@ -15,7 +15,7 @@ import {
     TAB_PANEL_CLASSNAME,
     TabsVariants,
 } from '../../common';
-import {getContentMap, getName, getTabId, getTabKey, isTabSelected} from '../utils';
+import {getContentMap, getName, getTabId, getTabKeys, isTabSelected} from '../utils';
 import {type RuntimeTab} from '../types';
 
 import {type TabsTokensGenerator} from './types';
@@ -61,6 +61,8 @@ export const accordion: TabsTokensGenerator = (
     tabsOpen.attrSet(TAB_DATA_VARIANT, TabsVariants.Accordion);
     tabsTokens.push(tabsOpen);
 
+    const tabKeys = getTabKeys(tabs);
+
     for (let i = 0; i < tabs.length; i++) {
         const tabOpen = new state.Token('tab_open', 'div', 1);
         const tabInline = new state.Token('inline', '', 0);
@@ -74,7 +76,7 @@ export const accordion: TabsTokensGenerator = (
 
         const tab = tabs[i];
         const tabId = getTabId(tab, {runId});
-        const tabKey = getTabKey(tab);
+        const tabKey = tabKeys[i];
         const didTabHasActiveAttr = isTabSelected(tab);
 
         tab.name = getName(tab);

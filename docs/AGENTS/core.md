@@ -34,7 +34,7 @@ Variant is set in the block: `{% list tabs group=... radio %}`, etc. Plugin opti
 ## Important details
 
 - **Single controller per document** — runtime creates one `TabsController` and stores it on `window[GLOBAL_SYMBOL]`. React hook and `TabsRuntime` use that instance; they do not check for SSR or missing runtime (see [improvement plan](../IMPROVEMENTS.md)).
-- **Tab identity** — `group` (optional), `key` (from tab title / custom anchor `{#id}`), `variant`. Keys are slugified; state is persisted as `group_key` or `group_key_variant` in URL.
+- **Tab identity** — `group` (optional), `key` (from tab title / custom anchor `{#id}`), `variant`. Keys are slugified and unique within a tabs block (a repeated slug gets a numeric suffix); state is persisted as `group_key` or `group_key_variant` in URL.
 - **Plugin** — runs as a MarkdownIt core ruler (`before 'curly_attributes'` or `push 'tabs'`). Injects script/style paths into `env.meta` and can copy bundled runtime to output dir when `bundle: true`.
 
 When modifying plugin code, run `npm test` (Vitest) and `npm run lint`; see [dev-infrastructure.md](dev-infrastructure.md).
