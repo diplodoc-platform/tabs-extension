@@ -4,6 +4,7 @@ import {
     GROUP_DATA_KEY,
     TABS_LIST_CLASSNAME,
     TAB_CLASSNAME,
+    TAB_DATA_ID,
     TAB_DATA_KEY,
     TabsVariants,
 } from '../src/common';
@@ -237,6 +238,32 @@ describe('Testing runtime features', () => {
             expect(tabs[2].classList.contains('active')).toBeTruthy();
         },
     );
+
+    it('selects the target tab by id when one block repeats a key', () => {
+        document.body.innerHTML = renderWithTabsPlugin([
+            '{% list tabs %}',
+            '',
+            '- asdf',
+            '',
+            '- -asdf',
+            '',
+            '{% endlist %}',
+        ]);
+
+        const [first, second] = Array.from(
+            document.querySelectorAll<HTMLElement>(`.${TAB_CLASSNAME}`),
+        );
+        // HTML built before keys became unique within a block
+        second.setAttribute(TAB_DATA_KEY, 'asdf');
+
+        tabController.selectTabById(second.getAttribute(TAB_DATA_ID) ?? '');
+        expect(first.classList.contains('active')).not.toBeTruthy();
+        expect(second.classList.contains('active')).toBeTruthy();
+
+        tabController.selectTabById(first.getAttribute(TAB_DATA_ID) ?? '');
+        expect(first.classList.contains('active')).toBeTruthy();
+        expect(second.classList.contains('active')).not.toBeTruthy();
+    });
 
     it('should save the state of grouped tabs by selecting tab[1]', () => {
         tabController.selectTab(getTabDataOrThrow(tabs[1]));
