@@ -9,8 +9,8 @@
     "types": ["node"]
   },
   "include": [
-    "mixed.mts",
-    "mixed.cts",
+    "native.mts",
+    "native.cts",
     "reexport.cts",
     "node_modules/@diplodoc/tabs-extension/build/**/*.d.ts"
   ]

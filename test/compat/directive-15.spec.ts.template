@@ -3,7 +3,7 @@ import {describe, expect, it} from 'vitest';
 
 import {transform} from '@diplodoc/tabs-extension/plugin';
 const features = {enabledVariants: {regular: true, radio: true, dropdown: true, accordion: true}};
-describe('tabs directives on markdown-it 13', () => {
+describe('tabs directives on markdown-it 15', () => {
     function parse(source: string, directiveSyntax: 'enabled' | 'only' = 'enabled') {
         const calls: string[] = [];
         const env = {};

@@ -4,26 +4,19 @@ import {readFileSync, existsSync, mkdirSync} from 'node:fs';
 import {join} from 'node:path';
 import {createRequire} from 'node:module';
 import {JSDOM} from 'jsdom';
-import MarkdownIt13 from 'markdown-it';
-import MarkdownIt15 from 'markdown-it-transform15';
+import MarkdownIt from 'markdown-it';
 
 import {transform as esmTabs} from '@diplodoc/tabs-extension';
 
 const require = createRequire(import.meta.url);
-assert.equal(require('markdown-it/package.json').version, '13.0.2');
-assert.equal(require('linkify-it/package.json').version, '5.0.2');
-for (const Host of [MarkdownIt13, require('markdown-it')]) {
+assert.match(require('markdown-it/package.json').version, /^15\./);
+for (const Host of [MarkdownIt, require('markdown-it')]) {
     const html = new Host({linkify: true}).render('Visit https://example.com and test@example.com');
     assert.match(html, /href="https:\/\/example\.com"/);
     assert.match(html, /href="mailto:test@example\.com"/);
 }
 const cjsTabs = require('@diplodoc/tabs-extension').transform;
-const hosts = [
-    MarkdownIt13,
-    MarkdownIt15,
-    require('markdown-it'),
-    require('markdown-it-transform15'),
-];
+const hosts = [MarkdownIt, require('markdown-it')];
 const features = {enabledVariants: {regular: true, radio: true, dropdown: true, accordion: true}};
 
 for (const createTabs of [esmTabs, cjsTabs]) {
@@ -92,7 +85,7 @@ for (const createTabs of [esmTabs, cjsTabs, pureTabs]) {
 }
 const output = join(process.cwd(), 'bundle-check');
 mkdirSync(output, {recursive: true});
-const mdNode = new MarkdownIt13().use(cjsTabs({directiveSyntax: 'enabled'}), {output});
+const mdNode = new MarkdownIt().use(cjsTabs({directiveSyntax: 'enabled'}), {output});
 mdNode.render(directiveSource, {});
 for (const name of ['js', 'css']) {
     const copied = join(output, `_assets/tabs-extension.${name}`);
@@ -100,10 +93,10 @@ for (const name of ['js', 'css']) {
     assert.deepEqual(readFileSync(copied), readFileSync(original));
 }
 const noCopy = join(process.cwd(), 'bundle-undefined');
-new MarkdownIt13().use(cjsTabs({directiveSyntax: 'enabled', onBundle: undefined}), {output:noCopy}).render(directiveSource, {});
+new MarkdownIt().use(cjsTabs({directiveSyntax: 'enabled', onBundle: undefined}), {output:noCopy}).render(directiveSource, {});
 assert.equal(existsSync(noCopy), false);
 const bundleCalls = [];
-const custom = new MarkdownIt13().use(cjsTabs({directiveSyntax:'enabled', onBundle: (args, cache) => {
+const custom = new MarkdownIt().use(cjsTabs({directiveSyntax:'enabled', onBundle: (args, cache) => {
     bundleCalls.push({args, size: cache.size});
 }}), {output});
 const sharedEnv = {};
@@ -114,7 +107,7 @@ custom.render(directiveSource, sharedEnv);
 assert.deepEqual(bundleCalls, [0, 0].map((size) => ({args: {runtimeJsPath:'_assets/tabs-extension.js', runtimeCssPath:'_assets/tabs-extension.css', output}, size})));
 
 // Exercise the shipped browser bundle against colon-generated markup and CSS.
-const browserHtml = new MarkdownIt13().use(pureTabs({bundle:false, directiveSyntax:'enabled'})).render(
+const browserHtml = new MarkdownIt().use(pureTabs({bundle:false, directiveSyntax:'enabled'})).render(
     ':::tabs {group=browser}\n\n- First\n\n  One\n\n- Second\n\n  Two\n\n:::',
 );
 const dom = new JSDOM(`<!doctype html><body>${browserHtml}</body>`, {runScripts:'outside-only', url:'https://example.com/'});
@@ -147,7 +140,7 @@ for (const Host of hosts) {
     assert.equal(JSON.stringify(tokens), original);
 }
 
-const hostEdges = [MarkdownIt13, MarkdownIt15].map((Host) => {
+const hostEdges = hosts.map((Host) => {
     const md = new Host();
     md.core.ruler.enableOnly(['normalize', 'block']);
     const tokens = md.parse('{% list tabs radio group=shared %}\n\n- A\n\n{% endlist %}', {});
