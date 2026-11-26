@@ -1,5 +1,23 @@
 # Changelog
 
+## [4.0.0](https://github.com/diplodoc-platform/tabs-extension/compare/v3.10.8...v4.0.0) (2026-11-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* **tabs:** The plugin now uses the new @diplodoc/utils major and its public Markdown-it host types.
+
+### Features
+
+* **tabs:** support colon directives and expose source boundaries ([e79e344](https://github.com/diplodoc-platform/tabs-extension/commit/e79e34433affd6ddd54a824abeee08bc941284d8))
+
+
+### Bug Fixes
+
+* **tabs:** link tab labels and synchronize dropdown selection ([573e1e9](https://github.com/diplodoc-platform/tabs-extension/commit/573e1e919c434be6fef341397f03bb8824acbb39))
+* **tabs:** require the native Markdown-it 15 host ([c352f0d](https://github.com/diplodoc-platform/tabs-extension/commit/c352f0d4f01960a47f9f5eafb0f1820c6b5b1284))
+* **tabs:** support mixed Markdown-it hosts and portable declarations ([d467355](https://github.com/diplodoc-platform/tabs-extension/commit/d467355483b68c170b8b5e7830526995cd018e08))
+
 ## [3.10.8](https://github.com/diplodoc-platform/tabs-extension/compare/v3.10.7...v3.10.8) (2026-11-26)
 
 
