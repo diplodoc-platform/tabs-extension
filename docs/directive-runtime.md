@@ -12,9 +12,9 @@ Acceptance examples:
 - A host with the table boundary registered can render an outer Cut containing
   a table with a literal `:::` cell and an inner Cut, followed by an unaffected
   sibling. Both Cuts must remain recognized after installing Tabs.
-- Native markdown-it 13 and 15 hosts retain Tabs behavior, including when both
-  versions are installed in the same consumer. Browser consumers can bundle the
-  pure plugin and its dependency without Node adapters.
+- A native Markdown-it 15 host retains Tabs behavior with legacy and directive
+  markup. Browser consumers can bundle the pure plugin and its dependency
+  without Node adapters.
 
 This change removes the bundled copy. Consumers still need a coherent dependency
 graph resolving all participating server plugins to the boundary-capable Directive
@@ -23,4 +23,4 @@ instance. Dependency version changes and releases are separate delivery steps.
 The package gate installs a separate consumer using the same Directive dependency
 as Tabs. A host-owned opaque rule models a table cell containing fence-like
 text and a literal closer. The fixture checks nested container boundaries on
-native markdown-it 13 and 15 through both server entries.
+native Markdown-it 15 through both server entries.

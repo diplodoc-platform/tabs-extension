@@ -334,10 +334,9 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 ## MarkdownIt compatibility
 
-The plugin supports MarkdownIt 13, 14 and 15. Its plugin callback describes the
-core rule and token capabilities it uses, so different supported parser versions
-can coexist in a TypeScript application. Tokens are created by the active parser
-state; no private MarkdownIt module is loaded at runtime.
+Tabs 4 requires Markdown-it 15.0.3 or newer within major 15. It uses the native
+Markdown-it declarations and creates tokens through the active parser state.
+Both legacy and colon markup are supported according to the plugin options.
 
 The installed-package compatibility tests use TypeScript 6.0.3 with NodeNext
 module resolution and `skipLibCheck: false`, including CommonJS and ESM hosts.

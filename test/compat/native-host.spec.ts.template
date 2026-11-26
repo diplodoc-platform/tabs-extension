@@ -1,23 +1,15 @@
-import MarkdownIt13 from 'markdown-it';
-import MarkdownIt15 from 'markdown-it-transform15';
+import MarkdownIt15 from 'markdown-it';
 import {describe, expect, it} from 'vitest';
 
 import {transform} from '@diplodoc/tabs-extension/plugin';
 
 const features = {enabledVariants: {regular: true, radio: true, dropdown: true, accordion: true}};
 
-describe.each([
-    [
-        'markdown-it 13',
-        (plugin: ReturnType<typeof transform>, generateID: (prefix?: string) => string) =>
-            new MarkdownIt13().use(plugin, {generateID}),
-    ],
-    [
-        'markdown-it 15',
-        (plugin: ReturnType<typeof transform>, generateID: (prefix?: string) => string) =>
-            new MarkdownIt15().use(plugin, {generateID}),
-    ],
-])('%s', (_name, createParser) => {
+describe('markdown-it 15', () => {
+    function createParser(plugin: ReturnType<typeof transform>, generateID: (prefix?: string) => string) {
+        return new MarkdownIt15().use(plugin, {generateID});
+    }
+
     const source = '{% list tabs %}\n\n- First\n\n  One\n\n{% endlist %}';
 
     it.each([true, 42, 'invalid'])('rejects invalid metadata %s', (meta) => {
