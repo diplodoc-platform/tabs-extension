@@ -44,25 +44,33 @@ function escapeCssAttrValue(value: string): string {
 }
 
 /**
- * Find tab elements by group and key without putting key in a selector (keys may contain %, spaces, etc.).
+ * One tab per block by group and key; the tab containing `target` wins, since older HTML
+ * can repeat a key within a block. Key stays out of the selector (may contain %, spaces).
  * @param doc - Document to query.
  * @param group - Group id.
  * @param key - Tab key (data-tabs-key value).
+ * @param target - Clicked element, if any.
  * @returns Matching tab elements.
  */
-function findTabsByGroupAndKey(doc: Document, group: string, key: string): Element[] {
+function findTabsByGroupAndKey(
+    doc: Document,
+    group: string,
+    key: string,
+    target?: HTMLElement,
+): Element[] {
     const containers = doc.querySelectorAll(
         `${Selector.TABS}[${GROUP_DATA_KEY}="${escapeCssAttrValue(group)}"]`,
     );
-    const result: Element[] = [];
-    containers.forEach((container) => {
-        container.querySelectorAll(Selector.TAB).forEach((tab) => {
-            if (tab.getAttribute(TAB_DATA_KEY) === key) {
-                result.push(tab);
-            }
-        });
+
+    return Array.from(containers).flatMap((container) => {
+        const tabs = Array.from(container.querySelectorAll(Selector.TAB)).filter(
+            (tab) =>
+                tab.closest(Selector.TABS) === container && tab.getAttribute(TAB_DATA_KEY) === key,
+        );
+        const tab = tabs.find((element) => target && element.contains(target)) ?? tabs[0];
+
+        return tab ? [tab] : [];
     });
-    return result;
 }
 
 function hasTabByGroupKeyAndVariant(
@@ -498,10 +506,10 @@ export class TabsController {
                 return this.updateHTMLAccordion(tab, target);
             }
             case TabsVariants.Regular: {
-                return this.updateHTMLRegular(tab);
+                return this.updateHTMLRegular(tab, target);
             }
             case TabsVariants.Dropdown: {
-                return this.updateHTMLDropdown(tab);
+                return this.updateHTMLDropdown(tab, target);
             }
             default: {
                 return 0;
@@ -589,7 +597,7 @@ export class TabsController {
 
         const {isForced, root} = this.didTabOpenForce(target);
 
-        let tabs = findTabsByGroupAndKey(this._document, group, key);
+        let tabs = findTabsByGroupAndKey(this._document, group, key, target);
         if (isForced) {
             tabs = tabs.filter(
                 (el) => (el as HTMLElement).getAttribute(TAB_FORCED_OPEN) === 'true',
@@ -644,10 +652,10 @@ export class TabsController {
         return updated;
     }
 
-    private updateHTMLRegular(tab: Required<Tab>) {
+    private updateHTMLRegular(tab: Required<Tab>, target: HTMLElement | undefined) {
         const {group, key} = tab;
 
-        const tabs = findTabsByGroupAndKey(this._document, group, key);
+        const tabs = findTabsByGroupAndKey(this._document, group, key, target);
 
         let updated = 0;
 
@@ -685,10 +693,10 @@ export class TabsController {
         return updated;
     }
 
-    private updateHTMLDropdown(tab: Required<Tab>) {
+    private updateHTMLDropdown(tab: Required<Tab>, target: HTMLElement | undefined) {
         const {group, key} = tab;
 
-        const tabs = findTabsByGroupAndKey(this._document, group, key);
+        const tabs = findTabsByGroupAndKey(this._document, group, key, target);
 
         let changed = 0;
 
@@ -734,7 +742,7 @@ export class TabsController {
     private updateHTMLAccordion(tab: Required<Tab>, target: HTMLElement | undefined) {
         const {group, key} = tab;
 
-        const tabs = findTabsByGroupAndKey(this._document, group, key);
+        const tabs = findTabsByGroupAndKey(this._document, group, key, target);
 
         let changed = 0;
 

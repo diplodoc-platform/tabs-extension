@@ -13,7 +13,7 @@ import {
     TAB_DATA_VARIANT,
     TAB_PANEL_CLASSNAME,
 } from '../../common';
-import {getContentMap, getName, getTabId, getTabKey, isTabSelected} from '../utils';
+import {getContentMap, getName, getTabId, getTabKeys, isTabSelected} from '../utils';
 import {type RuntimeTab} from '../types';
 
 import {type TabsTokensGenerator} from './types';
@@ -87,6 +87,7 @@ export const dropdown: TabsTokensGenerator = (
     dropdownMenuOpen.attrSet('class', TABS_DROPDOWN_MENU_CLASSNAME);
 
     const tabIds = tabs.map((tab) => getTabId(tab, {runId}));
+    const tabKeys = getTabKeys(tabs);
 
     const menuTokens = tabs.flatMap((tab, i) => {
         const menuListItemOpen = new state.Token('dropdown-menu-item_open', 'li', 1);
@@ -95,7 +96,7 @@ export const dropdown: TabsTokensGenerator = (
         const menuListItemInline = new state.Token('inline', '', 0);
 
         const tabId = tabIds[i];
-        const tabKey = getTabKey(tab);
+        const tabKey = tabKeys[i];
         const isActive = tab === activeTab;
 
         menuListItemOpen.attrSet(

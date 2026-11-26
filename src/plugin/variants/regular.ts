@@ -15,7 +15,7 @@ import {
     TAB_PANEL_CLASSNAME,
     VERTICAL_TAB_CLASSNAME,
 } from '../../common';
-import {getContentMap, getName, getTabId, getTabKey, isTabSelected} from '../utils';
+import {getContentMap, getName, getTabId, getTabKeys, isTabSelected} from '../utils';
 
 export const regular: TabsTokensGenerator = (
     tabs,
@@ -70,6 +70,8 @@ export const regular: TabsTokensGenerator = (
         tabsTokens.push(tabsOpen);
     }
 
+    const tabKeys = getTabKeys(tabs);
+
     for (let i = 0; i < tabs.length; i++) {
         const tabOpen = new state.Token('tab_open', 'div', 1);
         const tabInline = new state.Token('inline', '', 0);
@@ -87,7 +89,7 @@ export const regular: TabsTokensGenerator = (
 
         const tab = tabs[i];
         const tabId = getTabId(tab, {runId});
-        const tabKey = getTabKey(tab);
+        const tabKey = tabKeys[i];
         const didTabHasActiveAttr = isTabSelected(tab);
         /* if user did not provide default open tab we fallback to first tab (in default tabs only) */
         const isTabActive = hasDefaultOpenTab ? didTabHasActiveAttr : i === 0;
