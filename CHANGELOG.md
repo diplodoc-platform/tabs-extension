@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.10.8](https://github.com/diplodoc-platform/tabs-extension/compare/v3.10.7...v3.10.8) (2026-11-26)
+
+
+### Bug Fixes
+
+* **ci:** accept the shared lock workflow condition ([84326f1](https://github.com/diplodoc-platform/tabs-extension/commit/84326f1c7a4dd8bd81c207facf3f073496d6f548))
+* **ci:** use explicit indentation in lock workflow assertion ([7855d1b](https://github.com/diplodoc-platform/tabs-extension/commit/7855d1b908abdc1cf8e6707ec19dd3f4445813ec))
+
 ## [3.10.7](https://github.com/diplodoc-platform/tabs-extension/compare/v3.10.6...v3.10.7) (2026-08-14)
 
 
