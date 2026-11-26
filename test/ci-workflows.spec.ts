@@ -33,7 +33,7 @@ describe('Secretless dependency CI contract', () => {
         const source = workflow('package-lock.yml');
         const verify = source.split('  update-package-lock:')[0];
         expect(verify).toMatch(
-            /^    if: (?:>-?\s*\n\s+)?github\.event\.pull_request\.user\.login == 'dependabot\[bot\]'(?:\s*\|\||\s*$)/m,
+            /^ {4}if: (?:>-?\s*\n\s+)?github\.event\.pull_request\.user\.login == 'dependabot\[bot\]'(?:\s*\|\||\s*$)/m,
         );
         expect(verify).toContain('npm ci --no-workspaces --ignore-scripts');
         expect(verify).toContain('persist-credentials: false');
